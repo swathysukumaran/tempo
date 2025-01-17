@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 
 function Hero() {
@@ -14,7 +15,9 @@ function Hero() {
         Your personal trip planner and travel curator, creating custom
         itineraries tailored to your interests and budget.
       </p>
-      <Button>Get Started, It's Free</Button>
+      <Link to="/create-trip">
+        <Button>Get Started, It's Free</Button>
+      </Link>
     </div>
   );
 }
