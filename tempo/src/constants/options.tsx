@@ -6,6 +6,16 @@ import {
   FaGlobe,
   FaSchool,
 } from "react-icons/fa";
+import {
+  FaMoneyBillWave,
+  FaPiggyBank,
+  FaWallet,
+  FaCreditCard,
+  FaGem,
+  FaCoins,
+  FaCrown,
+  FaBalanceScale,
+} from "react-icons/fa";
 
 export const SelectTravelersList = [
   {
@@ -77,5 +87,68 @@ export const SelectTravelersList = [
     desc: "Large groups organized for sightseeing tours",
     icon: <FaUsers />, // Large group icon
     people: 30,
+  },
+];
+
+export const BudgetOptions = [
+  {
+    id: 1,
+    title: "Cheap",
+    desc: "Stay conscious of cost",
+    icon: <FaPiggyBank />, // Piggy bank icon for saving money
+  },
+  {
+    id: 2,
+    title: "Affordable",
+    desc: "Great value for your money",
+    icon: <FaWallet />, // Wallet icon for affordability
+  },
+  {
+    id: 3,
+    title: "Moderate",
+    desc: "A balance between cost and comfort",
+    icon: <FaMoneyBillWave />, // Money bill icon for moderate spending
+  },
+  {
+    id: 4,
+    title: "Premium",
+    desc: "Luxury and comfort within reach",
+    icon: <FaCreditCard />, // Credit card icon for premium options
+  },
+  {
+    id: 5,
+    title: "Luxury",
+    desc: "Top-tier experiences and comfort",
+    icon: <FaGem />, // Gem icon for luxury and exclusivity
+  },
+  {
+    id: 6,
+    title: "Backpacker",
+    desc: "Minimal cost for adventurous travelers",
+    icon: <FaCoins />, // Coin icon for frugal backpacking
+  },
+  {
+    id: 7,
+    title: "Eco-Friendly",
+    desc: "Budget-friendly and sustainable",
+    icon: <FaBalanceScale />, // Scale icon for eco-conscious and fair spending
+  },
+  {
+    id: 8,
+    title: "All-Inclusive",
+    desc: "Everything included for convenience",
+    icon: <FaCrown />, // Crown icon for premium packages
+  },
+  {
+    id: 9,
+    title: "Budget Family",
+    desc: "Affordable trips for the whole family",
+    icon: <FaWallet />, // Wallet icon for affordable family trips
+  },
+  {
+    id: 10,
+    title: "Ultra-Luxury",
+    desc: "Exclusive, luxurious, and personalized experiences",
+    icon: <FaGem />, // Gem icon to emphasize ultra-luxury
   },
 ];

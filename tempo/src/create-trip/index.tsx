@@ -38,6 +38,10 @@ function CreateTrip() {
           <Input placeholder={"EX.3"} type="number" />
         </div>
       </div>
+
+      <div>
+        <h2 className="text-xl my-3 font-medium">What is Your Budget?</h2>
+      </div>
     </div>
   );
 }
