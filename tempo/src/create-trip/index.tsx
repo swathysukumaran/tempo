@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
-
+import { Input } from "../components/ui/input";
 type Option = {
   label: string;
   value: string;
@@ -17,9 +17,12 @@ function CreateTrip() {
         a customized itinerary based on your preferences.
       </p>
 
-      <div className="mt-20">
+      <div className="mt-20 flex flex-col gap-10">
         <div>
-          <h2>What is destination of choice?</h2>
+          <h2 className="text-xl my-3 font-medium">
+            What is destination of choice?
+          </h2>
+
           <GooglePlacesAutocomplete
             selectProps={{
               value: place,
@@ -38,6 +41,12 @@ function CreateTrip() {
               },
             }}
           />
+        </div>
+        <div>
+          <h2 className="text-xl my-3 font-medium">
+            How many days are you planning your trip?
+          </h2>
+          <Input placeholder={"EX.3"} type="number" />
         </div>
       </div>
     </div>
