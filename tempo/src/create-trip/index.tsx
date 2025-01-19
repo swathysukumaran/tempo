@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { Input } from "../components/ui/input";
 import { SelectBudgetOptions, SelectTravelersList } from "@/constants/options";
+import { Button } from "@/components/ui/button";
 type Option = {
   label: string;
   value: string;
@@ -12,7 +13,9 @@ function CreateTrip() {
 
   return (
     <div className="sm:px-10 md:px-32 lg:px-56xl:px-10 px-5 mt-10">
-      <h2 className="font-bold text-3xl">Tell us your travel preferences</h2>
+      <h2 className="font-bold text-3xl">
+        Tell us your travel preferences 🏕️🌴
+      </h2>
       <p className="mt-3 text-gray-500 text-xl">
         Just provide some basic information, and our trip planner will generate
         a customized itinerary based on your preferences.
@@ -83,6 +86,10 @@ function CreateTrip() {
             ))}
           </div>
         </div>
+      </div>
+
+      <div className="my-10 justify-end flex">
+        <Button>Generate Trip</Button>
       </div>
     </div>
   );
