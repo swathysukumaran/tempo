@@ -90,7 +90,7 @@ export const SelectTravelersList = [
   },
 ];
 
-export const BudgetOptions = [
+export const SelectBudgetOptions = [
   {
     id: 1,
     title: "Cheap",
@@ -152,3 +152,5 @@ export const BudgetOptions = [
     icon: <FaGem />, // Gem icon to emphasize ultra-luxury
   },
 ];
+
+export const AI_PROMPT = "Generate Travel Plan for Location : {location}";
