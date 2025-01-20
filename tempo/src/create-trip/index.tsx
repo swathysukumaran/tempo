@@ -25,6 +25,13 @@ function CreateTrip() {
   useEffect(() => {
     console.log(formData);
   }, [formData]);
+
+  const onGenerateTrip = () => {
+    if (Number(formData?.noOfDays) > 5) {
+      console.log("Please enter a number of days less than 5");
+      return;
+    }
+  };
   return (
     <div className="sm:px-10 md:px-32 lg:px-56xl:px-10 px-5 mt-10">
       <h2 className="font-bold text-3xl">
@@ -109,7 +116,7 @@ function CreateTrip() {
       </div>
 
       <div className="my-10 justify-end flex">
-        <Button>Generate Trip</Button>
+        <Button onClick={onGenerateTrip}>Generate Trip</Button>
       </div>
     </div>
   );
