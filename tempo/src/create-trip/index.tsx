@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { Input } from "../components/ui/input";
 import { SelectBudgetOptions, SelectTravelersList } from "@/constants/options";
@@ -7,10 +7,24 @@ type Option = {
   label: string;
   value: string;
 };
-
+type FormData = {
+  [key: string]: string | number | boolean;
+};
 function CreateTrip() {
   const [place, setPlace] = useState<Option | null>(null);
-
+  const [formData, setFormData] = useState<FormData>({});
+  const handleInputChange = (
+    name: string,
+    value: string | number | boolean
+  ) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
   return (
     <div className="sm:px-10 md:px-32 lg:px-56xl:px-10 px-5 mt-10">
       <h2 className="font-bold text-3xl">
@@ -32,7 +46,7 @@ function CreateTrip() {
               value: place,
               onChange: (v) => {
                 setPlace(v);
-                console.log("Selected:", v);
+                handleInputChange("location", v ? v.value : "");
               },
               placeholder: "Search for a destination...",
               styles: {
@@ -50,7 +64,11 @@ function CreateTrip() {
           <h2 className="text-xl my-3 font-medium">
             How many days are you planning your trip?
           </h2>
-          <Input placeholder={"EX.3"} type="number" />
+          <Input
+            placeholder={"EX.3"}
+            type="number"
+            onChange={(e) => handleInputChange("noOfDays", e.target.value)}
+          />
         </div>
 
         <div>
@@ -59,6 +77,7 @@ function CreateTrip() {
             {SelectBudgetOptions.map((item, index) => (
               <div
                 key={index}
+                onClick={() => handleInputChange("budget", item.title)}
                 className="p-4 border curosor-pointer rounded-lg hover:shadow-lg"
               >
                 <h2 className="text-4xl">{item.icon}</h2>
@@ -77,6 +96,7 @@ function CreateTrip() {
             {SelectTravelersList.map((item, index) => (
               <div
                 key={index}
+                onClick={() => handleInputChange("traveler", item.people)}
                 className="p-4 border curosor-pointer rounded-lg hover:shadow-lg"
               >
                 <h2 className="text-4xl">{item.icon}</h2>
