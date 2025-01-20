@@ -8,6 +8,7 @@ import {
 } from "@/constants/options";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { chatSession } from "@/service/AIModal";
 type Option = {
   label: string;
   value: string;
@@ -31,7 +32,7 @@ function CreateTrip() {
     console.log(formData);
   }, [formData]);
 
-  const onGenerateTrip = () => {
+  const onGenerateTrip = async () => {
     if (
       Number(formData?.noOfDays) > 5 ||
       !formData?.location ||
@@ -50,7 +51,15 @@ function CreateTrip() {
       .replace("{traveler}", formData?.traveler as string)
       .replace("{budget}", formData?.budget as string);
     console.log(FINAL_PROMPT);
+
+    if (chatSession) {
+      const result = await chatSession.sendMessage(FINAL_PROMPT);
+      console.log(result?.response?.text());
+    } else {
+      toast("Chat session is not available.");
+    }
   };
+
   return (
     <div className="sm:px-10 md:px-32 lg:px-56xl:px-10 px-5 mt-10">
       <h2 className="font-bold text-3xl">
