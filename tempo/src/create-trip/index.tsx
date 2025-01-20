@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { Input } from "../components/ui/input";
-import { SelectBudgetOptions, SelectTravelersList } from "@/constants/options";
+import {
+  AI_PROMPT,
+  SelectBudgetOptions,
+  SelectTravelersList,
+} from "@/constants/options";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 type Option = {
@@ -9,7 +13,7 @@ type Option = {
   value: string;
 };
 type FormData = {
-  [key: string]: string | number | boolean;
+  [key: string]: string | number | boolean | Option;
 };
 function CreateTrip() {
   const [place, setPlace] = useState<Option | null>(null);
@@ -30,13 +34,22 @@ function CreateTrip() {
   const onGenerateTrip = () => {
     if (
       Number(formData?.noOfDays) > 5 ||
-      formData?.location ||
+      !formData?.location ||
       !formData?.budget ||
-      formData?.traveler
+      !formData?.traveler
     ) {
       toast("Please fill all details");
       return;
     }
+
+    const FINAL_PROMPT = AI_PROMPT.replace(
+      "{location}",
+      (formData?.location as Option)?.label
+    )
+      .replace("{totalDays}", formData?.noOfDays as string)
+      .replace("{traveler}", formData?.traveler as string)
+      .replace("{budget}", formData?.budget as string);
+    console.log(FINAL_PROMPT);
   };
   return (
     <div className="sm:px-10 md:px-32 lg:px-56xl:px-10 px-5 mt-10">
