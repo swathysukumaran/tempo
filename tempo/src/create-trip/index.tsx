@@ -33,6 +33,10 @@ function CreateTrip() {
   }, [formData]);
 
   const onGenerateTrip = async () => {
+    const user = localStorage.getItem("user");
+    if (!user) {
+      return;
+    }
     if (
       Number(formData?.noOfDays) > 5 ||
       !formData?.location ||
