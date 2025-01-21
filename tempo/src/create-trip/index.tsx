@@ -14,9 +14,8 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
+import { FcGoogle } from "react-icons/fc";
 
 type Option = {
   label: string;
@@ -165,8 +164,16 @@ function CreateTrip() {
         <DialogContent>
           <DialogHeader>
             <DialogDescription>
-              This action cannot be undone. This will permanently delete your
-              account and remove your data from our servers.
+              <img src="/logo.svg" />
+              <h2 className="font-bold text-lg mt-7">Sign in with Google</h2>
+              <p>Sign in to the app using Google Authentication securely</p>
+              <Button
+                className="w-full mt-5 flex gap-5 items-center"
+                onClick={login}
+              >
+                <FcGoogle className="w-7 h-7" />
+                Sign in with Google
+              </Button>
             </DialogDescription>
           </DialogHeader>
         </DialogContent>
