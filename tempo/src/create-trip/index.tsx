@@ -16,10 +16,11 @@ import {
   DialogHeader,
 } from "@/components/ui/dialog";
 import { FcGoogle } from "react-icons/fc";
-
+debugger;
 type Option = {
   label: string;
   value: string;
+  description: string;
 };
 type FormData = {
   [key: string]: string | number | boolean | Option;
