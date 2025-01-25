@@ -16,11 +16,11 @@ import {
   DialogHeader,
 } from "@/components/ui/dialog";
 import { FcGoogle } from "react-icons/fc";
-debugger;
+
 type Option = {
   label: string;
   value: string;
-  description: string;
+  description?: string;
 };
 type FormData = {
   [key: string]: string | number | boolean | Option;
@@ -60,7 +60,7 @@ function CreateTrip() {
 
     const FINAL_PROMPT = AI_PROMPT.replace(
       "{location}",
-      (formData?.location as Option)?.description
+      (formData?.location as Option)?.description || ""
     )
       .replace("{totalDays}", formData?.noOfDays as string)
       .replace("{traveler}", formData?.traveler as string)
@@ -95,7 +95,7 @@ function CreateTrip() {
             selectProps={{
               value: place,
               onChange: (v) => {
-                setPlace(v);
+                setPlace(v as Option);
                 handleInputChange("location", v ? v.value : "");
               },
               placeholder: "Search for a destination...",
