@@ -12,3 +12,18 @@ const TripSchema=new mongoose.Schema({
 });
 
 export const TripModel=mongoose.model('Trip',TripSchema);
+
+export const createTrip=async(userId:string,tripDetails:Record<string,any>,generatedItinerary:Record<string,any>)=>{
+    try{
+        const trip=new TripModel({
+            userId,
+            tripDetails,
+            generatedItinerary
+        });
+         await trip.save();
+         return;
+    }catch(err){
+        throw new Error(err.message);
+    }
+    
+}
