@@ -1,7 +1,7 @@
 
-import { deleteUser ,updateUser} from 'controllers/users';
+import { deleteUser ,updateUser} from '../controllers/users';
 import express from 'express';
-import { isAuthenticated, isOwner } from 'middlewares';
+import { isAuthenticated, isOwner } from '../middlewares';
 
 export default (router:express.Router)=>{
    

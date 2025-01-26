@@ -1,5 +1,5 @@
 
-import { deleteUserById, getUserById } from 'db/users';
+import { deleteUserById, getUserById } from '../db/users';
 import express from 'express';
 
 export const deleteUser=async(req:express.Request,res:express.Response)=>{
