@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { Input } from "../components/ui/input";
-import {
-  AI_PROMPT,
-  SelectBudgetOptions,
-  SelectTravelersList,
-} from "@/constants/options";
+import { SelectBudgetOptions, SelectTravelersList } from "@/constants/options";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { chatSession } from "@/service/AIModal";
+import { API_URL } from "@/config/api";
 
 type Option = {
   label: string;
@@ -44,21 +40,28 @@ function CreateTrip() {
       toast("Please fill all details");
       return;
     }
-
-    const FINAL_PROMPT = AI_PROMPT.replace(
-      "{location}",
-      (formData?.location as Option)?.description || ""
-    )
-      .replace("{totalDays}", formData?.noOfDays as string)
-      .replace("{traveler}", formData?.traveler as string)
-      .replace("{budget}", formData?.budget as string);
-    console.log("final prompt", FINAL_PROMPT);
-
-    if (chatSession) {
-      const result = await chatSession.sendMessage(FINAL_PROMPT);
-      console.log(result?.response?.text());
-    } else {
-      toast("Chat session is not available.");
+    const tripData = {
+      location: formData.location,
+      noOfDays: formData.noOfDays,
+      budget: formData.budget,
+      traveler: formData.traveler,
+    };
+    try {
+      const response = await fetch(`${API_URL}/ai/create-trip`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(tripData),
+      });
+      // if (!response.ok) throw new Error("Failed to generate trip");
+      const trip = await response.json();
+      console.log(response);
+      console.log(trip);
+    } catch (error) {
+      toast("Something went wrong");
+      console.log(error);
     }
   };
 

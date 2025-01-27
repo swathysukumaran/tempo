@@ -14,6 +14,7 @@ const TripSchema=new mongoose.Schema({
 export const TripModel=mongoose.model('Trip',TripSchema);
 
 export const createNewTrip=async(userId:string,tripDetails:Record<string,any>,generatedItinerary:Record<string,any>)=>{
+    console.log("Creating new trip");
     try{
         const trip=new TripModel({
             userId,
