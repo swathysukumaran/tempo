@@ -31,7 +31,7 @@ export const createNewTrip=async(userId:string,tripDetails:Record<string,any>,ge
 }
 
 export const getTripById=async(tripId:string)=>{
-    try{
+    try{       
         const trip=await TripModel.findById(tripId);
         return trip;
 
