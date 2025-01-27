@@ -10,7 +10,7 @@ export const createTrip = async (req: express.Request, res: express.Response) =>
     try{
         const {location, noOfDays, budget, traveler} = req.body;
         const FINAL_PROMPT = AI_PROMPT.replace(
-        "{location}",location|| "").replace("{totalDays}", noOfDays).replace("{traveler}", traveler).replace("{budget}", budget);
+        "{location}",location.description|| "").replace("{totalDays}", noOfDays).replace("{traveler}", traveler).replace("{budget}", budget);
 
         if (chatSession) {
             const userId = get(req, 'identity._id');
@@ -20,8 +20,10 @@ export const createTrip = async (req: express.Request, res: express.Response) =>
             const generatedItinerary=JSON.parse(aiResponse);
             console.log(generatedItinerary);
             const trip=await createNewTrip(userId,{location,noOfDays,budget,traveler},generatedItinerary);
-            res.status(200).send(generatedItinerary);
-            return
+            res.status(200).json({
+                tripId: trip._id,
+            });
+            return;
             } else {
             res.status(400).send("Chat session not found");
             return;

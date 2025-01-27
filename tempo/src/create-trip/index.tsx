@@ -46,6 +46,7 @@ function CreateTrip() {
       budget: formData.budget,
       traveler: formData.traveler,
     };
+    console.log(tripData);
     try {
       const response = await fetch(`${API_URL}/ai/create-trip`, {
         method: "POST",
@@ -55,10 +56,10 @@ function CreateTrip() {
         credentials: "include",
         body: JSON.stringify(tripData),
       });
-      // if (!response.ok) throw new Error("Failed to generate trip");
+      if (!response.ok) throw new Error("Failed to generate trip");
       const trip = await response.json();
-      console.log(response);
       console.log(trip);
+      // "navigate(`/trips/${trip.tripId}`);
     } catch (error) {
       toast("Something went wrong");
       console.log(error);

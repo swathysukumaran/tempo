@@ -21,9 +21,9 @@ export const createNewTrip=async(userId:string,tripDetails:Record<string,any>,ge
             tripDetails,
             generatedItinerary
         });
-         await trip.save();
-         console.log("Trip created successfully");
-         return;
+        const savedTrip = await trip.save();
+        console.log("Trip created successfully");
+        return savedTrip;  // Return the saved trip
     }catch(err){
         throw new Error(err.message);
     }
