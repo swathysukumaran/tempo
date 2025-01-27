@@ -29,3 +29,13 @@ export const createNewTrip=async(userId:string,tripDetails:Record<string,any>,ge
     }
     
 }
+
+export const getTripById=async(tripId:string)=>{
+    try{
+        const trip=await TripModel.findById(tripId);
+        return trip;
+
+    }catch(error){
+        throw new Error(error.message);
+    }
+}
