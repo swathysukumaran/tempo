@@ -144,11 +144,11 @@ function TripDetails() {
                       className="border rounded-lg overflow-hidden"
                     >
                       <div className="grid md:grid-cols-3 gap-4">
-                        <img
+                        {/* <img
                           src={activity.place_image_url}
                           alt={activity.place_name}
                           className="w-full h-48 object-cover"
-                        />
+                        /> */}
                         <div className="md:col-span-2 p-4">
                           <h3 className="font-semibold text-lg">
                             {activity.place_name}
