@@ -21,7 +21,6 @@ type FormData = {
 function CreateTrip() {
   const [place, setPlace] = useState<Option | null>(null);
   const [formData, setFormData] = useState<FormData>({});
-  // const [openDialog, setOpenDialog] = useState(false);
   const handleInputChange = (
     name: string,
     value: string | number | boolean
