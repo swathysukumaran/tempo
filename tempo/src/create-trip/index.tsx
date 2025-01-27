@@ -9,13 +9,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { chatSession } from "@/service/AIModal";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-} from "@/components/ui/dialog";
-import { FcGoogle } from "react-icons/fc";
 
 type Option = {
   label: string;
@@ -43,11 +36,6 @@ function CreateTrip() {
   }, [formData]);
 
   const onGenerateTrip = async () => {
-    // const user = localStorage.getItem("user");
-    // if (!user) {
-    //   // setOpenDialog(true);
-    //   return;
-    // }
     if (
       Number(formData?.noOfDays) > 5 ||
       !formData?.location ||
@@ -161,21 +149,6 @@ function CreateTrip() {
       <div className="my-10 justify-end flex">
         <Button onClick={onGenerateTrip}>Generate Trip</Button>
       </div>
-      <Dialog>
-        <DialogContent>
-          <DialogHeader>
-            <DialogDescription>
-              <img src="/logo.svg" />
-              <h2 className="font-bold text-lg mt-7">Sign in with Google</h2>
-              <p>Sign in to the app using Google Authentication securely</p>
-              <Button className="w-full mt-5 flex gap-5 items-center">
-                <FcGoogle className="w-7 h-7" />
-                Sign in with Google
-              </Button>
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
