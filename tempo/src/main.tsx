@@ -8,11 +8,20 @@ import CreateTrip from "./create-trip/index.tsx";
 import Header from "./components/custom/Header.tsx";
 import { Toaster } from "./components/ui/sonner.tsx";
 import Register from "./components/custom/Register.tsx";
+import Login from "./components/custom/Login.tsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Register />,
+  },
+  {
+    path: "/",
+    element: <Register />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
   },
   {
     path: "/home",
