@@ -5,6 +5,7 @@ import { SelectBudgetOptions, SelectTravelersList } from "@/constants/options";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { API_URL } from "@/config/api";
+import { useNavigate } from "react-router-dom";
 
 type Option = {
   label: string;
@@ -17,6 +18,7 @@ type FormData = {
 function CreateTrip() {
   const [place, setPlace] = useState<Option | null>(null);
   const [formData, setFormData] = useState<FormData>({});
+  const navigate = useNavigate();
   const handleInputChange = (
     name: string,
     value: string | number | boolean
@@ -59,7 +61,7 @@ function CreateTrip() {
       if (!response.ok) throw new Error("Failed to generate trip");
       const trip = await response.json();
       console.log(trip);
-      // "navigate(`/trips/${trip.tripId}`);
+      navigate(`/trip-details/${trip.tripId}`);
     } catch (error) {
       toast("Something went wrong");
       console.log(error);

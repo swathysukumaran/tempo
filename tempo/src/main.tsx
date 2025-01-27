@@ -9,6 +9,7 @@ import Header from "./components/custom/Header.tsx";
 import { Toaster } from "./components/ui/sonner.tsx";
 import Register from "./components/custom/Register.tsx";
 import Login from "./components/custom/Login.tsx";
+import TripDetails from "./components/custom/tripDetails.tsx";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
   {
     path: "/create-trip",
     element: <CreateTrip />,
+  },
+  {
+    path: "/trip-details/:tripId",
+    element: <TripDetails />,
   },
 ]);
 createRoot(document.getElementById("root")!).render(
