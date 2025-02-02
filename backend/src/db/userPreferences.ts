@@ -44,7 +44,7 @@ export const createPreferences=async(userId: mongoose.Schema.Types.ObjectId,pref
     }
 }
 
-const updatePreferences=async (userId: mongoose.Schema.Types.ObjectId,preferences:Object)=>{
+export const updatePreferences=async (userId: mongoose.Schema.Types.ObjectId,preferences:Object)=>{
     try{
         return await PreferencesModel.findOneAndUpdate({userId:userId},{preferences:preferences},{new:true});
     }catch(error){
@@ -55,7 +55,7 @@ const updatePreferences=async (userId: mongoose.Schema.Types.ObjectId,preference
 
 }
 
-const getPreferences=async(userId:mongoose.Schema.Types.ObjectId)=>{
+export const getPreferences=async(userId:mongoose.Schema.Types.ObjectId)=>{
 
     try{
         const userPreferences=await PreferencesModel.findOne({userId:userId});
