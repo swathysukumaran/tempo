@@ -1,5 +1,5 @@
 import { getOnboarding, startOnboarding, updateOnboarding } from '../db/onboarding';
-import express, { response } from 'express';
+import express from 'express';
 import { get } from 'lodash';
 
 export const createOnboarding = async (req: express.Request, res: express.Response) => {
@@ -7,7 +7,8 @@ export const createOnboarding = async (req: express.Request, res: express.Respon
     try{
         const userId=get(req, 'identity._id');
          if (!userId) {
-            return res.sendStatus(403); // Unauthorized if no user ID
+             res.sendStatus(403); // Unauthorized if no user ID
+             return;
         }
         const onboarding=await startOnboarding(userId);
         res.status(200).json({onboarding});
@@ -23,7 +24,8 @@ export const updateOnboardingSteps=async(req:express.Request,res:express.Respons
     try{
         const userId=get(req,'identity._id');
         if(!userId){
-            return res.sendStatus(403);
+             res.sendStatus(403);
+             return;
         }
         const {status,completedSteps,preferences}=req.body;
         const onboarding=await updateOnboarding(userId,status,completedSteps,preferences);
@@ -42,7 +44,8 @@ export const getOnboardingStatus=async(req:express.Request,res:express.Response)
 
         const userId=get(req,'identity._id');
         if(!userId){
-            return res.sendStatus(403);
+             res.sendStatus(403);
+             return;
         }
         const onboarding=await getOnboarding(userId);
         res.status(200).json({onboarding});
