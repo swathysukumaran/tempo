@@ -41,3 +41,14 @@ const OnboardingSchema = new mongoose.Schema({
 });
 
 export const OnboardingModel = mongoose.model('Onboarding', OnboardingSchema);
+
+export const startOnboarding = async (userId: mongoose.Schema.Types.ObjectId) => {
+    try {
+        return await OnboardingModel.create({
+            userId,
+            status: 'in_progress'
+        });
+    } catch (error) {
+        throw new Error(error);
+    }
+}
