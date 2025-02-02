@@ -1,4 +1,8 @@
 import mongoose from 'mongoose';
+import { userInfo } from 'os';
+import { useRevalidator } from 'react-router-dom';
+import { Interface } from 'readline';
+import { getTripById } from './trip';
 
 
 const PreferencesSchema=new mongoose.Schema({
@@ -25,4 +29,40 @@ const PreferencesSchema=new mongoose.Schema({
 
 export const PreferencesModel=mongoose.model('Preferences',PreferencesSchema);
 
-export const getPreferences=()=>PreferencesModel.find();
+
+export const createPreferences=async(userId: mongoose.Schema.Types.ObjectId,preferences:Object)=>{
+
+    try{
+        const newPreferences=new PreferencesModel({
+            userId,
+            preferences:preferences
+        })
+
+    }catch(error){
+        console.log(error);
+        throw new Error(error.message);
+    }
+}
+
+const updatePreferences=async (userId: mongoose.Schema.Types.ObjectId,preferences:Object)=>{
+    try{
+        return await PreferencesModel.findOneAndUpdate({userId:userId},{preferences:preferences},{new:true});
+    }catch(error){
+        console.log(error);
+        throw new Error(error);
+
+    }
+
+}
+
+const getPreferences=async(userId:mongoose.Schema.Types.ObjectId)=>{
+
+    try{
+        const userPreferences=await PreferencesModel.findOne({userId:userId});
+        return userPreferences?userPreferences.preferences:null;
+    }
+    catch(error){
+        console.log(error);
+        throw new Error(error);
+    }
+}
