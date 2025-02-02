@@ -18,7 +18,8 @@ const OnboardingSchema = new mongoose.Schema({
         default: 'not_started'
     },
     completedSteps: [{
-        type: Number
+        type: [Number],
+        default:[]
     }],
     temporaryPreferences: {
         type: Object,
@@ -48,6 +49,24 @@ export const startOnboarding = async (userId: mongoose.Schema.Types.ObjectId) =>
             userId,
             status: 'in_progress'
         });
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+export const updateOnboarding = async (userId: mongoose.Schema.Types.ObjectId,status:string,completedSteps:number[],preferences:Object) => {
+    try {
+        return await OnboardingModel.findOneAndUpdate({userId:userId},{$addToSet: {completedSteps: { $each: completedSteps } },  
+                temporaryPreferences: preferences,
+                lastUpdated: new Date()},{new:true});
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
+export const getOnboarding = async (userId: mongoose.Schema.Types.ObjectId) => {
+    try {
+        return await OnboardingModel.findOne({userId:userId});
     } catch (error) {
         throw new Error(error);
     }
