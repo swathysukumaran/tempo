@@ -35,7 +35,7 @@ function Register() {
       });
 
       if (response.ok) {
-        navigate("/login");
+        navigate("/onboarding");
       } else {
         const data: ErrorResponse = await response.json();
         setError(data.error || "Registration failed");
