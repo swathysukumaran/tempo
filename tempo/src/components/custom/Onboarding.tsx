@@ -231,15 +231,24 @@ function Onboarding() {
       // Handle multiple selection for activities
       setPreferences((prev) => ({
         ...prev,
-        activities: prev.activities.includes(value)
-          ? prev.activities.filter((item) => item !== value)
-          : [...prev.activities, value],
+        [currentStep.field]: (
+          prev[currentStep.field as keyof typeof preferences] as string[]
+        ).includes(value)
+          ? (
+              prev[currentStep.field as keyof typeof preferences] as string[]
+            ).filter((item: string) => item !== value)
+          : [
+              ...(prev[
+                currentStep.field as keyof typeof preferences
+              ] as string[]),
+              value,
+            ],
       }));
     } else {
       // Handle single selection for pace
       setPreferences((prev) => ({
         ...prev,
-        pace: value,
+        [currentStep.field]: value,
       }));
       // Auto advance for single selection
       if (step < steps.length - 1) {
@@ -251,6 +260,14 @@ function Onboarding() {
   const handleNext = () => {
     if (step < steps.length - 1) {
       setStep((prev) => prev + 1);
+    } else {
+      // Handle completion
+      console.log("Completed:", preferences);
+    }
+  };
+  const handleBack = () => {
+    if (step > 0) {
+      setStep((prev) => prev - 1);
     }
   };
 
@@ -297,16 +314,24 @@ function Onboarding() {
         </div>
 
         {/* Only show Next button for multiple selection */}
-        {currentStep.multiple && (
-          <div className="mt-8 flex justify-end">
+
+        <div className="mt-8 flex justify-end">
+          <button
+            onClick={handleBack}
+            disabled={step === 0}
+            className="px-6 py-2 text-gray-600 hover:text-gray-800 disabled:opacity-50"
+          >
+            Back
+          </button>
+          {currentStep.multiple && (
             <button
               onClick={handleNext}
               className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
             >
               Next
             </button>
-          </div>
-        )}
+          )}
+        </div>
       </Card>
     </div>
   );
