@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { Heart, Compass, Plane } from "lucide-react";
+import {
+  Heart,
+  Compass,
+  Plane,
+  Camera,
+  TreePine,
+  Music,
+  Utensils,
+} from "lucide-react";
 import { Card } from "../ui/card";
 function Onboarding() {
   const [step, setStep] = useState(0);
@@ -72,20 +80,21 @@ function Onboarding() {
   return (
     <div className="max-w-2xl mx-auto p-4">
       <Card className="p-6">
-        <h2 className="text-2xl font-bold mb-2">How do you like to travel?</h2>
-        <p className="text-gray-600 mb-6">Choose your preferred travel pace</p>
+        <h2 className="text-2xl font-bold mb-2">{currentStep.title}</h2>
+        <p className="text-gray-600 mb-6">{currentStep.description}</p>
 
         <div className="space-y-3">
-          {options.map((option) => {
+          {currentStep.options.map((option) => {
             const Icon = option.icon;
-            const isSelected = preferences.pace === option.id;
-
+            const isSelected = currentStep.multiple
+              ? preferences.activities.includes(option.id)
+              : preferences.pace === option.id;
             return (
               <button
                 key={option.id}
-                onClick={() =>
-                  setPreferences({ ...preferences, pace: option.id })
-                }
+                onClick={() => {
+                  handleSelect(option.id);
+                }}
                 className={`w-full p-4 rounded-lg border-2 transition-all ${
                   isSelected
                     ? "border-blue-500 bg-blue-50"
