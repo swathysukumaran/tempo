@@ -295,6 +295,26 @@ function Onboarding() {
     }
   };
 
+  // Add save progress function
+  const saveProgress = async (
+    newPreferences: typeof preferences,
+    currentStep: number
+  ) => {
+    try {
+      await fetch(`${API_URL}/onboarding/update`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          preferences: newPreferences,
+          completedSteps: [currentStep],
+          status:
+            currentStep === steps.length - 1 ? "completed" : "in_progress",
+        }),
+      });
+    } catch (error) {
+      console.error("Error saving progress:", error);
+    }
+  };
   return (
     <div className="max-w-2xl mx-auto p-4">
       <Card className="p-6">
