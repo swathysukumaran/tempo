@@ -30,11 +30,13 @@ export const isAuthenticated=async(req:express.Request,res:express.Response,next
     try{
         const sessionToken=req.cookies['TEMPO-AUTH'];
         if(!sessionToken){
+            console.log("first");
             res.status(401).json({error:'Unauthorized'});
             return;
         }
         const existingUser=await getUserBySessionToken(sessionToken);
         if(!existingUser){
+            console.log("second");
             res.status(401).json({error:'Unauthorized'});
             return;
         }

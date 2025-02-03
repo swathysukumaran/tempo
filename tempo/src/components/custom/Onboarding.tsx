@@ -250,30 +250,38 @@ function Onboarding() {
 
   const currentStep = steps[step];
 
-  const handleSelect = (value: string) => {
+  const handleSelect = async (value: string) => {
     if (currentStep.multiple) {
       // Handle multiple selection for activities
-      setPreferences((prev) => ({
-        ...prev,
+      const newPreferences = {
+        ...preferences,
         [currentStep.field]: (
-          prev[currentStep.field as keyof typeof preferences] as string[]
+          preferences[currentStep.field as keyof typeof preferences] as string[]
         ).includes(value)
           ? (
-              prev[currentStep.field as keyof typeof preferences] as string[]
+              preferences[
+                currentStep.field as keyof typeof preferences
+              ] as string[]
             ).filter((item: string) => item !== value)
           : [
-              ...(prev[
+              ...(preferences[
                 currentStep.field as keyof typeof preferences
               ] as string[]),
               value,
             ],
-      }));
+      };
+      setPreferences(newPreferences);
+
+      await saveProgress(newPreferences, step);
     } else {
-      // Handle single selection for pace
-      setPreferences((prev) => ({
-        ...prev,
+      const newPreferences = {
+        ...preferences,
         [currentStep.field]: value,
-      }));
+      };
+      setPreferences(newPreferences);
+
+      // Save progress and advance for single selection
+      await saveProgress(newPreferences, step);
       // Auto advance for single selection
       if (step < steps.length - 1) {
         setStep((prev) => prev + 1);
@@ -281,10 +289,12 @@ function Onboarding() {
     }
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (step < steps.length - 1) {
+      await saveProgress(preferences, step);
       setStep((prev) => prev + 1);
     } else {
+      await saveProgress(preferences, step);
       // Handle completion
       console.log("Completed:", preferences);
     }
@@ -302,8 +312,9 @@ function Onboarding() {
   ) => {
     try {
       await fetch(`${API_URL}/onboarding/update`, {
-        method: "POST",
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           preferences: newPreferences,
           completedSteps: [currentStep],

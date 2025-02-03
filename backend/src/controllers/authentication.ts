@@ -56,6 +56,7 @@ export const login=async (req:express.Request,res:express.Response)=>{
 
         const salt=random();
         user.authentication.sessionToken=authentication(salt,user._id.toString());
+        console.log(user.authentication.sessionToken);
         await user.save();
 
         res.cookie('TEMPO-AUTH',user.authentication.sessionToken,{domain:'localhost',path:'/'});
