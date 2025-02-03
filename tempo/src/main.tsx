@@ -10,6 +10,7 @@ import { Toaster } from "./components/ui/sonner.tsx";
 import Register from "./components/custom/Register.tsx";
 import Login from "./components/custom/Login.tsx";
 import TripDetails from "./components/custom/tripDetails.tsx";
+import Onboarding from "./components/custom/Onboarding.tsx";
 
 const router = createBrowserRouter([
   {
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
   {
     path: "/trip-details/:tripId",
     element: <TripDetails />,
+  },
+  {
+    path: "/onboarding",
+    element: <Onboarding />,
   },
 ]);
 createRoot(document.getElementById("root")!).render(
