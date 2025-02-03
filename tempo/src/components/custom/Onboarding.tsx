@@ -1,29 +1,71 @@
 import React, { useState } from "react";
-import { Heart, Compass, Plane } from "lucide-react";
+import { Heart, Compass, Plane, Music, Utensils } from "lucide-react";
 import { Card } from "../ui/card";
 function Onboarding() {
-  const [selectedPace, setSelectedPace] = useState("");
-  const options = [
+  const [step, setStep] = useState(0);
+  const [preferences, setPreferences] = useState({
+    pace: "",
+    activities: [], // For multiple selection
+  });
+  const steps = [
     {
-      id: "relaxed",
-      label: "Take it Easy",
-      icon: Heart,
-      description: "Relaxed pace, plenty of free time",
+      title: "How do you like to travel?",
+      description: "Choose your preferred travel pace",
+      field: "pace",
+      options: [
+        {
+          id: "relaxed",
+          label: "Take it Easy",
+          icon: Heart,
+          description: "Relaxed pace, plenty of free time",
+        },
+        {
+          id: "balanced",
+          label: "Balanced Mix",
+          icon: Compass,
+          description: "Mix of activities and downtime",
+        },
+        {
+          id: "intense",
+          label: "Adventure Packed",
+          icon: Plane,
+          description: "Full schedule, maximum experiences",
+        },
+      ],
     },
     {
-      id: "balanced",
-      label: "Balanced Mix",
-      icon: Compass,
-      description: "Mix of activities and downtime",
-    },
-    {
-      id: "intense",
-      label: "Adventure Packed",
-      icon: Plane,
-      description: "Full schedule, maximum experiences",
+      title: "What excites you most?",
+      description: "Select activities you enjoy (choose multiple)",
+      field: "activities",
+      multiple: true,
+      options: [
+        {
+          id: "culture",
+          label: "Cultural",
+          icon: Camera,
+          description: "Museums, historical sites",
+        },
+        {
+          id: "nature",
+          label: "Nature",
+          icon: TreePine,
+          description: "Hiking, landscapes, outdoors",
+        },
+        {
+          id: "entertainment",
+          label: "Entertainment",
+          icon: Music,
+          description: "Shows, concerts, nightlife",
+        },
+        {
+          id: "food",
+          label: "Food",
+          icon: Utensils,
+          description: "Local cuisine, food tours",
+        },
+      ],
     },
   ];
-
   return (
     <div className="max-w-2xl mx-auto p-4">
       <Card className="p-6">
