@@ -66,6 +66,7 @@ export const updateOnboarding = async (userId: mongoose.Schema.Types.ObjectId,st
 
 export const getOnboarding = async (userId: mongoose.Schema.Types.ObjectId) => {
     try {
+        console.log("indb",userId);
         return await OnboardingModel.findOne({userId:userId});
     } catch (error) {
         throw new Error(error);

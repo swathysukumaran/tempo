@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Heart,
   Compass,
@@ -14,6 +14,7 @@ import {
   Coffee,
 } from "lucide-react";
 import { Card } from "../ui/card";
+import { API_URL } from "@/config/api";
 function Onboarding() {
   const [step, setStep] = useState(0);
   const [preferences, setPreferences] = useState({
@@ -223,6 +224,29 @@ function Onboarding() {
       ],
     },
   ];
+  useEffect(() => {
+    const loadProgress = async () => {
+      try {
+        const response = await fetch(`${API_URL}/onboarding/status`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        });
+        const data = await response.json();
+        console.log("Loaded progress:", data);
+        if (data?.temporaryPreferences) {
+          setPreferences(data.temporaryPreferences);
+          if (data.currentStep) {
+            setStep(data.currentStep);
+          }
+        }
+      } catch (error) {
+        console.error("Error loading progress:", error);
+      }
+    };
+
+    loadProgress();
+  }, []);
 
   const currentStep = steps[step];
 

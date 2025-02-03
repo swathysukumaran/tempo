@@ -32,7 +32,7 @@ function Login() {
       });
 
       if (response.ok) {
-        navigate("/home");
+        navigate("/onboarding");
       } else {
         const data = await response.json();
         setError(data.error || "Login failed");

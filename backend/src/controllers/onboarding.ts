@@ -39,9 +39,8 @@ export const updateOnboardingSteps=async(req:express.Request,res:express.Respons
 }
 
 export const getOnboardingStatus=async(req:express.Request,res:express.Response)=>{
-
+    
     try{
-
         const userId=get(req,'identity._id');
         if(!userId){
              res.sendStatus(403);
