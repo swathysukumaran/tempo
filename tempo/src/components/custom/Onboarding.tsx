@@ -77,6 +77,34 @@ function Onboarding() {
 
   const currentStep = steps[step];
 
+  const handleSelect = (value: string) => {
+    if (currentStep.multiple) {
+      // Handle multiple selection for activities
+      setPreferences((prev) => ({
+        ...prev,
+        activities: prev.activities.includes(value)
+          ? prev.activities.filter((item) => item !== value)
+          : [...prev.activities, value],
+      }));
+    } else {
+      // Handle single selection for pace
+      setPreferences((prev) => ({
+        ...prev,
+        pace: value,
+      }));
+      // Auto advance for single selection
+      if (step < steps.length - 1) {
+        setStep((prev) => prev + 1);
+      }
+    }
+  };
+
+  const handleNext = () => {
+    if (step < steps.length - 1) {
+      setStep((prev) => prev + 1);
+    }
+  };
+
   return (
     <div className="max-w-2xl mx-auto p-4">
       <Card className="p-6">
@@ -118,6 +146,18 @@ function Onboarding() {
             );
           })}
         </div>
+
+        {/* Only show Next button for multiple selection */}
+        {currentStep.multiple && (
+          <div className="mt-8 flex justify-end">
+            <button
+              onClick={handleNext}
+              className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            >
+              Next
+            </button>
+          </div>
+        )}
       </Card>
     </div>
   );
