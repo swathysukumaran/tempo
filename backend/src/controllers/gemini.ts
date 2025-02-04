@@ -18,19 +18,19 @@ export const createTrip = async (req: express.Request, res: express.Response) =>
             return;
         }
         const FINAL_PROMPT = AI_PROMPT
-            .replace("{location}", location.description || "")
-            .replace("{totalDays}", noOfDays)
-            .replace("{traveler}", traveler)
-            .replace("{budget}", budget)
-            .replace("{pace}", userPreferences.pace)
-            .replace("{activityLevel}", userPreferences.activityLevel)
-            .replace("{activities}", userPreferences.activities.join(", "))
-            .replace("{startTime}", userPreferences.startTime)
-            .replace("{foodApproach}", userPreferences.foodApproach)
-            .replace("{diningStyles}", userPreferences.diningStyles.join(", "))
-            .replace("{avoidances}", userPreferences.avoidances.length > 0 
-                ? userPreferences.avoidances.join(", ") 
-                : "no specific avoidances");
+    .replace(/{location}/g, location.description || "")
+    .replace(/{totalDays}/g, noOfDays)
+    .replace(/{traveler}/g, traveler)
+    .replace(/{budget}/g, budget)
+    .replace(/{pace}/g, userPreferences.pace)
+    .replace(/{activityLevel}/g, userPreferences.activityLevel)
+    .replace(/{activities}/g, userPreferences.activities.join(", "))
+    .replace(/{startTime}/g, userPreferences.startTime)
+    .replace(/{foodApproach}/g, userPreferences.foodApproach)
+    .replace(/{diningStyles}/g, userPreferences.diningStyles.join(", "))
+    .replace(/{avoidances}/g, userPreferences.avoidances.join(", "));
+
+                console.log(FINAL_PROMPT);
 
         if (chatSession) {
             
