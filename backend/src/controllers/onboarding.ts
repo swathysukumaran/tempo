@@ -28,6 +28,13 @@ export const updateOnboardingSteps=async(req:express.Request,res:express.Respons
              return;
         }
         const {status,completedSteps,preferences}=req.body;
+        // First check if onboarding exists
+        let isOnboarding = await getOnboarding(userId);
+        
+        if (!isOnboarding) {
+            // If no onboarding exists, create it first
+            isOnboarding = await startOnboarding(userId);
+        }
         const onboarding=await updateOnboarding(userId,status,completedSteps,preferences);
         res.status(200).json({onboarding});
         return;
