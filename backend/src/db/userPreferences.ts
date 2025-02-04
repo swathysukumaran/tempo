@@ -58,9 +58,18 @@ export const updatePreferences=async (userId: mongoose.Schema.Types.ObjectId,pre
 }
 
 export const getPreferences=async(userId:mongoose.Schema.Types.ObjectId)=>{
-
+    console.log("Searching for preferences with userId:", userId);
     try{
         const userPreferences=await PreferencesModel.findOne({userId:userId});
+          console.log("Found preferences:", userPreferences);
+        
+        if (!userPreferences) {
+            console.log("No preferences found for this user");
+            return null;
+        }
+
+        // Log the actual preferences being returned
+        console.log("Returning preferences:", userPreferences.preferences);
         return userPreferences?userPreferences.preferences:null;
     }
     catch(error){

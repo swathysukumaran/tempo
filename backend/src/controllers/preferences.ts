@@ -6,6 +6,8 @@ export const getUserPreferences=async(req:express.Request,res:express.Response)=
     try{
         const userId=get(req, 'identity._id');
         const preferences=await getPreferences(userId)
+        res.json({preferences});
+        return;
 
     }catch(error){
         console.log(error);
