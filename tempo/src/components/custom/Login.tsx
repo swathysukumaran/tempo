@@ -32,7 +32,27 @@ function Login() {
       });
 
       if (response.ok) {
-        navigate("/onboarding");
+        // Check onboarding status
+        const onboardingResponse = await fetch(`${API_URL}/onboarding/status`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        });
+
+        if (onboardingResponse.ok) {
+          const data = await onboardingResponse.json();
+          console.log("Onboarding status", data);
+          // Navigate based on onboarding status
+          if (!data.onboarding || data.onboarding.status !== "completed") {
+            console.log("Redirecting to onboarding");
+            navigate("/onboarding");
+          } else {
+            navigate("/home");
+          }
+        } else {
+          console.log("Failed to check onboarding status");
+          navigate("/onboarding"); // Fallback to onboarding if status check fails
+        }
       } else {
         const data = await response.json();
         setError(data.error || "Login failed");
