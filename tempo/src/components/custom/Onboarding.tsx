@@ -15,8 +15,10 @@ import {
 } from "lucide-react";
 import { Card } from "../ui/card";
 import { API_URL } from "@/config/api";
+import { useNavigate } from "react-router-dom";
 function Onboarding() {
   const [step, setStep] = useState(0);
+  const navigate = useNavigate();
   const [preferences, setPreferences] = useState({
     pace: "",
     activities: [] as string[],
@@ -297,6 +299,7 @@ function Onboarding() {
       await saveProgress(preferences, step);
       // Handle completion
       console.log("Completed:", preferences);
+      navigate("/home");
     }
   };
   const handleBack = () => {
