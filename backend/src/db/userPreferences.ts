@@ -37,6 +37,8 @@ export const createPreferences=async(userId: mongoose.Schema.Types.ObjectId,pref
             userId,
             preferences:preferences
         })
+         await newPreferences.save(); 
+         return;
 
     }catch(error){
         console.log(error);
