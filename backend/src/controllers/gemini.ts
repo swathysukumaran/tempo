@@ -3,17 +3,38 @@ import { AI_PROMPT } from '../helpers/AIprompt';
 import { chatSession } from '../helpers/AIModel';
 import { get } from 'lodash';
 import { createNewTrip } from '../db/trip';
+import { getPreferences } from '../db/userPreferences';
 
 
 export const createTrip = async (req: express.Request, res: express.Response) => {
 
     try{
         const {location, noOfDays, budget, traveler} = req.body;
-        const FINAL_PROMPT = AI_PROMPT.replace(
-        "{location}",location.description|| "").replace("{totalDays}", noOfDays).replace("{traveler}", traveler).replace("{budget}", budget);
+        const userId = get(req, 'identity._id');
+        const userPreferences = await getPreferences(userId);
+
+        if (!userPreferences) {
+            res.status(400).json({ error: "User preferences not found" });
+            return;
+        }
+        const FINAL_PROMPT = AI_PROMPT
+            .replace("{location}", location.description || "")
+            .replace("{totalDays}", noOfDays)
+            .replace("{traveler}", traveler)
+            .replace("{budget}", budget)
+            .replace("{pace}", userPreferences.pace)
+            .replace("{activityLevel}", userPreferences.activityLevel)
+            .replace("{activities}", userPreferences.activities.join(", "))
+            .replace("{startTime}", userPreferences.startTime)
+            .replace("{foodApproach}", userPreferences.foodApproach)
+            .replace("{diningStyles}", userPreferences.diningStyles.join(", "))
+            .replace("{avoidances}", userPreferences.avoidances.length > 0 
+                ? userPreferences.avoidances.join(", ") 
+                : "no specific avoidances");
 
         if (chatSession) {
-            const userId = get(req, 'identity._id');
+            
+            
             const result = await chatSession.sendMessage(FINAL_PROMPT);
             const resultText = result.response.candidates[0].content.parts[0].text;
             const aiResponse = resultText.replace(/```json\n|\n```/g, '');

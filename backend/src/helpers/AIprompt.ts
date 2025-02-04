@@ -1,2 +1,24 @@
-export const AI_PROMPT =
-  "Generate Travel Plan for Location: {location} for {totalDays} Days for {traveler} with a budget of {budget}, give me hotels options list with hotel name,hotel address,price,hotel image url,geo coordinates, rating,descriptions and suggest itinerary with place name,place details, place image url,geo coordinates,ticket pricing,rating,time travel for each of the locations for 3 days with each day plan with best time to visit, image urls for each activity and cover image in json format.The response should only contain json formatted data.";
+export const AI_PROMPT = `Generate a personalized Travel Plan for {location} for {totalDays} Days, tailored for {traveler} with a budget of {budget}.
+
+Travel Style Preferences:
+- Pace: {pace} (this traveler prefers a {pace} travel pace)
+- Activity Level: {activityLevel}
+- Preferred Activities: {activities}
+- Daily Start Time: {startTime}
+- Food Preferences: {foodApproach} with interest in {diningStyles}
+- Preferences to Avoid: {avoidances}
+
+Please provide:
+1. Hotel options that match the travel style and preferences:
+   - Hotel name, address, price, hotel image url, geo coordinates, rating, descriptions
+   - Focus on {pace}-paced locations and {foodApproach}-friendly dining options nearby
+
+2. Daily itinerary that:
+   - Matches their {activityLevel} activity level
+   - Focuses on their interests: {activities}
+   - Starts around their preferred time: {startTime}
+   - Includes {diningStyles} dining options
+   - Avoids: {avoidances}
+   - For each activity include: place name, place details, place image url, geo coordinates, ticket pricing, rating, travel time, best time to visit
+
+Return only JSON formatted data including a cover image for the trip.`;
