@@ -1,6 +1,7 @@
 import { getOnboarding, startOnboarding, updateOnboarding } from '../db/onboarding';
 import express from 'express';
 import { get } from 'lodash';
+import { createPreferences } from '../db/userPreferences';
 
 export const createOnboarding = async (req: express.Request, res: express.Response) => {
 
@@ -36,6 +37,12 @@ export const updateOnboardingSteps=async(req:express.Request,res:express.Respons
             isOnboarding = await startOnboarding(userId);
         }
         const onboarding=await updateOnboarding(userId,status,completedSteps,preferences);
+
+        // If onboarding is completed, save to final preferences
+        if (status === 'completed') {
+            await createPreferences(userId, preferences);
+        }
+
         res.status(200).json({onboarding});
         return;
 
@@ -61,3 +68,4 @@ export const getOnboardingStatus=async(req:express.Request,res:express.Response)
         return;
     }
 }
+
