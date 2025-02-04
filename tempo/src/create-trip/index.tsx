@@ -18,8 +18,73 @@ type FormData = {
 function CreateTrip() {
   const [place, setPlace] = useState<Option | null>(null);
   const [formData, setFormData] = useState<FormData>({});
-  const [savedPreferences, setSavedPreferences] = useState(null);
+  const [savedPreferences, setSavedPreferences] = useState({
+    pace: "",
+    activities: [] as string[],
+    activityLevel: "",
+    startTime: "",
+    foodApproach: "",
+    diningStyles: [] as string[],
+    avoidances: [] as string[],
+  });
 
+  const PreferencesSection = () => {
+    if (!savedPreferences) return null;
+
+    return (
+      <div className="border rounded-lg p-4 mb-6">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="font-medium">Your Travel Preferences</h3>
+          <Button
+            variant="ghost"
+            className="text-blue-600"
+            onClick={() => navigate("/onboarding")}
+          >
+            Update Preferences
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
+          <div>
+            🚶‍♂️ Pace:{" "}
+            <span className="font-medium capitalize">
+              {savedPreferences.pace}
+            </span>
+          </div>
+          <div>
+            📍 Activities:{" "}
+            <span className="font-medium capitalize">
+              {savedPreferences.activities.join(", ")}
+            </span>
+          </div>
+          <div>
+            ⚡ Activity Level:{" "}
+            <span className="font-medium capitalize">
+              {savedPreferences.activityLevel}
+            </span>
+          </div>
+          <div>
+            🌅 Start Time:{" "}
+            <span className="font-medium capitalize">
+              {savedPreferences.startTime}
+            </span>
+          </div>
+          <div>
+            🍽️ Food Style:{" "}
+            <span className="font-medium capitalize">
+              {savedPreferences.foodApproach}
+            </span>
+          </div>
+          <div>
+            🍳 Dining:{" "}
+            <span className="font-medium capitalize">
+              {savedPreferences.diningStyles.join(", ")}
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  };
   const navigate = useNavigate();
   // Load saved preferences
   useEffect(() => {
@@ -32,7 +97,6 @@ function CreateTrip() {
         if (response.ok) {
           const data = await response.json();
           setSavedPreferences(data.preferences);
-          console.log("Preferences loaded:", data.preferences);
         }
       } catch (error) {
         console.error("Error loading preferences:", error);
@@ -172,8 +236,11 @@ function CreateTrip() {
         </div>
       </div>
 
-      <div className="my-10 justify-end flex">
-        <Button onClick={onGenerateTrip}>Generate Trip</Button>
+      <div className="my-10 ">
+        <PreferencesSection />
+        <div className="justify-end flex">
+          <Button onClick={onGenerateTrip}>Generate Trip</Button>
+        </div>
       </div>
     </div>
   );
