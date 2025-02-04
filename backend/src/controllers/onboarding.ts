@@ -40,8 +40,10 @@ export const updateOnboardingSteps=async(req:express.Request,res:express.Respons
 
         // If onboarding is completed, save to final preferences
         if (status === 'completed') {
-            console.log('Saving preferences', preferences);
+            
+            await updateOnboarding(userId,status,completedSteps,preferences);
             await createPreferences(userId, preferences);
+            console.log('Preferences created');
         }
 
         res.status(200).json({onboarding});

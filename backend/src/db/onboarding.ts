@@ -57,6 +57,7 @@ export const startOnboarding = async (userId: mongoose.Schema.Types.ObjectId) =>
 export const updateOnboarding = async (userId: mongoose.Schema.Types.ObjectId,status:string,completedSteps:number[],preferences:Object) => {
     try {
         return await OnboardingModel.findOneAndUpdate({userId:userId},{$addToSet: {completedSteps: { $each: completedSteps } },  
+                status: status,
                 temporaryPreferences: preferences,
                 lastUpdated: new Date()},{new:true});
     } catch (error) {
