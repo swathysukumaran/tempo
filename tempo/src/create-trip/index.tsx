@@ -18,7 +18,28 @@ type FormData = {
 function CreateTrip() {
   const [place, setPlace] = useState<Option | null>(null);
   const [formData, setFormData] = useState<FormData>({});
+  const [savedPreferences, setSavedPreferences] = useState(null);
+
   const navigate = useNavigate();
+  // Load saved preferences
+  useEffect(() => {
+    const loadPreferences = async () => {
+      try {
+        const response = await fetch(`${API_URL}/preferences`, {
+          method: "GET",
+          credentials: "include",
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setSavedPreferences(data.preferences);
+          console.log("Preferences loaded:", data.preferences);
+        }
+      } catch (error) {
+        console.error("Error loading preferences:", error);
+      }
+    };
+    loadPreferences();
+  }, []);
   const handleInputChange = (
     name: string,
     value: string | number | boolean
