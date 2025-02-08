@@ -12,6 +12,7 @@ import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../config/api";
+import registerImage from "../../assets/register.jpeg";
 function Register() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -47,33 +48,12 @@ function Register() {
   };
   return (
     <div className="min-h-screen flex">
-      <div className="hidden lg:flex lg:w-1/2 relative bg-primary items-center justify-center overflow-hidden">
-        {/* Decorative Wave Patterns */}
-        <div className="absolute inset-0">
-          <svg
-            className="w-full h-full text-primary-light opacity-10"
-            viewBox="0 0 100 100"
-            preserveAspectRatio="none"
-          >
-            <path
-              d="M0,0 C40,40 60,40 100,0 L100,100 L0,100 Z"
-              fill="currentColor"
-            />
-            <path
-              d="M0,50 C40,30 60,70 100,50 L100,100 L0,100 Z"
-              fill="currentColor"
-            />
-          </svg>
-        </div>
-
-        {/* Centered Icon/Logo with Text */}
-        <div className="relative text-white text-center px-8">
-          <div className="mb-4">
-            <img src="/logo.svg" alt="logo" />
-          </div>
-          <h1 className="text-h1 font-extrabold mb-2">Tempo</h1>
-          <p className="text-body opacity-90">Travel at your own rhythm</p>
-        </div>
+      <div className="hidden lg:block lg:w-1/2 ">
+        <img
+          src={registerImage}
+          alt="A man relaxing on a beach"
+          className="object-cover w-full h-full opacity-90" // opacity helps blend with bg
+        />
       </div>
       <Card className="w-full max-w-md relative backdrop-blur-sm bg-white/95 border-0 shadow-2xl">
         <CardHeader>
