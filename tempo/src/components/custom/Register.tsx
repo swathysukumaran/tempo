@@ -46,8 +46,36 @@ function Register() {
     }
   };
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex">
+      <div className="hidden lg:flex lg:w-1/2 relative bg-primary items-center justify-center overflow-hidden">
+        {/* Decorative Wave Patterns */}
+        <div className="absolute inset-0">
+          <svg
+            className="w-full h-full text-primary-light opacity-10"
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+          >
+            <path
+              d="M0,0 C40,40 60,40 100,0 L100,100 L0,100 Z"
+              fill="currentColor"
+            />
+            <path
+              d="M0,50 C40,30 60,70 100,50 L100,100 L0,100 Z"
+              fill="currentColor"
+            />
+          </svg>
+        </div>
+
+        {/* Centered Icon/Logo with Text */}
+        <div className="relative text-white text-center px-8">
+          <div className="mb-4">
+            <img src="/logo.svg" alt="logo" />
+          </div>
+          <h1 className="text-h1 font-extrabold mb-2">Tempo</h1>
+          <p className="text-body opacity-90">Travel at your own rhythm</p>
+        </div>
+      </div>
+      <Card className="w-full max-w-md relative backdrop-blur-sm bg-white/95 border-0 shadow-2xl">
         <CardHeader>
           <CardTitle>Create an account</CardTitle>
           <CardDescription>Enter your details to register</CardDescription>
@@ -98,16 +126,19 @@ function Register() {
               />
             </div>
 
-            <Button type="submit" className="w-full">
+            <Button
+              type="submit"
+              className="w-full bg-[#FF8364] hover:bg-[#E65C3A] transition-colors"
+            >
               Register
             </Button>
 
-            <p className="text-center text-sm text-gray-600">
+            <p className="text-center text-sm text-gray-600 mt-6">
               Already have an account?{" "}
               <Button
                 variant="link"
                 onClick={() => navigate("/login")}
-                className="p-0"
+                className="p-0 text-[#4ECDC4] hover:text-[#2B8B85]"
               >
                 Login
               </Button>
