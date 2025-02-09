@@ -361,64 +361,110 @@ function Onboarding() {
           ))}
         </div>
       </div>
-      <Card className="p-6">
-        <h2 className="text-2xl font-bold mb-2">{currentStep.title}</h2>
-        <p className="text-gray-600 mb-6">{currentStep.description}</p>
-
-        <div className="space-y-3">
-          {currentStep.options.map((option) => {
-            const Icon = option.icon;
-            const isSelected = currentStep.multiple
-              ? preferences.activities.includes(option.id)
-              : preferences.pace === option.id;
-            return (
-              <button
-                key={option.id}
-                onClick={() => {
-                  handleSelect(option.id);
-                }}
-                className={`w-full p-4 rounded-lg border-2 transition-all ${
-                  isSelected
-                    ? "border-blue-500 bg-blue-50"
-                    : "border-gray-200 hover:border-blue-200"
-                }`}
-              >
-                <div className="flex items-center">
-                  <Icon
-                    className={`w-6 h-6 mr-3 ${
-                      isSelected ? "text-blue-500" : "text-gray-400"
-                    }`}
-                  />
-                  <div className="text-left">
-                    <div className="font-medium">{option.label}</div>
-                    <div className="text-sm text-gray-500">
-                      {option.description}
+      <Card className="w-full max-w-2xl bg-white shadow-lg">
+        <div className="p-8">
+          <div className="mb-8">
+            <h2 className="text-h2 font-bold text-gray-700 mb-2">
+              {currentStep.title}
+            </h2>
+            <p className="text-body text-gray-600">{currentStep.description}</p>
+          </div>
+          <div className="grid gap-4">
+            {currentStep.options.map((option) => {
+              const Icon = option.icon;
+              const isSelected = currentStep.multiple
+                ? preferences.activities.includes(option.id)
+                : preferences.pace === option.id;
+              return (
+                <button
+                  key={option.id}
+                  onClick={() => {
+                    handleSelect(option.id);
+                  }}
+                  className={`
+                    w-full p-6 rounded-xl border-2 transition-all duration-300
+                    hover:shadow-md group
+                    ${
+                      isSelected
+                        ? "border-primary bg-primary-light/10"
+                        : "border-gray-100 hover:border-primary-light"
+                    }
+                  `}
+                >
+                  <div className="flex items-center space-x-4">
+                    <div
+                      className={`
+                      p-3 rounded-lg 
+                      ${
+                        isSelected
+                          ? "bg-primary text-white"
+                          : "bg-gray-100 text-gray-500 group-hover:bg-primary-light/20"
+                      }
+                    `}
+                    >
+                      <Icon className="w-6 h-6" />
+                    </div>
+                    <div className="flex-1 text-left">
+                      <div
+                        className={`
+                        font-medium mb-1 transition-colors
+                        ${isSelected ? "text-primary" : "text-gray-700"}
+                      `}
+                      >
+                        {option.label}
+                      </div>
+                      <div className="text-small text-gray-500">
+                        {option.description}
+                      </div>
+                    </div>
+                    <div
+                      className={`
+                      w-6 h-6 rounded-full border-2 flex items-center justify-center
+                      transition-all duration-300
+                      ${
+                        isSelected
+                          ? "border-primary bg-primary"
+                          : "border-gray-300"
+                      }
+                    `}
+                    >
+                      {isSelected && (
+                        <div className="w-2 h-2 rounded-full bg-white" />
+                      )}
                     </div>
                   </div>
-                </div>
-              </button>
-            );
-          })}
-        </div>
+                </button>
+              );
+            })}
+          </div>
 
-        {/* Only show Next button for multiple selection */}
+          {/* Only show Next button for multiple selection */}
 
-        <div className="mt-8 flex justify-end">
-          <button
-            onClick={handleBack}
-            disabled={step === 0}
-            className="px-6 py-2 text-gray-600 hover:text-gray-800 disabled:opacity-50"
-          >
-            Back
-          </button>
-          {currentStep.multiple && (
+          <div className="mt-8 flex justify-between items-center">
             <button
-              onClick={handleNext}
-              className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+              onClick={handleBack}
+              disabled={step === 0}
+              className={`
+                px-6 py-2 rounded-lg transition-colors
+                ${
+                  step === 0
+                    ? "text-gray-400 cursor-not-allowed"
+                    : "text-gray-600 hover:text-gray-800"
+                }
+              `}
             >
-              Next
+              Back
             </button>
-          )}
+            {(currentStep.multiple || step === steps.length - 1) && (
+              <button
+                onClick={handleNext}
+                className="px-8 py-3 bg-secondary hover:bg-secondary-dark 
+                         text-white rounded-lg transition-colors"
+              >
+                {step === steps.length - 1 ? "Complete" : "Next"}
+              </button>
+            )}
+          </div>
         </div>
       </Card>
     </div>
