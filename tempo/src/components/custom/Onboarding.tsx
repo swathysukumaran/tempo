@@ -331,69 +331,101 @@ function Onboarding() {
   };
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-2xl mb-8">
-        <div className="flex justify-between relative mb-4">
-          {/* Progress Line */}
-          <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-200 -z-1">
-            <div
-              className="h-full bg-primary transition-all duration-300"
-              style={{ width: `${(step / (steps.length - 1)) * 100}%` }}
-            />
-          </div>
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Gradient circles */}
+        <div className="absolute top-0 left-0 w-96 h-96 bg-primary/10 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary/10 rounded-full translate-x-1/2 translate-y-1/2 blur-3xl" />
 
-          {/* Step Indicators */}
-          {steps.map((_, index) => (
-            <div key={index} className="flex flex-col items-center z-10">
+        {/* Floating icons in background */}
+        <div className="absolute top-20 right-20 text-primary/20">
+          <Plane className="w-12 h-12 transform rotate-45" />
+        </div>
+        <div className="absolute bottom-20 left-20 text-secondary/20">
+          <Camera className="w-12 h-12" />
+        </div>
+      </div>
+      <div className="relative w-full max-w-2xl">
+        <div className="text-center mb-8">
+          <h1 className="text-h2 font-bold text-gray-700 mb-2">
+            Let's personalize your experience
+          </h1>
+          <p className="text-body text-gray-600">
+            Step {step + 1} of {steps.length}
+          </p>
+        </div>
+        <div className="mb-8">
+          <div className="flex justify-between relative mb-4">
+            {/* Progress Line */}
+            <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-200 -z-1">
               <div
-                className={`
+                className="h-full bg-primary transition-all duration-500"
+                style={{ width: `${(step / (steps.length - 1)) * 100}%` }}
+              />
+            </div>
+
+            {/* Step Indicators */}
+            {steps.map((_, index) => (
+              <div key={index} className="flex flex-col items-center z-10">
+                <div
+                  className={`
                 w-10 h-10 rounded-full flex items-center justify-center 
-                transition-all duration-300
+                transition-all duration-300 transform
                 ${
                   index <= step
-                    ? "bg-primary text-white"
+                    ? "bg-primary text-white scale-110"
                     : "bg-gray-200 text-gray-500"
                 }
               `}
-              >
-                {index + 1}
+                >
+                  {index + 1}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      </div>
-      <Card className="w-full max-w-2xl bg-white shadow-lg">
-        <div className="p-8">
-          <div className="mb-8">
-            <h2 className="text-h2 font-bold text-gray-700 mb-2">
-              {currentStep.title}
-            </h2>
-            <p className="text-body text-gray-600">{currentStep.description}</p>
+            ))}
           </div>
-          <div className="grid gap-4">
-            {currentStep.options.map((option) => {
-              const Icon = option.icon;
-              const isSelected = currentStep.multiple
-                ? preferences.activities.includes(option.id)
-                : preferences.pace === option.id;
-              return (
-                <button
-                  key={option.id}
-                  onClick={() => {
-                    handleSelect(option.id);
-                  }}
-                  className={`
+        </div>
+        <Card className="w-full bg-white shadow-lg relative">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-primary/5 rounded-bl-full" />
+          <div className="p-8">
+            <div className="mb-8">
+              <h2 className="text-h2 font-bold text-gray-700 mb-2 flex items-center">
+                <span className="p-2 bg-primary/10 rounded-lg mr-3">
+                  {(() => {
+                    const StepIcon = currentStep.options[0].icon;
+                    return <StepIcon className="w-6 h-6 text-primary" />;
+                  })()}
+                </span>
+                {currentStep.title}
+              </h2>
+              <p className="text-body text-gray-600 ml-12">
+                {currentStep.description}
+              </p>
+            </div>
+            <div className="grid gap-4">
+              {currentStep.options.map((option) => {
+                const Icon = option.icon;
+                const isSelected = currentStep.multiple
+                  ? preferences[currentStep.field].includes(option.id)
+                  : preferences[currentStep.field] === option.id;
+
+                return (
+                  <button
+                    key={option.id}
+                    onClick={() => {
+                      handleSelect(option.id);
+                    }}
+                    className={`
                     w-full p-6 rounded-xl border-2 transition-all duration-300
-                    hover:shadow-md group
+                    hover:shadow-lg transform hover:-translate-y-0.5
                     ${
                       isSelected
                         ? "border-primary bg-primary-light/10"
                         : "border-gray-100 hover:border-primary-light"
                     }
                   `}
-                >
-                  <div className="flex items-center space-x-4">
-                    <div
-                      className={`
+                  >
+                    <div className="flex items-center space-x-4">
+                      <div
+                        className={`
                       p-3 rounded-lg 
                       ${
                         isSelected
@@ -401,24 +433,24 @@ function Onboarding() {
                           : "bg-gray-100 text-gray-500 group-hover:bg-primary-light/20"
                       }
                     `}
-                    >
-                      <Icon className="w-6 h-6" />
-                    </div>
-                    <div className="flex-1 text-left">
-                      <div
-                        className={`
+                      >
+                        <Icon className="w-6 h-6" />
+                      </div>
+                      <div className="flex-1 text-left">
+                        <div
+                          className={`
                         font-medium mb-1 transition-colors
                         ${isSelected ? "text-primary" : "text-gray-700"}
                       `}
-                      >
-                        {option.label}
+                        >
+                          {option.label}
+                        </div>
+                        <div className="text-small text-gray-500">
+                          {option.description}
+                        </div>
                       </div>
-                      <div className="text-small text-gray-500">
-                        {option.description}
-                      </div>
-                    </div>
-                    <div
-                      className={`
+                      <div
+                        className={`
                       w-6 h-6 rounded-full border-2 flex items-center justify-center
                       transition-all duration-300
                       ${
@@ -427,46 +459,55 @@ function Onboarding() {
                           : "border-gray-300"
                       }
                     `}
-                    >
-                      {isSelected && (
-                        <div className="w-2 h-2 rounded-full bg-white" />
-                      )}
+                      >
+                        {isSelected && (
+                          <div className="w-2 h-2 rounded-full bg-white" />
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
+                  </button>
+                );
+              })}
+            </div>
 
-          {/* Only show Next button for multiple selection */}
+            {/* Only show Next button for multiple selection */}
 
-          <div className="mt-8 flex justify-between items-center">
-            <button
-              onClick={handleBack}
-              disabled={step === 0}
-              className={`
-                px-6 py-2 rounded-lg transition-colors
+            <div className="mt-8 flex justify-between items-center pt-6 border-t border-gray-100">
+              <button
+                onClick={handleBack}
+                disabled={step === 0}
+                className={`
+                px-6 py-2 rounded-lg transition-all duration-300
+                  flex items-center gap-2
                 ${
                   step === 0
                     ? "text-gray-400 cursor-not-allowed"
-                    : "text-gray-600 hover:text-gray-800"
+                    : "text-gray-600 hover:text-gray-800 hover:bg-gray-100"
                 }
               `}
-            >
-              Back
-            </button>
-            {(currentStep.multiple || step === steps.length - 1) && (
-              <button
-                onClick={handleNext}
-                className="px-8 py-3 bg-secondary hover:bg-secondary-dark 
-                         text-white rounded-lg transition-colors"
               >
-                {step === steps.length - 1 ? "Complete" : "Next"}
+                ← Back
               </button>
-            )}
+              {(currentStep.multiple || step === steps.length - 1) && (
+                <button
+                  onClick={handleNext}
+                  className="px-8 py-3 bg-secondary hover:bg-secondary-dark 
+                           text-white rounded-lg transition-all duration-300
+                           hover:shadow-lg transform hover:-translate-y-0.5
+                           flex items-center gap-2"
+                >
+                  {step === steps.length - 1
+                    ? "Complete Setup →"
+                    : "Continue →"}
+                </button>
+              )}
+            </div>
           </div>
-        </div>
-      </Card>
+        </Card>
+        <p className="text-center text-small text-gray-500 mt-4">
+          Your preferences help us create the perfect travel experience for you
+        </p>
+      </div>
     </div>
   );
 }
