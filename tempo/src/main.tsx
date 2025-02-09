@@ -11,16 +11,21 @@ import Register from "./components/custom/Register.tsx";
 import Login from "./components/custom/Login.tsx";
 import TripDetails from "./components/custom/tripDetails.tsx";
 import Onboarding from "./components/custom/Onboarding.tsx";
+import AuthLayout from "./components/custom/AuthLayout.tsx";
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Register />,
-  },
-
-  {
-    path: "/login",
-    element: <Login />,
+    element: <AuthLayout />,
+    children: [
+      {
+        path: "/",
+        element: <Register />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+    ],
   },
   {
     path: "/home",
