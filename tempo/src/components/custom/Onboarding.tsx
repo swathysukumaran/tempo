@@ -330,7 +330,37 @@ function Onboarding() {
     }
   };
   return (
-    <div className="max-w-2xl mx-auto p-4">
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
+      <div className="w-full max-w-2xl mb-8">
+        <div className="flex justify-between relative mb-4">
+          {/* Progress Line */}
+          <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-200 -z-1">
+            <div
+              className="h-full bg-primary transition-all duration-300"
+              style={{ width: `${(step / (steps.length - 1)) * 100}%` }}
+            />
+          </div>
+
+          {/* Step Indicators */}
+          {steps.map((_, index) => (
+            <div key={index} className="flex flex-col items-center z-10">
+              <div
+                className={`
+                w-10 h-10 rounded-full flex items-center justify-center 
+                transition-all duration-300
+                ${
+                  index <= step
+                    ? "bg-primary text-white"
+                    : "bg-gray-200 text-gray-500"
+                }
+              `}
+              >
+                {index + 1}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
       <Card className="p-6">
         <h2 className="text-2xl font-bold mb-2">{currentStep.title}</h2>
         <p className="text-gray-600 mb-6">{currentStep.description}</p>
