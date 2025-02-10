@@ -36,6 +36,17 @@ export default {
 				'body': ['1rem', { lineHeight: '1.6' }],
 				'small': ['0.875rem', { lineHeight: '1.5' }],
 			},
+			keyframes: {
+				float: {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-10px)' }
+				}
+			},
+			animation: {
+				'float': 'float 3s ease-in-out infinite',
+				'float-slow': 'float 5s ease-in-out infinite',
+				'float-slower': 'float 7s ease-in-out infinite'
+			}
 		},
 	},
 	plugins: [require("tailwindcss-animate")],

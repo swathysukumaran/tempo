@@ -331,19 +331,7 @@ function Onboarding() {
   };
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
-      <div className="absolute inset-0 pointer-events-none">
-        {/* Gradient circles */}
-        <div className="absolute top-0 left-0 w-96 h-96 bg-primary/10 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary/10 rounded-full translate-x-1/2 translate-y-1/2 blur-3xl" />
-
-        {/* Floating icons in background */}
-        <div className="absolute top-20 right-20 text-primary/20">
-          <Plane className="w-12 h-12 transform rotate-45" />
-        </div>
-        <div className="absolute bottom-20 left-20 text-secondary/20">
-          <Camera className="w-12 h-12" />
-        </div>
-      </div>
+    
       <div className="relative w-full max-w-2xl">
         <div className="text-center mb-8">
           <h1 className="text-h2 font-bold text-gray-700 mb-2">
@@ -404,8 +392,8 @@ function Onboarding() {
               {currentStep.options.map((option) => {
                 const Icon = option.icon;
                 const isSelected = currentStep.multiple
-                  ? preferences[currentStep.field].includes(option.id)
-                  : preferences[currentStep.field] === option.id;
+                  ? (preferences[currentStep.field as keyof typeof preferences] as string[]).includes(option.id)
+                  : (preferences[currentStep.field as keyof typeof preferences] as string) === option.id;
 
                 return (
                   <button
