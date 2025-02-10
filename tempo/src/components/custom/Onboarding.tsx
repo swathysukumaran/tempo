@@ -330,8 +330,7 @@ function Onboarding() {
     }
   };
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
-    
+    <div className="min-h-screen  flex flex-col items-center justify-center p-4">
       <div className="relative w-full max-w-2xl">
         <div className="text-center mb-8">
           <h1 className="text-h2 font-bold text-gray-700 mb-2">
@@ -392,8 +391,14 @@ function Onboarding() {
               {currentStep.options.map((option) => {
                 const Icon = option.icon;
                 const isSelected = currentStep.multiple
-                  ? (preferences[currentStep.field as keyof typeof preferences] as string[]).includes(option.id)
-                  : (preferences[currentStep.field as keyof typeof preferences] as string) === option.id;
+                  ? (
+                      preferences[
+                        currentStep.field as keyof typeof preferences
+                      ] as string[]
+                    ).includes(option.id)
+                  : (preferences[
+                      currentStep.field as keyof typeof preferences
+                    ] as string) === option.id;
 
                 return (
                   <button

@@ -11,7 +11,7 @@ function AuthLayout() {
           className="object-cover w-full h-full opacity-90" // opacity helps blend with bg
         />
       </div>
-      <div className="w-full lg:w-1/2 flex flex-col items-center justify-center p-8 bg-gray-50">
+      <div className="w-full lg:w-1/2 flex flex-col items-center justify-center p-8 ">
         <div className="text-center justify-center items-center mb-8">
           {/* Simple musical wave logo */}
           <img src="/logo.svg" alt="logo" className="mx-auto" />
