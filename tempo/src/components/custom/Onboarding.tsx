@@ -22,10 +22,7 @@ function Onboarding() {
   const [preferences, setPreferences] = useState({
     pace: "",
     activities: [] as string[],
-    activityLevel: "",
     startTime: "",
-    foodApproach: "",
-    diningStyles: [] as string[],
     avoidances: [] as string[],
   });
   const steps = [
@@ -87,31 +84,6 @@ function Onboarding() {
       ],
     },
     {
-      title: "What's your activity level?",
-      description: "Choose how active you want to be",
-      field: "activityLevel",
-      options: [
-        {
-          id: "low",
-          label: "Low Impact",
-          icon: Heart,
-          description: "Mostly sightseeing, minimal walking",
-        },
-        {
-          id: "moderate",
-          label: "Moderate",
-          icon: Clock,
-          description: "Regular walking tours, some activities",
-        },
-        {
-          id: "high",
-          label: "High Energy",
-          icon: Plane,
-          description: "Hiking, sports, adventure activities",
-        },
-      ],
-    },
-    {
       title: "When do you start your day?",
       description: "Choose your preferred start time",
       field: "startTime",
@@ -136,63 +108,7 @@ function Onboarding() {
         },
       ],
     },
-    {
-      title: "What's your food style?",
-      description: "Choose your approach to food while traveling",
-      field: "foodApproach",
-      options: [
-        {
-          id: "adventurous",
-          label: "Adventurous",
-          icon: Utensils,
-          description: "Love trying local specialties",
-        },
-        {
-          id: "mixed",
-          label: "Flexible",
-          icon: Coffee,
-          description: "Mix of local and familiar",
-        },
-        {
-          id: "cautious",
-          label: "Conservative",
-          icon: Heart,
-          description: "Prefer familiar foods",
-        },
-      ],
-    },
-    {
-      title: "Dining preferences",
-      description: "Select your preferred dining styles (choose multiple)",
-      field: "diningStyles",
-      multiple: true,
-      options: [
-        {
-          id: "local",
-          label: "Local Restaurants",
-          icon: Utensils,
-          description: "Authentic local establishments",
-        },
-        {
-          id: "street",
-          label: "Street Food",
-          icon: Coffee,
-          description: "Food markets and street vendors",
-        },
-        {
-          id: "fine",
-          label: "Fine Dining",
-          icon: Utensils,
-          description: "Upscale restaurants",
-        },
-        {
-          id: "casual",
-          label: "Casual Dining",
-          icon: Coffee,
-          description: "Casual cafes and eateries",
-        },
-      ],
-    },
+
     {
       title: "Any preferences to avoid?",
       description: "Select what you'd prefer to avoid (choose multiple)",

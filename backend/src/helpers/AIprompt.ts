@@ -14,10 +14,9 @@ Please provide:
    - Focus on {pace}-paced locations and {foodApproach}-friendly dining options nearby
 
 2. Daily itinerary that:
-   - Matches their {activityLevel} activity level
+   
    - Focuses on their interests: {activities}
    - Starts around their preferred time: {startTime}
-   - Includes {diningStyles} dining options
    - Avoids: {avoidances}
    - For each activity include: place name, place details, place image url, geo coordinates, ticket pricing, rating, travel time, best time to visit
 

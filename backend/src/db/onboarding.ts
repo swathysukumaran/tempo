@@ -26,10 +26,7 @@ const OnboardingSchema = new mongoose.Schema({
         default: {
             pace: '',
             activities: [],
-            activityLevel: '',
             startTime: '',
-            foodApproach: '',
-            diningStyles: [],
             avoidances: []
         }
     },
