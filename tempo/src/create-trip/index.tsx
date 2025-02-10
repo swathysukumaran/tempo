@@ -21,10 +21,9 @@ function CreateTrip() {
   const [savedPreferences, setSavedPreferences] = useState({
     pace: "",
     activities: [] as string[],
-    activityLevel: "",
+
     startTime: "",
-    foodApproach: "",
-    diningStyles: [] as string[],
+
     avoidances: [] as string[],
   });
 
@@ -51,34 +50,11 @@ function CreateTrip() {
               {savedPreferences.pace}
             </span>
           </div>
-          <div>
-            📍 Activities:{" "}
-            <span className="font-medium capitalize">
-              {savedPreferences.activities.join(", ")}
-            </span>
-          </div>
-          <div>
-            ⚡ Activity Level:{" "}
-            <span className="font-medium capitalize">
-              {savedPreferences.activityLevel}
-            </span>
-          </div>
+
           <div>
             🌅 Start Time:{" "}
             <span className="font-medium capitalize">
               {savedPreferences.startTime}
-            </span>
-          </div>
-          <div>
-            🍽️ Food Style:{" "}
-            <span className="font-medium capitalize">
-              {savedPreferences.foodApproach}
-            </span>
-          </div>
-          <div>
-            🍳 Dining:{" "}
-            <span className="font-medium capitalize">
-              {savedPreferences.diningStyles.join(", ")}
             </span>
           </div>
         </div>
