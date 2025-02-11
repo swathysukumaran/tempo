@@ -154,7 +154,7 @@ function Hero() {
           {/* Floating Form Card */}
         </div>
       </div>
-      <div className="bg-white w-[95%] md:w-[80%] mx-auto -mt-20 rounded-t-xl shadow-lg">
+      <div className="bg-white w-[95%] md:w-[80%] mx-auto  rounded-t-xl shadow-lg">
         <div className="p-4 md:p-8">
           {/* Header */}
           <div className="mb-6">
