@@ -23,11 +23,11 @@ export const createTrip = async (req: express.Request, res: express.Response) =>
     .replace(/{traveler}/g, traveler)
     .replace(/{budget}/g, budget)
     .replace(/{pace}/g, userPreferences.pace)
-    .replace(/{activityLevel}/g, userPreferences.activityLevel)
+   
     .replace(/{activities}/g, userPreferences.activities.join(", "))
     .replace(/{startTime}/g, userPreferences.startTime)
-    .replace(/{foodApproach}/g, userPreferences.foodApproach)
-    .replace(/{diningStyles}/g, userPreferences.diningStyles.join(", "))
+    
+    
     .replace(/{avoidances}/g, userPreferences.avoidances.join(", "));
 
                 console.log(FINAL_PROMPT);
