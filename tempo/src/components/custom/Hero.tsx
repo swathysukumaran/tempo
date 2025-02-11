@@ -30,34 +30,110 @@ function Hero() {
   const PreferencesSection = () => {
     if (!savedPreferences) return null;
 
+    // Helper function to get emoji for each preference type
+    const getPreferenceEmoji = (type: string) => {
+      const emojiMap = {
+        pace: "🚶‍♂️",
+        activities: "🎯",
+        startTime: "🌅",
+        avoidances: "⚠️",
+      };
+      return emojiMap[type as keyof typeof emojiMap];
+    };
+
     return (
-      <div className="border rounded-lg p-4 mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="font-medium">Your Travel Preferences</h3>
+      <div className="rounded-lg border md:w-[60%] border-gray-100 bg-white/50 backdrop-blur-sm p-4">
+        <div className="flex justify-between items-center mb-3">
+          <div>
+            <h3 className="font-medium text-gray-800">Your Travel Style</h3>
+            <p className="text-sm text-gray-500">
+              These preferences will shape your trip
+            </p>
+          </div>
           <Button
             variant="ghost"
-            className="text-primary hover:text-primary-dark text-sm whitespace-nowrap"
+            size="sm"
+            className="text-primary hover:text-primary-dark text-sm"
             onClick={() => navigate("/onboarding")}
           >
-            Update Preferences
+            Modify
           </Button>
         </div>
 
-        <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
-          <div>
-            🚶‍♂️ Pace:{" "}
-            <span className="font-medium capitalize">
-              {savedPreferences.pace}
-            </span>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {/* Pace */}
+          <div className="flex items-center gap-2 p-2 rounded-md bg-primary/5">
+            <span className="text-lg">{getPreferenceEmoji("pace")}</span>
+            <div>
+              <p className="text-xs text-gray-500">Travel Pace</p>
+              <p className="font-medium capitalize">
+                {savedPreferences.pace || "Not set"}
+              </p>
+            </div>
           </div>
 
-          <div>
-            🌅 Start Time:{" "}
-            <span className="font-medium capitalize">
-              {savedPreferences.startTime}
-            </span>
+          {/* Start Time */}
+          <div className="flex items-center gap-2 p-2 rounded-md bg-primary/5">
+            <span className="text-lg">{getPreferenceEmoji("startTime")}</span>
+            <div>
+              <p className="text-xs text-gray-500">Day Start</p>
+              <p className="font-medium capitalize">
+                {savedPreferences.startTime || "Not set"}
+              </p>
+            </div>
+          </div>
+
+          {/* Activities */}
+          <div className="flex items-start gap-2 p-2 rounded-md bg-primary/5">
+            <span className="text-lg">{getPreferenceEmoji("activities")}</span>
+            <div>
+              <p className="text-xs text-gray-500">Interests</p>
+              {savedPreferences.activities.length > 0 ? (
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {savedPreferences.activities.map((activity) => (
+                    <span
+                      key={activity}
+                      className="text-xs px-2 py-0.5 bg-white rounded-full text-primary"
+                    >
+                      {activity}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p className="font-medium">Not set</p>
+              )}
+            </div>
+          </div>
+
+          {/* Avoidances */}
+          <div className="flex items-start gap-2 p-2 rounded-md bg-primary/5">
+            <span className="text-lg">{getPreferenceEmoji("avoidances")}</span>
+            <div>
+              <p className="text-xs text-gray-500">Preferences to Avoid</p>
+              {savedPreferences.avoidances.length > 0 ? (
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {savedPreferences.avoidances.map((avoidance) => (
+                    <span
+                      key={avoidance}
+                      className="text-xs px-2 py-0.5 bg-white rounded-full text-secondary"
+                    >
+                      {avoidance}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p className="font-medium">None specified</p>
+              )}
+            </div>
           </div>
         </div>
+
+        {!savedPreferences.pace && (
+          <p className="text-xs text-gray-500 mt-3">
+            💡 Complete your travel preferences to get better personalized
+            recommendations
+          </p>
+        )}
       </div>
     );
   };
@@ -269,7 +345,7 @@ function Hero() {
             </div>
 
             {/* Preferences and Submit */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-4 border-t">
+            <div className="flex flex-col  md:flex-row md:items-center justify-between gap-4 pt-4 border-t">
               <PreferencesSection />
               <Button onClick={onGenerateTrip} className="w-full md:w-auto">
                 Generate Trip
