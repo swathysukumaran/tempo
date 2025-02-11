@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import coverImage from "../../assets/cover.jpg";
-import SavedTrips from "./SavedTrips";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -143,36 +142,36 @@ function Hero() {
         </div>
 
         {/* Hero Content */}
-        <div className="relative h-full flex flex-col  items-center pt-12 px-4">
-          <div className="text-center text-white mb-20 my-auto">
-            <h1 className="text-h1 font-bold mb-4">
+        <div className="relative h-full flex flex-col  items-center px-4 pt-16 md:pt-12">
+          <div className="text-center text-white mb-12 md:mb-20 my-auto">
+            <h1 className="text-2xl md:text-h1 font-bold mb-3 md:mb-4">
               Your Journey, Your Rhythm
             </h1>
-            <p className="text-h3">
+            <p className="text-lg md:text-h3">
               Create personalized travel experiences that match your pace
             </p>
           </div>
           {/* Floating Form Card */}
         </div>
       </div>
-      <div className="bg-white  w-[80%] mx-auto">
-        <div className="p-6 md:p-8">
+      <div className="bg-white w-[95%] md:w-[80%] mx-auto -mt-20 rounded-t-xl shadow-lg">
+        <div className="p-4 md:p-8">
           {/* Header */}
           <div className="mb-6">
-            <h2 className="text-2xl md:text-3xl font-bold">
+            <h2 className="text-xl md:text-3xl font-bold">
               Tell us your travel vibe 🏖️🌍
             </h2>
-            <p className="mt-2 text-gray-500">
+            <p className="mt-2 text-sm md:text-base text-gray-500">
               Share your preferences, and let us craft a personalized adventure
               just for you!"
             </p>
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-4 md:space-y-6">
             {/* Row 1: Destination and Duration */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium mb-2">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+              <div className="col-span-full md:col-span-2">
+                <label className="block text-sm font-medium mb-1.5">
                   Destination
                 </label>
                 <GooglePlacesAutocomplete
@@ -186,7 +185,7 @@ function Hero() {
                     styles: {
                       control: (provided) => ({
                         ...provided,
-                        padding: "6px",
+                        minHeight: "42px",
                         borderRadius: "8px",
                         border: "1px solid #e5e7eb",
                       }),
@@ -195,7 +194,7 @@ function Hero() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">
+                <label className="block text-sm font-medium mb-1.5">
                   Duration
                 </label>
                 <Input
@@ -211,24 +210,24 @@ function Hero() {
 
             {/* Budget Options */}
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label className="block text-sm font-medium mb-1.5">
                 Budget Range
               </label>
-              <div className="flex overflow-x-auto gap-2 pb-2 hide-scrollbar">
+              <div className="flex overflow-x-auto gap-2 -mx-4 px-4 md:mx-0 pb-2 md:pb-0 hide-scrollbar">
                 {SelectBudgetOptions.map((item, index) => (
                   <div
                     key={index}
                     onClick={() => handleInputChange("budget", item.title)}
-                    className={`flex-shrink-0 px-4 py-2.5 border rounded-lg cursor-pointer transition-all hover:shadow-sm
-                    ${
-                      formData.budget === item.title
-                        ? "border-primary bg-primary/5"
-                        : "border-gray-200"
-                    }
-                  `}
+                    className={`flex-shrink-0 px-3 py-2 md:px-4 md:py-2.5 border rounded-lg cursor-pointer transition-all
+                  ${
+                    formData.budget === item.title
+                      ? "border-primary bg-primary/5"
+                      : "border-gray-200"
+                  }
+                `}
                   >
-                    <div className="flex items-center gap-2.5 min-w-[140px]">
-                      <span className="text-2xl">{item.icon}</span>
+                    <div className="flex items-center gap-2 min-w-[120px] md:min-w-[140px]">
+                      <span className="text-xl md:text-2xl">{item.icon}</span>
                       <div>
                         <p className="font-medium text-sm">{item.title}</p>
                         {/* <p className="text-xs text-gray-500">{item.desc}</p> */}
@@ -241,24 +240,24 @@ function Hero() {
 
             {/* Travelers */}
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label className="block text-sm font-medium mb-1.5">
                 Travel With
               </label>
-              <div className="flex overflow-x-auto gap-2 pb-2 hide-scrollbar">
+              <div className="flex overflow-x-auto gap-2 -mx-4 px-4 md:mx-0 pb-2 md:pb-0 hide-scrollbar">
                 {SelectTravelersList.map((item, index) => (
                   <div
                     key={index}
                     onClick={() => handleInputChange("traveler", item.people)}
-                    className={`flex-shrink-0 px-4 py-2.5 border rounded-lg cursor-pointer transition-all hover:shadow-sm
-          ${
-            formData.traveler === item.people
-              ? "border-primary bg-primary/5"
-              : "border-gray-200"
-          }
-        `}
+                    className={`flex-shrink-0 px-3 py-2 md:px-4 md:py-2.5 border rounded-lg cursor-pointer transition-all
+                  ${
+                    formData.traveler === item.people
+                      ? "border-primary bg-primary/5"
+                      : "border-gray-200"
+                  }
+                `}
                   >
-                    <div className="flex items-center gap-2.5 min-w-[140px]">
-                      <span className="text-2xl">{item.icon}</span>
+                    <div className="flex items-center gap-2 min-w-[120px] md:min-w-[140px]">
+                      <span className="text-xl md:text-2xl">{item.icon}</span>
                       <div>
                         <p className="font-medium text-sm">{item.title}</p>
                         {/* <p className="text-xs text-gray-500">{item.desc}</p> */}
@@ -270,9 +269,11 @@ function Hero() {
             </div>
 
             {/* Preferences and Submit */}
-            <div className="flex items-center justify-between border-t pt-4 mt-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-4 border-t">
               <PreferencesSection />
-              <Button onClick={onGenerateTrip}>Generate Trip</Button>
+              <Button onClick={onGenerateTrip} className="w-full md:w-auto">
+                Generate Trip
+              </Button>
             </div>
           </div>
         </div>
