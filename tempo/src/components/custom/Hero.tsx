@@ -145,99 +145,123 @@ function Hero() {
         {/* Hero Content */}
         <div className="relative h-full flex flex-col items-center pt-12 px-4">
           {/* Floating Form Card */}
-          <div className="bg-white w-full px-4 md:max-w-5xl md:mx-auto">
-            <div className="sm:px-10 md:px-32 lg:px-56xl:px-10 px-5 mt-10">
-              <h2 className="font-bold text-3xl">Your Journey, Your Rhythm</h2>
-              <p className="mt-3 text-gray-500 text-xl">
-                Share your preferences, and let our planner craft a custom
-                itinerary just for you! 🏕️🌴
-              </p>
+        </div>
+      </div>
+      <div className="bg-white  w-full ">
+        <div className="p-6 md:p-8">
+          {/* Header */}
+          <div className="mb-6">
+            <h2 className="text-2xl md:text-3xl font-bold">
+              Your Journey, Your Rhythm
+            </h2>
+            <p className="mt-2 text-gray-500">Let's plan your perfect trip</p>
+          </div>
 
-              <div className="mt-20 flex flex-col gap-10">
-                <div>
-                  <h2 className="text-xl my-3 font-medium">
-                    What is destination of choice?
-                  </h2>
+          <div className="space-y-6">
+            {/* Row 1: Destination and Duration */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium mb-2">
+                  Destination
+                </label>
+                <GooglePlacesAutocomplete
+                  selectProps={{
+                    value: place,
+                    onChange: (v) => {
+                      setPlace(v as Option);
+                      handleInputChange("location", v ? v.value : "");
+                    },
+                    placeholder: "Where to?",
+                    styles: {
+                      control: (provided) => ({
+                        ...provided,
+                        padding: "6px",
+                        borderRadius: "8px",
+                        border: "1px solid #e5e7eb",
+                      }),
+                    },
+                  }}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Duration
+                </label>
+                <Input
+                  placeholder="Days"
+                  type="number"
+                  className="w-full"
+                  onChange={(e) =>
+                    handleInputChange("noOfDays", e.target.value)
+                  }
+                />
+              </div>
+            </div>
 
-                  <GooglePlacesAutocomplete
-                    selectProps={{
-                      value: place,
-                      onChange: (v) => {
-                        setPlace(v as Option);
-                        handleInputChange("location", v ? v.value : "");
-                      },
-                      placeholder: "Search for a destination...",
-                      styles: {
-                        control: (provided) => ({
-                          ...provided,
-                          padding: "2px",
-                          borderRadius: "4px",
-                          border: "1px solid #ccc",
-                        }),
-                      },
-                    }}
-                  />
-                </div>
-                <div>
-                  <h2 className="text-xl my-3 font-medium">
-                    How many days are you planning your trip?
-                  </h2>
-                  <Input
-                    placeholder={"EX.3"}
-                    type="number"
-                    onChange={(e) =>
-                      handleInputChange("noOfDays", e.target.value)
+            {/* Budget Options */}
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Budget Range
+              </label>
+              <div className="flex overflow-x-auto gap-2 pb-2 hide-scrollbar">
+                {SelectBudgetOptions.map((item, index) => (
+                  <div
+                    key={index}
+                    onClick={() => handleInputChange("budget", item.title)}
+                    className={`flex-shrink-0 px-4 py-2.5 border rounded-lg cursor-pointer transition-all hover:shadow-sm
+                    ${
+                      formData.budget === item.title
+                        ? "border-primary bg-primary/5"
+                        : "border-gray-200"
                     }
-                  />
-                </div>
-
-                <div>
-                  <h2 className="text-xl my-3 font-medium">
-                    What is Your Budget?
-                  </h2>
-                  <div className="grid grid-cols-3 gap-5 mt-5">
-                    {SelectBudgetOptions.map((item, index) => (
-                      <div
-                        key={index}
-                        onClick={() => handleInputChange("budget", item.title)}
-                        className={`p-4 border curosor-pointer rounded-lg hover:shadow-lg $(formData.budget === item.title &&'shadow-lg border-black')`}
-                      >
-                        <h2 className="text-4xl">{item.icon}</h2>
-                        <h2 className="font-bold text-lg">{item.title}</h2>
-                        <h2 className="text-sm text-gray-500">{item.desc}</h2>
+                  `}
+                  >
+                    <div className="flex items-center gap-2.5 min-w-[140px]">
+                      <span className="text-2xl">{item.icon}</span>
+                      <div>
+                        <p className="font-medium text-sm">{item.title}</p>
+                        {/* <p className="text-xs text-gray-500">{item.desc}</p> */}
                       </div>
-                    ))}
+                    </div>
                   </div>
-                </div>
+                ))}
+              </div>
+            </div>
 
-                <div>
-                  <h2 className="text-xl my-3 font-medium">
-                    Who do you plan on traveling with on your next adventure?
-                  </h2>
-                  <div className="grid grid-cols-3 gap-5 mt-5">
-                    {SelectTravelersList.map((item, index) => (
-                      <div
-                        key={index}
-                        onClick={() =>
-                          handleInputChange("traveler", item.people)
-                        }
-                        className={`p-4 border curosor-pointer rounded-lg hover:shadow-lg $(formData.traveler === item.people &&'shadow-lg border-black')`}
-                      >
-                        <h2 className="text-4xl">{item.icon}</h2>
-                        <h2 className="font-bold text-lg">{item.title}</h2>
-                        <h2 className="text-sm text-gray-500">{item.desc}</h2>
+            {/* Travelers */}
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Travel With
+              </label>
+              <div className="flex overflow-x-auto gap-2 pb-2 hide-scrollbar">
+                {SelectTravelersList.map((item, index) => (
+                  <div
+                    key={index}
+                    onClick={() => handleInputChange("traveler", item.people)}
+                    className={`flex-shrink-0 px-4 py-2.5 border rounded-lg cursor-pointer transition-all hover:shadow-sm
+          ${
+            formData.traveler === item.people
+              ? "border-primary bg-primary/5"
+              : "border-gray-200"
+          }
+        `}
+                  >
+                    <div className="flex items-center gap-2.5 min-w-[140px]">
+                      <span className="text-2xl">{item.icon}</span>
+                      <div>
+                        <p className="font-medium text-sm">{item.title}</p>
+                        {/* <p className="text-xs text-gray-500">{item.desc}</p> */}
                       </div>
-                    ))}
+                    </div>
                   </div>
-                </div>
+                ))}
               </div>
+            </div>
 
-              <div className="my-10 ">
-                <div className="justify-end flex">
-                  <Button onClick={onGenerateTrip}>Generate Trip</Button>
-                </div>
-                <PreferencesSection />
-              </div>
+            {/* Preferences and Submit */}
+            <div className="flex items-center justify-between border-t pt-4 mt-4">
+              <PreferencesSection />
+              <Button onClick={onGenerateTrip}>Generate Trip</Button>
             </div>
           </div>
         </div>
