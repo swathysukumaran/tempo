@@ -11,30 +11,6 @@ function SavedTrips() {
 
       {/* Trip Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Add New Trip Card */}
-        <div className="border-2 border-dashed border-gray-200 rounded-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:border-primary/50 transition-colors">
-          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-6 h-6 text-primary"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-          </div>
-          <h3 className="font-medium text-gray-700">Create New Trip</h3>
-          <p className="text-sm text-gray-500 mt-1">
-            Start planning your next adventure
-          </p>
-        </div>
-
         {/* Trip Cards */}
         {[1, 2, 3, 4, 5].map((trip) => (
           <div

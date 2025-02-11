@@ -4,7 +4,7 @@ import SavedTrips from "./SavedTrips";
 function Hero() {
   return (
     <div className="min-h-screen  flex flex-col">
-      <div className="h-[70vh] relative">
+      <div className="min-h-[85vh] relative">
         <div className="absolute inset-0">
           <img
             src={coverImage} // Replace with your image path
@@ -16,18 +16,18 @@ function Hero() {
         </div>
 
         {/* Hero Content */}
-        <div className="relative h-full flex flex-col items-center pt-16 md:pt-32">
+        <div className="relative h-full flex flex-col items-center pt-12 px-4">
           {/* Hero Text */}
-          <div className="text-center text-white px-4 mb-12 md:mb-20">
-            <h1 className="text-h2 md:text-h1 font-bold mb-3 md:mb-4">
+          <div className="text-center text-white mb-8">
+            <h1 className="text-xl md:text-3xl font-bold mb-2">
               Your Journey, Your Rhythm
             </h1>
-            <p className="text-body md:text-h3">
+            <p className="text-sm md:text-lg">
               Create personalized travel experiences that match your pace
             </p>
           </div>
           {/* Floating Form Card */}
-          <div className="w-full px-4 md:max-w-5xl md:mx-auto">
+          <div className="w-full px-4 md:max-w-5xl md:mx-auto shadow-md">
             <div className="bg-white w-full px-4 md:max-w-5xl md:mx-auto">
               {/* Main Trip Details Row */}
               <div className="p-4 md:p-6 border-b border-gray-100">
@@ -97,7 +97,7 @@ function Hero() {
           </div>
         </div>
       </div>
-      <div className=" bg-gray-50 mt-12">
+      <div className=" bg-gray-50 ">
         <SavedTrips />
       </div>
     </div>
