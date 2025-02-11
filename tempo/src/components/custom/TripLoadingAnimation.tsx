@@ -18,7 +18,8 @@ const TripLoadingAnimation: React.FC<TripLoadingAnimationProps> = ({
           animationData={travelAnimationData}
           loop
           autoplay
-          className="w-full h-auto"
+          style={{ width: "70%", height: "auto" }}
+          className="w-full h-auto mx-auto"
         />
         <p className="text-center text-xl text-primary font-semibold mt-4">
           Crafting Your Perfect Trip...

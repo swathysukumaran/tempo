@@ -7,6 +7,7 @@ import { API_URL } from "@/config/api";
 import { SelectBudgetOptions, SelectTravelersList } from "@/constants/options";
 import { useNavigate } from "react-router-dom";
 import { Input } from "../ui/input";
+import TripLoadingAnimation from "../custom/TripLoadingAnimation";
 function Hero() {
   type Option = {
     label: string;
@@ -17,6 +18,7 @@ function Hero() {
     [key: string]: string | number | boolean | Option;
   };
   const [place, setPlace] = useState<Option | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<FormData>({});
   const [savedPreferences, setSavedPreferences] = useState({
     pace: "",
@@ -187,6 +189,7 @@ function Hero() {
     };
     console.log(tripData);
     try {
+      setIsLoading(true);
       const response = await fetch(`${API_URL}/ai/create-trip`, {
         method: "POST",
         headers: {
@@ -201,9 +204,14 @@ function Hero() {
       navigate(`/trip-details/${trip.tripId}`);
     } catch (error) {
       toast("Something went wrong");
+      setIsLoading(false);
       console.log(error);
     }
   };
+  if (isLoading) {
+    return <TripLoadingAnimation />;
+  }
+
   return (
     <div className="min-h-screen  flex flex-col">
       <div className="min-h-[85vh] relative">
