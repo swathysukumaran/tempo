@@ -276,7 +276,7 @@ function Hero() {
                 <Input
                   placeholder="Days"
                   type="number"
-                  className="w-full"
+                  className="w-full h-[42px] "
                   onChange={(e) =>
                     handleInputChange("noOfDays", e.target.value)
                   }
