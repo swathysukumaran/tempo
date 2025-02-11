@@ -214,38 +214,42 @@ function TripDetails() {
               {dayData.activities.map((activity, index) => (
                 <div
                   key={index}
-                  className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors"
+                  className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors flex items-start space-x-4"
                 >
-                  <div className="flex items-center mb-4">
-                    <h4 className="text-lg font-semibold text-gray-800 mr-4">
-                      {activity.place_name}
-                    </h4>
-                    <div className="flex items-center text-yellow-500">
-                      <Star size={16} className="mr-1" />
-                      {activity.rating}/5
-                    </div>
-                  </div>
-                  <p className="text-sm text-gray-600 mb-4">
-                    {activity.place_details}
-                  </p>
-                  <div className="grid grid-cols-3 gap-4 text-sm">
-                    <div>
-                      <p className="font-semibold text-primary">Price</p>
-                      <p>{activity.ticket_pricing}</p>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-primary">Travel Time</p>
-                      <p>{activity.travel_time}</p>
-                    </div>
-                    {activity.place_image_url && (
-                      <div className="col-span-3 mt-4">
-                        <img
-                          src={activity.place_image_url}
-                          alt={activity.place_name}
-                          className="w-full h-48 object-cover rounded-lg shadow-md"
-                        />
-                      </div>
+                  <div className="bg-primary/20 rounded-full p-3 self-start mt-2">
+                    {index % 3 === 0 ? (
+                      <Compass className="text-primary" size={24} />
+                    ) : index % 3 === 1 ? (
+                      <Sun className="text-yellow-500" size={24} />
+                    ) : (
+                      <Globe className="text-secondary" size={24} />
                     )}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center mb-2">
+                      <h4 className="text-lg font-semibold text-gray-800 mr-4">
+                        {activity.place_name}
+                      </h4>
+                      <div className="flex items-center text-yellow-500">
+                        <Star size={16} className="mr-1" />
+                        {activity.rating}/5
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-4">
+                      {activity.place_details}
+                    </p>
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <p className="font-semibold text-primary">Price</p>
+                        <p>{activity.ticket_pricing}</p>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-primary">
+                          Travel Time
+                        </p>
+                        <p>{activity.travel_time}</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
