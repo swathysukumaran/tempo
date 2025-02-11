@@ -1,5 +1,5 @@
 import React from "react";
-import coverImage from "../../assets/cover-image.jpeg";
+import coverImage from "../../assets/cover.jpg";
 function Hero() {
   return (
     <div className="min-h-screen  relative">
