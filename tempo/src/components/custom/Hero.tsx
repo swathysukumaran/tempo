@@ -143,18 +143,29 @@ function Hero() {
         </div>
 
         {/* Hero Content */}
-        <div className="relative h-full flex flex-col items-center pt-12 px-4">
+        <div className="relative h-full flex flex-col  items-center pt-12 px-4">
+          <div className="text-center text-white mb-20 my-auto">
+            <h1 className="text-h1 font-bold mb-4">
+              Your Journey, Your Rhythm
+            </h1>
+            <p className="text-h3">
+              Create personalized travel experiences that match your pace
+            </p>
+          </div>
           {/* Floating Form Card */}
         </div>
       </div>
-      <div className="bg-white  w-full ">
+      <div className="bg-white  w-[80%] mx-auto">
         <div className="p-6 md:p-8">
           {/* Header */}
           <div className="mb-6">
             <h2 className="text-2xl md:text-3xl font-bold">
-              Your Journey, Your Rhythm
+              Tell us your travel vibe 🏖️🌍
             </h2>
-            <p className="mt-2 text-gray-500">Let's plan your perfect trip</p>
+            <p className="mt-2 text-gray-500">
+              Share your preferences, and let us craft a personalized adventure
+              just for you!"
+            </p>
           </div>
 
           <div className="space-y-6">
@@ -265,9 +276,6 @@ function Hero() {
             </div>
           </div>
         </div>
-      </div>
-      <div className=" bg-gray-50 ">
-        <SavedTrips />
       </div>
     </div>
   );
