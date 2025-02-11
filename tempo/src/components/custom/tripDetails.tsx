@@ -216,7 +216,7 @@ function TripDetails() {
                   key={index}
                   className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors flex items-start space-x-4"
                 >
-                  <div className="bg-primary/20 rounded-full p-3 self-start mt-2">
+                  <div className="hidden md:block bg-primary/20 rounded-full p-3 self-start mt-2">
                     {index % 3 === 0 ? (
                       <Compass className="text-primary" size={24} />
                     ) : index % 3 === 1 ? (
