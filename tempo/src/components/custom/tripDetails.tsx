@@ -2,7 +2,17 @@ import { API_URL } from "@/config/api";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-
+import {
+  MapPin,
+  Clock,
+  Users,
+  Wallet,
+  Hotel,
+  Sun,
+  Star,
+  Globe,
+  Compass,
+} from "lucide-react";
 function TripDetails() {
   const { tripId } = useParams();
   interface TripData {
@@ -66,9 +76,36 @@ function TripDetails() {
 
     fetchTripDetails();
   }, [tripId]);
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (!tripData) return <div>No trip found</div>;
+  if (loading)
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-50 animate-pulse">
+        <div className="text-primary text-2xl font-bold">
+          Loading Your Adventure...
+        </div>
+      </div>
+    );
+  if (error)
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-error/10 p-6">
+        <div className="text-center">
+          <div className="text-error text-3xl font-bold mb-4">
+            Oops! Something Went Wrong
+          </div>
+          <p className="text-gray-700">{error}</p>
+        </div>
+      </div>
+    );
+  if (!tripData)
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-50">
+        <div className="text-center">
+          <div className="text-primary text-3xl font-bold mb-4">
+            No Trip Found
+          </div>
+          <p className="text-gray-700">Let's plan your next adventure!</p>
+        </div>
+      </div>
+    );
 
   return (
     <div className="container mx-auto  p-6 space-y-8 bg-gray-50">
