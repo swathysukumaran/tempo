@@ -21,9 +21,10 @@ function AuthLayout() {
             className="w-auto h-12 mx-auto sm:h-16 md:h-20"
           />
           <h1 className="text-h2 font-bold text-gray-700 mb-2">Tempo</h1>
-          <p className="text-body ">Enjoyour journey, your rhythm</p>
+          <p className="text-body ">Travel at your rhythm</p>
           <p className="text-small text-gray-500">
-            Create personalized travel experiences that match your pace
+            Discover personalized itineraries powered by AI, designed to match
+            your interests, and style.
           </p>
         </div>
         <Outlet />
