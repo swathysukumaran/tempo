@@ -1,7 +1,7 @@
 import { API_URL } from "@/config/api";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+
 import {
   MapPin,
   Clock,
@@ -106,143 +106,153 @@ function TripDetails() {
         </div>
       </div>
     );
-
+  const { generatedItinerary, tripDetails } = tripData;
   return (
-    <div className="container mx-auto  p-6 space-y-8 bg-gray-50">
-      {/* Trip Overview */}
-      <Card className="shadow-xl hover:shadow-2xl transition-all">
-        <CardHeader className="bg-primary text-white rounded-t-lg py-4 px-6">
-          <CardTitle>{tripData.generatedItinerary.trip_name}</CardTitle>
-        </CardHeader>
-        <CardContent className="py-6 px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="flex flex-col items-center">
-              <p className="text-sm text-gray-500">Duration</p>
-              <p className="text-xl font-semibold">
-                {tripData.generatedItinerary.duration}
-              </p>
+    <div className="min-h-screen bg-gray-50 pb-16">
+      {/* Hero Section */}
+      <div className="bg-primary text-white py-12 px-6 rounded-b-3xl shadow-lg">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-3xl font-bold mb-4 flex items-center">
+            <Globe className="mr-3 animate-float" size={36} />
+            {generatedItinerary.trip_name}
+          </h1>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="flex items-center space-x-2">
+              <Clock className="text-white/70" size={24} />
+              <div>
+                <p className="text-xs text-white/70">Duration</p>
+                <p className="font-semibold">{generatedItinerary.duration}</p>
+              </div>
             </div>
-            <div className="text-xl font-semibold">
-              <p className="text-sm text-gray-500">Travelers</p>
-              <p className="text-xl font-semibold">
-                {tripData.generatedItinerary.travelers}
-              </p>
+            <div className="flex items-center space-x-2">
+              <Users className="text-white/70" size={24} />
+              <div>
+                <p className="text-xs text-white/70">Travelers</p>
+                <p className="font-semibold">{generatedItinerary.travelers}</p>
+              </div>
             </div>
-            <div className="flex flex-col items-center">
-              <p className="text-sm text-gray-500">Budget</p>
-              <p className="text-xl font-semibold">
-                {tripData.tripDetails.budget}
-              </p>
+            <div className="flex items-center space-x-2">
+              <Wallet className="text-white/70" size={24} />
+              <div>
+                <p className="text-xs text-white/70">Budget</p>
+                <p className="font-semibold">{tripDetails.budget}</p>
+              </div>
             </div>
-            <div className="flex flex-col items-center">
-              <p className="text-sm text-gray-500">Location</p>
-              <p className="text-xl font-semibold">
-                {tripData.tripDetails.location.description}
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Hotels */}
-      <Card className="shadow-xl hover:shadow-2xl transition-all">
-        <CardHeader className="bg-secondary text-white rounded-t-lg py-4 px-6">
-          <CardTitle>Recommended Hotels</CardTitle>
-        </CardHeader>
-        <CardContent className="py-6 px-6">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tripData.generatedItinerary.hotels.map((hotel, index) => (
-              <div
-                key={index}
-                className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-all"
-              >
-                <h3 className="font-semibold text-lg text-gray-800">
-                  {hotel.hotel_name}
-                </h3>
-                <p className="text-sm text-gray-600">{hotel.hotel_address}</p>
-                <p className="text-gray-800 mt-2">{hotel.price}</p>
-                <p className="text-sm text-yellow-400 mt-1">
-                  Rating: {hotel.rating}/5
-                </p>
-                <p className="text-sm text-gray-600 mt-2">
-                  {hotel.description}
+            <div className="flex items-center space-x-2">
+              <MapPin className="text-white/70" size={24} />
+              <div>
+                <p className="text-xs text-white/70">Location</p>
+                <p className="font-semibold">
+                  {tripDetails.location.description}
                 </p>
               </div>
-            ))}
+            </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
+
+      {/* Hotels Section */}
+      <section className="max-w-4xl mx-auto px-6 mt-8">
+        <h2 className="text-2xl font-bold mb-6 flex items-center text-primary">
+          <Hotel className="mr-3" size={32} />
+          Recommended Hotels
+        </h2>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {generatedItinerary.hotels.map((hotel, index) => (
+            <div
+              key={index}
+              className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-2 p-6"
+            >
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                {hotel.hotel_name}
+              </h3>
+              <div className="flex items-center text-sm text-gray-600 mb-4">
+                <MapPin size={16} className="mr-2 text-primary" />
+                {hotel.hotel_address}
+              </div>
+              <div className="flex justify-between items-center mb-4">
+                <div className="text-lg font-bold text-primary">
+                  {hotel.price}
+                </div>
+                <div className="flex items-center text-yellow-400">
+                  <Star size={16} className="mr-1" />
+                  <span>{hotel.rating}/5</span>
+                </div>
+              </div>
+              <p className="text-sm text-gray-600">{hotel.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* Daily Itinerary */}
-      {/* Daily Itinerary */}
-      <div className="space-y-6">
-        <h2 className="text-3xl font-bold text-primary">Daily Itinerary</h2>
-        {Object.entries(tripData.generatedItinerary.itinerary).map(
-          ([day, dayData]) => (
-            <Card
-              key={day}
-              className="shadow-xl hover:shadow-2xl transition-all"
-            >
-              <CardHeader className="bg-primary text-white rounded-t-lg py-4 px-6">
-                <CardTitle className="flex items-center justify-between">
-                  <span className="text-2xl font-bold text-primary">
-                    {day.replace("day", "Day ")}
-                  </span>
-                  <span className="text-xl">{dayData.theme}</span>
-                </CardTitle>
-                <p className="text-sm text-gray-500">
-                  Best time: {dayData.best_time_to_visit}
-                </p>
-              </CardHeader>
-              <CardContent className="py-6 px-6">
-                <div className="space-y-4">
-                  {dayData.activities.map((activity, index) => (
-                    <div
-                      key={index}
-                      className="flex flex-col bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-all"
-                    >
-                      <div className="grid md:grid-cols-3 gap-4">
-                        {/* <img
+      <section className="max-w-4xl mx-auto px-6 mt-12">
+        <h2 className="text-2xl font-bold mb-8 flex items-center text-primary">
+          <Compass className="mr-3" size={32} />
+          Daily Itinerary
+        </h2>
+        {Object.entries(generatedItinerary.itinerary).map(([day, dayData]) => (
+          <div
+            key={day}
+            className="mb-8 bg-white rounded-xl shadow-lg overflow-hidden"
+          >
+            <div className="bg-primary/10 p-6">
+              <div className="flex justify-between items-center">
+                <h3 className="text-xl font-bold text-primary">
+                  {day.replace("day", "Day ")}
+                </h3>
+                <div className="flex items-center text-gray-600">
+                  <Sun size={20} className="mr-2 text-yellow-500" />
+                  {dayData.theme}
+                </div>
+              </div>
+              <p className="text-sm text-gray-500 mt-2">
+                Best time: {dayData.best_time_to_visit}
+              </p>
+            </div>
+            <div className="p-6 space-y-6">
+              {dayData.activities.map((activity, index) => (
+                <div
+                  key={index}
+                  className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors"
+                >
+                  <div className="flex items-center mb-4">
+                    <h4 className="text-lg font-semibold text-gray-800 mr-4">
+                      {activity.place_name}
+                    </h4>
+                    <div className="flex items-center text-yellow-500">
+                      <Star size={16} className="mr-1" />
+                      {activity.rating}/5
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-4">
+                    {activity.place_details}
+                  </p>
+                  <div className="grid grid-cols-3 gap-4 text-sm">
+                    <div>
+                      <p className="font-semibold text-primary">Price</p>
+                      <p>{activity.ticket_pricing}</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-primary">Travel Time</p>
+                      <p>{activity.travel_time}</p>
+                    </div>
+                    {activity.place_image_url && (
+                      <div className="col-span-3 mt-4">
+                        <img
                           src={activity.place_image_url}
                           alt={activity.place_name}
-                          className="w-full h-48 object-cover"
-                        /> */}
-                        <div className="pt-4">
-                          <h3 className="font-semibold text-lg text-gray-800">
-                            {activity.place_name}
-                          </h3>
-                          <p className="text-sm text-gray-600 mt-2">
-                            {activity.place_details}
-                          </p>
-                          <div className="mt-4 grid grid-cols-3 gap-4 text-sm text-gray-600">
-                            <div>
-                              <p className="font-semibold">Price</p>
-                              <p>{activity.ticket_pricing}</p>
-                            </div>
-                            <div>
-                              <p className="font-semibold">Rating</p>
-                              <div className="flex items-center">
-                                <span className="text-yellow-400">★</span>
-                                <span className="ml-1">
-                                  {activity.rating}/5
-                                </span>
-                              </div>
-                            </div>
-                            <div>
-                              <p className="font-semibold">Travel Time</p>
-                              <p>{activity.travel_time}</p>
-                            </div>
-                          </div>
-                        </div>
+                          className="w-full h-48 object-cover rounded-lg shadow-md"
+                        />
                       </div>
-                    </div>
-                  ))}
+                    )}
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
-          )
-        )}
-      </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </section>
     </div>
   );
 }
