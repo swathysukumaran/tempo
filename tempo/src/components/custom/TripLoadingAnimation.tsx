@@ -21,9 +21,9 @@ const TripLoadingAnimation: React.FC<TripLoadingAnimationProps> = ({
           style={{ width: "70%", height: "auto" }}
           className="w-full h-auto mx-auto"
         />
-        <p className="text-center text-xl text-primary font-semibold mt-4">
+        <h2 className="text-center text-h2 text-primary font-semibold mt-4">
           Crafting Your Perfect Trip...
-        </p>
+        </h2>
         <p className="text-center text-sm text-gray-500 mt-2">
           Generating a personalized itinerary just for you
         </p>
