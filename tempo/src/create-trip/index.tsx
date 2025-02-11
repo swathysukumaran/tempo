@@ -32,7 +32,7 @@ function CreateTrip() {
 
     return (
       <div className="border rounded-lg p-4 mb-6">
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between">
           <h3 className="font-medium">Your Travel Preferences</h3>
           <Button
             variant="ghost"
@@ -43,7 +43,7 @@ function CreateTrip() {
           </Button>
         </div>
 
-        <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
+        <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:items-center md:justify-between">
           <div>
             🚶‍♂️ Pace:{" "}
             <span className="font-medium capitalize">
@@ -73,6 +73,7 @@ function CreateTrip() {
         if (response.ok) {
           const data = await response.json();
           setSavedPreferences(data.preferences);
+          console.log("got", data.preferences);
         }
       } catch (error) {
         console.error("Error loading preferences:", error);
@@ -213,10 +214,10 @@ function CreateTrip() {
       </div>
 
       <div className="my-10 ">
-        <PreferencesSection />
         <div className="justify-end flex">
           <Button onClick={onGenerateTrip}>Generate Trip</Button>
         </div>
+        <PreferencesSection />
       </div>
     </div>
   );

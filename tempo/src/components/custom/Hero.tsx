@@ -5,7 +5,9 @@ import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { API_URL } from "@/config/api";
+import { SelectBudgetOptions, SelectTravelersList } from "@/constants/options";
 import { useNavigate } from "react-router-dom";
+import { Input } from "../ui/input";
 function Hero() {
   type Option = {
     label: string;
@@ -142,77 +144,99 @@ function Hero() {
 
         {/* Hero Content */}
         <div className="relative h-full flex flex-col items-center pt-12 px-4">
-          {/* Hero Text */}
-          <div className="text-center text-white mb-8">
-            <h1 className="text-xl md:text-3xl font-bold mb-2">
-              Your Journey, Your Rhythm
-            </h1>
-            <p className="text-sm md:text-lg">
-              Create personalized travel experiences that match your pace
-            </p>
-          </div>
           {/* Floating Form Card */}
-          <div className="w-full px-4 md:max-w-5xl md:mx-auto shadow-md">
-            <div className="bg-white w-full px-4 md:max-w-5xl md:mx-auto">
-              {/* Main Trip Details Row */}
-              <div className="p-4 md:p-6 border-b border-gray-100">
-                <div className="flex flex-col space-y-4 md:space-y-0 md:grid md:grid-cols-5 md:gap-4">
-                  <div className="md:col-span-2">
-                    <GooglePlacesAutocomplete
-                      selectProps={{
-                        value: place,
-                        onChange: (v) => {
-                          setPlace(v as Option);
-                          handleInputChange("location", v ? v.value : "");
-                        },
-                        placeholder: "Search for a destination...",
-                        styles: {
-                          control: (provided) => ({
-                            ...provided,
-                            padding: "2px",
-                            borderRadius: "4px",
-                            border: "1px solid #ccc",
-                          }),
-                        },
-                      }}
-                    />
-                  </div>
+          <div className="bg-white w-full px-4 md:max-w-5xl md:mx-auto">
+            <div className="sm:px-10 md:px-32 lg:px-56xl:px-10 px-5 mt-10">
+              <h2 className="font-bold text-3xl">Your Journey, Your Rhythm</h2>
+              <p className="mt-3 text-gray-500 text-xl">
+                Share your preferences, and let our planner craft a custom
+                itinerary just for you! 🏕️🌴
+              </p>
 
-                  <div>
-                    <select className="w-full p-3 rounded-lg border border-gray-200 focus:ring-primary focus:border-primary">
-                      <option value="">Budget</option>
-                      <option value="budget">Budget Friendly</option>
-                      <option value="moderate">Moderate</option>
-                      <option value="luxury">Luxury</option>
-                    </select>
-                  </div>
-                  <div>
-                    <input
-                      type="number"
-                      min="1"
-                      placeholder="Days"
-                      className="w-full p-3 rounded-lg border border-gray-200 focus:ring-primary focus:border-primary"
-                    />
-                  </div>
+              <div className="mt-20 flex flex-col gap-10">
+                <div>
+                  <h2 className="text-xl my-3 font-medium">
+                    What is destination of choice?
+                  </h2>
 
-                  <div>
-                    <button
-                      onClick={onGenerateTrip}
-                      className="w-full bg-secondary hover:bg-secondary-dark text-white p-3 rounded-lg transition-colors"
-                    >
-                      Create Trip
-                    </button>
+                  <GooglePlacesAutocomplete
+                    selectProps={{
+                      value: place,
+                      onChange: (v) => {
+                        setPlace(v as Option);
+                        handleInputChange("location", v ? v.value : "");
+                      },
+                      placeholder: "Search for a destination...",
+                      styles: {
+                        control: (provided) => ({
+                          ...provided,
+                          padding: "2px",
+                          borderRadius: "4px",
+                          border: "1px solid #ccc",
+                        }),
+                      },
+                    }}
+                  />
+                </div>
+                <div>
+                  <h2 className="text-xl my-3 font-medium">
+                    How many days are you planning your trip?
+                  </h2>
+                  <Input
+                    placeholder={"EX.3"}
+                    type="number"
+                    onChange={(e) =>
+                      handleInputChange("noOfDays", e.target.value)
+                    }
+                  />
+                </div>
+
+                <div>
+                  <h2 className="text-xl my-3 font-medium">
+                    What is Your Budget?
+                  </h2>
+                  <div className="grid grid-cols-3 gap-5 mt-5">
+                    {SelectBudgetOptions.map((item, index) => (
+                      <div
+                        key={index}
+                        onClick={() => handleInputChange("budget", item.title)}
+                        className={`p-4 border curosor-pointer rounded-lg hover:shadow-lg $(formData.budget === item.title &&'shadow-lg border-black')`}
+                      >
+                        <h2 className="text-4xl">{item.icon}</h2>
+                        <h2 className="font-bold text-lg">{item.title}</h2>
+                        <h2 className="text-sm text-gray-500">{item.desc}</h2>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <h2 className="text-xl my-3 font-medium">
+                    Who do you plan on traveling with on your next adventure?
+                  </h2>
+                  <div className="grid grid-cols-3 gap-5 mt-5">
+                    {SelectTravelersList.map((item, index) => (
+                      <div
+                        key={index}
+                        onClick={() =>
+                          handleInputChange("traveler", item.people)
+                        }
+                        className={`p-4 border curosor-pointer rounded-lg hover:shadow-lg $(formData.traveler === item.people &&'shadow-lg border-black')`}
+                      >
+                        <h2 className="text-4xl">{item.icon}</h2>
+                        <h2 className="font-bold text-lg">{item.title}</h2>
+                        <h2 className="text-sm text-gray-500">{item.desc}</h2>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
 
-              {/* Preferences Row */}
-              <div className="px-4 py-3 md:px-6 md:py-4 bg-gray-50/50">
-                <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:items-center md:justify-between">
-                  {/* <div className="flex overflow-x-auto pb-2 md:pb-0 gap-3 md:gap-4 hide-scrollbar"> */}
-                  <PreferencesSection />
-                  {/* </div> */}
+              <div className="my-10 ">
+                <div className="justify-end flex">
+                  <Button onClick={onGenerateTrip}>Generate Trip</Button>
                 </div>
+                <PreferencesSection />
               </div>
             </div>
           </div>

@@ -27,110 +27,27 @@ export const SelectTravelersList = [
     icon: "👯", // Friends emoji
     people: 5,
   },
-  {
-    id: 5,
-    title: "Group",
-    desc: "A large group embarking on a shared experience",
-    icon: "🌍", // Globe emoji
-    people: 10,
-  },
-  {
-    id: 6,
-    title: "Students",
-    desc: "Student groups traveling for study or fun",
-    icon: "🎓", // Graduation cap emoji
-    people: 15,
-  },
-  {
-    id: 7,
-    title: "Corporate Team",
-    desc: "Teams traveling for corporate retreats or meetings",
-    icon: "🏢", // Office building emoji
-    people: 20,
-  },
-  {
-    id: 8,
-    title: "Adventure Seekers",
-    desc: "Thrill-seekers looking for exciting adventures",
-    icon: "⛰️", // Mountain emoji
-    people: 8,
-  },
-  {
-    id: 9,
-    title: "Solo Backpacker",
-    desc: "An independent backpacker exploring the world",
-    icon: "🎒", // Backpack emoji
-    people: 1,
-  },
-  {
-    id: 10,
-    title: "Tour Group",
-    desc: "Large groups organized for sightseeing tours",
-    icon: "🚌", // Bus emoji
-    people: 30,
-  },
 ];
 
 export const SelectBudgetOptions = [
   {
     id: 1,
-    title: "Cheap",
-    desc: "Stay conscious of cost",
-    icon: "💰", // Money bag emoji
-  },
-  {
-    id: 2,
     title: "Affordable",
     desc: "Great value for your money",
     icon: "💵", // Dollar bills emoji
   },
+
   {
-    id: 3,
-    title: "Moderate",
-    desc: "A balance between cost and comfort",
-    icon: "💸", // Money with wings emoji
-  },
-  {
-    id: 4,
+    id: 2,
     title: "Premium",
     desc: "Luxury and comfort within reach",
     icon: "💳", // Credit card emoji
   },
   {
-    id: 5,
+    id: 3,
     title: "Luxury",
     desc: "Top-tier experiences and comfort",
     icon: "💎", // Gem emoji
-  },
-  {
-    id: 6,
-    title: "Backpacker",
-    desc: "Minimal cost for adventurous travelers",
-    icon: "🎒", // Backpack emoji
-  },
-  {
-    id: 7,
-    title: "Eco-Friendly",
-    desc: "Budget-friendly and sustainable",
-    icon: "🌱", // Leaf emoji
-  },
-  {
-    id: 8,
-    title: "All-Inclusive",
-    desc: "Everything included for convenience",
-    icon: "👑", // Crown emoji
-  },
-  {
-    id: 9,
-    title: "Budget Family",
-    desc: "Affordable trips for the whole family",
-    icon: "👨‍👩‍👧‍👦", // Family emoji
-  },
-  {
-    id: 10,
-    title: "Ultra-Luxury",
-    desc: "Exclusive, luxurious, and personalized experiences",
-    icon: "✨", // Sparkles emoji
   },
 ];
 

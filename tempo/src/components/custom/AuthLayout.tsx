@@ -1,6 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import registerImage from "../../assets/register.jpeg";
+import logo from "../../assets/logo.png";
 function AuthLayout() {
   return (
     <div className="min-h-screen flex">
@@ -14,7 +15,7 @@ function AuthLayout() {
       <div className="w-full lg:w-1/2 flex flex-col items-center justify-center p-8 ">
         <div className="text-center justify-center items-center mb-8">
           {/* Simple musical wave logo */}
-          <img src="/logo.svg" alt="logo" className="mx-auto" />
+          <img src={logo} alt="logo" className="w-auto h-12 sm:h-16 md:h-20" />
           <h1 className="text-h2 font-bold text-gray-700 mb-2">Tempo</h1>
           <p className="text-body ">Enjoyour journey, your rhythm</p>
           <p className="text-small text-gray-500">
