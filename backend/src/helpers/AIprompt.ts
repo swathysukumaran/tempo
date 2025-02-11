@@ -1,4 +1,4 @@
-export const AI_PROMPT = `Generate a personalized Travel Plan for {location} for {totalDays} Days, tailored for {traveler} with a budget of {budget}.
+export const AI_PROMPT = `Return a json formatted data only. Result should be json object only.  Generate a personalized Travel Plan for {location} for {totalDays} Days, tailored for {traveler} with a budget of {budget}.
 
 Travel Style Preferences:
 - Pace: {pace} (this traveler prefers a {pace} travel pace)

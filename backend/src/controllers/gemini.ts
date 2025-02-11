@@ -37,7 +37,9 @@ export const createTrip = async (req: express.Request, res: express.Response) =>
             
             const result = await chatSession.sendMessage(FINAL_PROMPT);
             const resultText = result.response.candidates[0].content.parts[0].text;
+            console.log(resultText);
             const aiResponse = resultText.replace(/```json\n|\n```/g, '');
+        
             const generatedItinerary=JSON.parse(aiResponse);
             console.log(generatedItinerary);
             const trip=await createNewTrip(userId,{location,noOfDays,budget,traveler},generatedItinerary);
