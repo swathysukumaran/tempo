@@ -16,5 +16,6 @@ export default():express.Router=>{
     tripDetails(router);
     preferences(router);
     onboarding(router);
+    
     return router;
 }
