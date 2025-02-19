@@ -12,6 +12,8 @@ import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "@/config/api";
 import { Alert, AlertDescription } from "../ui/alert";
+
+import { toast } from "sonner";
 function Login() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -19,9 +21,12 @@ function Login() {
     password: "",
   });
   const [error, setError] = useState("");
+  const [, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError("");
+    setIsLoading(true);
     try {
       console.log("API_URL", API_URL);
       const response = await fetch(`${API_URL}/auth/login`, {
@@ -33,33 +38,42 @@ function Login() {
 
       if (response.ok) {
         // Check onboarding status
-        const onboardingResponse = await fetch(`${API_URL}/onboarding/status`, {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-        });
+        try {
+          const onboardingResponse = await fetch(
+            `${API_URL}/onboarding/status`,
+            {
+              method: "GET",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+            }
+          );
 
-        if (onboardingResponse.ok) {
           const data = await onboardingResponse.json();
-          console.log("Onboarding status", data);
-          // Navigate based on onboarding status
-          if (!data.onboarding || data.onboarding.status !== "completed") {
-            console.log("Redirecting to onboarding");
-            navigate("/onboarding");
-          } else {
-            navigate("/home");
-          }
-        } else {
-          console.log("Failed to check onboarding status");
+          toast.success("Login successful! Redirecting...");
+          setTimeout(() => {
+            if (!data.onboarding || data.onboarding.status !== "completed") {
+              navigate("/onboarding");
+            } else {
+              navigate("/home");
+            }
+          }, 1000);
+        } catch (error) {
+          console.error("Onboarding status check failed:", error);
           navigate("/onboarding"); // Fallback to onboarding if status check fails
         }
       } else {
         const data = await response.json();
-        setError(data.error || "Login failed");
+        if (data.error === "Invalid credentials") {
+          setError("Invalid credentials");
+        } else {
+          setError(data.error || "Login failed. Please try again");
+        }
       }
     } catch (err) {
-      setError("Login failed");
-      console.log(err);
+      console.error("Login error:", err);
+      setError("Network error. Please try again");
+    } finally {
+      setIsLoading(false);
     }
   };
 
