@@ -40,17 +40,17 @@ export const login=async (req:express.Request,res:express.Response)=>{
     try{
         const {email,password}=req.body;
         if(!email || !password){
-            res.status(400);
+            res.status(400).json({ error: "Email and password are required." });;
             return;
         }
         const user=await getUserByEmail(email).select('+authentication.salt +authentication.password');
         if(!user){
-            res.status(400);
+            res.status(400).json({ error: "User not found." });;
             return;
         }
         const expectedHash=authentication(user.authentication.salt,password);
         if(expectedHash!=user.authentication.password){
-            res.status(403);
+            res.status(403).json({ error: "Invalid credentials." });;
             return;
         }
 

@@ -35,44 +35,44 @@ function Login() {
         credentials: "include",
         body: JSON.stringify(formData),
       });
+      const data = await response.json();
+      if (!response.ok) {
+        // Check for a specific error message
+        console.log("Response Data:", data);
+        setError(data.error || "Login failed. Please try again.");
+        setIsLoading(false);
+        return; // Stop execution here
+      }
+      toast.success("Login successful! Redirecting...");
 
-      if (response.ok) {
-        // Check onboarding status
-        try {
-          const onboardingResponse = await fetch(
-            `${API_URL}/onboarding/status`,
-            {
-              method: "GET",
-              headers: { "Content-Type": "application/json" },
-              credentials: "include",
-            }
-          );
+      try {
+        const onboardingResponse = await fetch(`${API_URL}/onboarding/status`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        });
 
-          const data = await onboardingResponse.json();
-          toast.success("Login successful! Redirecting...");
-          setTimeout(() => {
-            if (!data.onboarding || data.onboarding.status !== "completed") {
-              navigate("/onboarding");
-            } else {
-              navigate("/home");
-            }
-          }, 1000);
-        } catch (error) {
-          console.error("Onboarding status check failed:", error);
-          navigate("/onboarding"); // Fallback to onboarding if status check fails
-        }
-      } else {
-        const data = await response.json();
-        if (data.error === "Invalid credentials") {
-          setError("Invalid credentials");
-        } else {
-          setError(data.error || "Login failed. Please try again");
-        }
+        const onboardingData = await onboardingResponse.json();
+
+        setTimeout(() => {
+          if (
+            !onboardingData.onboarding ||
+            onboardingData.onboarding.status !== "completed"
+          ) {
+            navigate("/onboarding");
+          } else {
+            navigate("/home");
+          }
+        }, 1000);
+      } catch (error) {
+        console.error("Onboarding status check failed:", error);
+        navigate("/onboarding"); // Fallback to onboarding if status check fails
       }
     } catch (err) {
       console.error("Login error:", err);
       setError("Network error. Please try again");
     } finally {
+      console.log("Finally");
       setIsLoading(false);
     }
   };
@@ -86,8 +86,13 @@ function Login() {
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <Alert variant="destructive">
-              <AlertDescription>{error}</AlertDescription>
+            <Alert
+              variant="destructive"
+              className="p-3 bg-red-100 border border-red-500 rounded-md"
+            >
+              <AlertDescription className="text-red-700">
+                {error}
+              </AlertDescription>
             </Alert>
           )}
           <div className="space-y-2">
