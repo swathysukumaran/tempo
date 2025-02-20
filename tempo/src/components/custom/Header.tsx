@@ -4,6 +4,7 @@ import logo from "../../assets/logo.png";
 import { Button } from "../ui/button";
 import { API_URL } from "@/config/api";
 import { useNavigate } from "react-router-dom";
+import { Globe } from "lucide-react";
 function Header() {
   const navigate = useNavigate();
   const logout = async () => {
@@ -31,11 +32,22 @@ function Header() {
       <img
         src={logo}
         alt="logo"
-        className="w-auto h-12 mx-auto sm:h-16 md:h-20"
+        onClick={() => navigate("/")}
+        className="w-auto h-12 mx-auto sm:h-16 md:h-20 cursor-pointer"
       />
-      <Button variant="ghost" onClick={handleLogout}>
-        Logout
-      </Button>
+      <div className="flex items-center gap-4">
+        <Button
+          variant="ghost"
+          className="flex items-center gap-2"
+          onClick={() => navigate("/saved-trips")}
+        >
+          <Globe size={20} />
+          My Trips
+        </Button>
+        <Button variant="ghost" onClick={handleLogout}>
+          Logout
+        </Button>
+      </div>
     </div>
   );
 }
