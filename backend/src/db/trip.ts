@@ -39,3 +39,15 @@ export const getTripById=async(tripId:string)=>{
         throw new Error(error.message);
     }
 }
+
+export const getUserTrips = async (userId:string) => {
+    try {
+        const trips = await TripModel.find({ userId })
+            .sort({ createdAt: -1 }) // Sort by newest first
+            .lean();
+
+        return trips;
+    } catch (error) {
+        throw new Error('Failed to fetch trips');
+    }
+};
