@@ -28,7 +28,7 @@ function MyTrips() {
   useEffect(() => {
     const fetchTrips = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/trips`, {
+        const response = await fetch(`${API_URL}/trips`, {
           method: "GET",
           credentials: "include",
         });
