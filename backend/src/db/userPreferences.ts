@@ -25,20 +25,28 @@ const PreferencesSchema=new mongoose.Schema({
         }
     },
     
+},{
+    timestamps: true 
 });
-
+PreferencesSchema.index({ userId: 1 }, { unique: true });
 export const PreferencesModel=mongoose.model('Preferences',PreferencesSchema);
 
 
 export const createPreferences=async(userId: mongoose.Schema.Types.ObjectId,preferences:Object)=>{
 
     try{
+        const existingPreferences = await PreferencesModel.findOne({ userId });
+        
+        if (existingPreferences) {
+            // If preferences exist, update them
+            return await updatePreferences(userId, preferences);
+        }
         const newPreferences=new PreferencesModel({
             userId,
             preferences:preferences
         })
          await newPreferences.save(); 
-         return;
+         return newPreferences;
 
     }catch(error){
         console.log(error);
@@ -48,7 +56,17 @@ export const createPreferences=async(userId: mongoose.Schema.Types.ObjectId,pref
 
 export const updatePreferences=async (userId: mongoose.Schema.Types.ObjectId,preferences:Object)=>{
     try{
-        return await PreferencesModel.findOneAndUpdate({userId:userId},{preferences:preferences},{new:true});
+        const updatedPreferences = await PreferencesModel.findOneAndUpdate(
+            { userId },
+            { preferences },
+            { new: true }
+        );
+
+        if (!updatedPreferences) {
+            throw new Error('No preferences found to update');
+        }
+
+        return updatedPreferences;
     }catch(error){
         console.log(error);
         throw new Error(error);

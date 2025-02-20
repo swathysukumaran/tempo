@@ -20,7 +20,14 @@ export const updateUserPreferences=async(req:express.Request,res:express.Respons
     try{
         const userId=get(req, 'identity._id');
         const preferences=get(req, 'body.preferences');
-        await updatePreferences(userId,preferences);
+         if (!userId || !preferences) {
+           res.status(400).json({ error: 'Missing required data' });
+            return ;
+        }
+        const updatedPreferences=await updatePreferences(userId,preferences);
+         res.status(200).json({ preferences: updatedPreferences });
+         return;
+
     }
     catch(error){
         console.log(error);

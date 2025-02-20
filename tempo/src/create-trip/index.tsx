@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { Input } from "../components/ui/input";
 import { SelectBudgetOptions, SelectTravelersList } from "@/constants/options";
@@ -15,20 +15,53 @@ type Option = {
 type FormData = {
   [key: string]: string | number | boolean | Option;
 };
+type Preferences = {
+  pace: string;
+  activities: string[];
+  startTime: string;
+  avoidances: string[];
+};
 function CreateTrip() {
   const [place, setPlace] = useState<Option | null>(null);
   const [formData, setFormData] = useState<FormData>({});
-  const [savedPreferences, setSavedPreferences] = useState({
+  const [savedPreferences, setSavedPreferences] = useState<Preferences>({
     pace: "",
-    activities: [] as string[],
-
+    activities: [],
     startTime: "",
-
-    avoidances: [] as string[],
+    avoidances: [],
   });
-
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+  const loadPreferences = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(`${API_URL}/preferences`, {
+        method: "GET",
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setSavedPreferences(data.preferences);
+      }
+    } catch (error) {
+      console.error("Error loading preferences:", error);
+      toast("Failed to load preferences");
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+  useEffect(() => {
+    loadPreferences();
+  }, [loadPreferences]);
   const PreferencesSection = () => {
-    if (!savedPreferences) return null;
+    if (isLoading)
+      return (
+        <div className="border rounded-lg p-4 mb-6 animate-pulse bg-gray-50">
+          <div className="flex items-center justify-center">
+            Loading preferences...
+          </div>
+        </div>
+      );
 
     return (
       <div className="border rounded-lg p-4 mb-6">
@@ -37,7 +70,15 @@ function CreateTrip() {
           <Button
             variant="ghost"
             className="text-blue-600"
-            onClick={() => navigate("/onboarding")}
+            onClick={async () => {
+              navigate("/onboarding");
+              // Force a refresh when coming back
+              const handleFocus = () => {
+                loadPreferences();
+                window.removeEventListener("focus", handleFocus);
+              };
+              window.addEventListener("focus", handleFocus);
+            }}
           >
             Update Preferences
           </Button>
@@ -61,26 +102,44 @@ function CreateTrip() {
       </div>
     );
   };
-  const navigate = useNavigate();
+
   // Load saved preferences
-  useEffect(() => {
-    const loadPreferences = async () => {
-      try {
-        const response = await fetch(`${API_URL}/preferences`, {
-          method: "GET",
-          credentials: "include",
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setSavedPreferences(data.preferences);
-          console.log("got", data.preferences);
-        }
-      } catch (error) {
-        console.error("Error loading preferences:", error);
-      }
-    };
-    loadPreferences();
-  }, []);
+  // useEffect(() => {
+  //   const loadPreferences = async () => {
+  //     try {
+  //       const response = await fetch(`${API_URL}/preferences`, {
+  //         method: "GET",
+  //         credentials: "include",
+  //       });
+  //       if (response.ok) {
+  //         const data = await response.json();
+  //         setSavedPreferences(data.preferences);
+  //         console.log("got", data.preferences);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error loading preferences:", error);
+  //     }
+  //   };
+  //   loadPreferences();
+  // }, []);
+  // const refreshPreferences = async () => {
+  //   try {
+  //     const response = await fetch(`${API_URL}/preferences`, {
+  //       method: "GET",
+  //       credentials: "include",
+  //     });
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       setSavedPreferences(data.preferences);
+  //       console.log("Preferences updated:", data.preferences);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error loading preferences:", error);
+  //   }
+  // };
+  // useEffect(() => {
+  //   refreshPreferences();
+  // }, [navigate]);
   const handleInputChange = (
     name: string,
     value: string | number | boolean
@@ -90,9 +149,9 @@ function CreateTrip() {
       [name]: value,
     }));
   };
-  useEffect(() => {
-    console.log(formData);
-  }, [formData]);
+  // useEffect(() => {
+  //   console.log(formData);
+  // }, [formData]);
 
   const onGenerateTrip = async () => {
     if (
@@ -183,7 +242,9 @@ function CreateTrip() {
               <div
                 key={index}
                 onClick={() => handleInputChange("budget", item.title)}
-                className={`p-4 border curosor-pointer rounded-lg hover:shadow-lg $(formData.budget === item.title &&'shadow-lg border-black')`}
+                className={`p-4 border cursor-pointer rounded-lg hover:shadow-lg ${
+                  formData.budget === item.title ? "shadow-lg border-black" : ""
+                }`}
               >
                 <h2 className="text-4xl">{item.icon}</h2>
                 <h2 className="font-bold text-lg">{item.title}</h2>
@@ -214,10 +275,10 @@ function CreateTrip() {
       </div>
 
       <div className="my-10 ">
+        <PreferencesSection />
         <div className="justify-end flex">
           <Button onClick={onGenerateTrip}>Generate Trip</Button>
         </div>
-        <PreferencesSection />
       </div>
     </div>
   );
