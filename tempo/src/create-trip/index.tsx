@@ -103,43 +103,6 @@ function CreateTrip() {
     );
   };
 
-  // Load saved preferences
-  // useEffect(() => {
-  //   const loadPreferences = async () => {
-  //     try {
-  //       const response = await fetch(`${API_URL}/preferences`, {
-  //         method: "GET",
-  //         credentials: "include",
-  //       });
-  //       if (response.ok) {
-  //         const data = await response.json();
-  //         setSavedPreferences(data.preferences);
-  //         console.log("got", data.preferences);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error loading preferences:", error);
-  //     }
-  //   };
-  //   loadPreferences();
-  // }, []);
-  // const refreshPreferences = async () => {
-  //   try {
-  //     const response = await fetch(`${API_URL}/preferences`, {
-  //       method: "GET",
-  //       credentials: "include",
-  //     });
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       setSavedPreferences(data.preferences);
-  //       console.log("Preferences updated:", data.preferences);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error loading preferences:", error);
-  //   }
-  // };
-  // useEffect(() => {
-  //   refreshPreferences();
-  // }, [navigate]);
   const handleInputChange = (
     name: string,
     value: string | number | boolean
