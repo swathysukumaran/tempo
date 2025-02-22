@@ -13,10 +13,18 @@ interface Trip {
   };
   generatedItinerary: {
     trip_name: string;
-    cover_image_url?: string;
+    cover_image_url: string;
     travelers: string;
+    duration: string; // Add this
+    budget: string; // Add this
     travel_style: {
       pace: string;
+      activity_level: string;
+      daily_start_time: string;
+      dining_styles: string[];
+      food_preferences: string;
+      preferences_to_avoid: string[];
+      preferred_activities: string[];
     };
   };
   createdAt: string;
@@ -34,6 +42,7 @@ function MyTrips() {
         });
         if (!response.ok) throw new Error("Failed to fetch trips");
         const data = await response.json();
+        console.log("Trip data:", data.trips);
         setTrips(data.trips);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load trips");
