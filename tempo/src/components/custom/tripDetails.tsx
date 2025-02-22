@@ -205,23 +205,31 @@ function TripDetails() {
               key={index}
               className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-2 p-6"
             >
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                {hotel.hotel_name}
-              </h3>
-              <div className="flex items-center text-sm text-gray-600 mb-4">
-                <MapPin size={16} className="mr-2 text-primary" />
-                {hotel.hotel_address}
-              </div>
-              <div className="flex justify-between items-center mb-4">
-                <div className="text-lg font-bold text-primary">
-                  {hotel.price}
+              <div
+                className="h-48 w-full bg-cover bg-center"
+                style={{
+                  backgroundImage: `url(${hotel.hotel_image_url})`,
+                }}
+              />
+              <div className="p-6">
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                  {hotel.hotel_name}
+                </h3>
+                <div className="flex items-center text-sm text-gray-600 mb-4">
+                  <MapPin size={16} className="mr-2 text-primary" />
+                  {hotel.hotel_address}
                 </div>
-                <div className="flex items-center text-yellow-400">
-                  <Star size={16} className="mr-1" />
-                  <span>{hotel.rating}/5</span>
+                <div className="flex justify-between items-center mb-4">
+                  <div className="text-lg font-bold text-primary">
+                    {hotel.price}
+                  </div>
+                  <div className="flex items-center text-yellow-400">
+                    <Star size={16} className="mr-1" />
+                    <span>{hotel.rating}/5</span>
+                  </div>
                 </div>
+                <p className="text-sm text-gray-600">{hotel.description}</p>
               </div>
-              <p className="text-sm text-gray-600">{hotel.description}</p>
             </div>
           ))}
         </div>
