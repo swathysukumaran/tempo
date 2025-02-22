@@ -13,6 +13,7 @@ import {
   Globe,
   Compass,
 } from "lucide-react";
+import { googlePlacePhotos } from "@/config/googlePlaces";
 function TripDetails() {
   const { tripId } = useParams();
   interface TripData {
@@ -20,12 +21,14 @@ function TripDetails() {
       trip_name: string;
       duration: string;
       travelers: number;
+      cover_image_url?: string;
       hotels: {
         hotel_name: string;
         hotel_address: string;
         price: string;
         rating: number;
         description: string;
+        hotel_image_url?: string;
       }[];
       itinerary: {
         [day: string]: {
@@ -62,6 +65,26 @@ function TripDetails() {
         });
         if (!response.ok) throw new Error("Failed to fetch trip details");
         const data = await response.json();
+
+        const coverImageUrl = await googlePlacePhotos(
+          data.tripDetails.location.description
+        );
+        data.generatedItinerary.cover_image_url = coverImageUrl;
+
+        for (const hotel of data.generatedItinerary.hotels) {
+          const hotelImageUrl = await googlePlacePhotos(
+            hotel.hotel_name + " " + hotel.hotel_address
+          );
+          hotel.hotel_image_url = hotelImageUrl;
+        }
+        for (const day of Object.values(data.generatedItinerary.itinerary)) {
+          for (const activity of day.activities) {
+            const activityImageUrl = await googlePlacePhotos(
+              activity.place_name
+            );
+            activity.place_image_url = activityImageUrl;
+          }
+        }
         setTripData(data);
       } catch (err) {
         if (err instanceof Error) {
