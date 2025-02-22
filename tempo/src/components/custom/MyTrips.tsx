@@ -13,7 +13,7 @@ interface Trip {
   };
   generatedItinerary: {
     trip_name: string;
-    cover_image_url: string;
+    cover_image_url?: string;
     travelers: string;
     travel_style: {
       pace: string;
@@ -131,7 +131,7 @@ function MyTrips() {
                 style={{
                   backgroundImage: `url(${
                     trip.generatedItinerary.cover_image_url ||
-                    "/default-trip-image.jpg"
+                    "/placeholder-trip.jpg"
                   })`,
                 }}
               />

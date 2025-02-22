@@ -30,6 +30,24 @@ export const createNewTrip=async(userId:string,tripDetails:Record<string,any>,ge
     
 }
 
+export const updateTrip=async(userId:string,tripDetails:Record<string,any>,generatedItinerary:Record<string,any>)=>{
+    console.log("Creating new trip");
+    try{
+        const trip=await TripModel.findOneAndUpdate(
+            {userId},
+            {tripDetails,generatedItinerary},
+            {new:true}
+           
+        );
+        const updatedTrip = await trip.save();
+        console.log("Trip created successfully");
+        return updatedTrip;  // Return the saved trip
+    }catch(err){
+        throw new Error(err.message);
+    }
+    
+}
+
 export const getTripById=async(tripId:string)=>{
     try{       
         const trip=await TripModel.findById(tripId);
