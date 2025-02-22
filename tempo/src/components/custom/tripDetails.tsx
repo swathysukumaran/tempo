@@ -145,7 +145,14 @@ function TripDetails() {
   return (
     <div className="min-h-screen bg-gray-50 pb-16">
       {/* Hero Section */}
-      <div className="bg-primary text-white py-12 px-6 rounded-b-3xl shadow-lg">
+      <div
+        className="bg-primary text-white py-12 px-6 rounded-b-3xl shadow-lg relative"
+        style={{
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url(${generatedItinerary.cover_image_url})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl font-bold mb-4 flex items-center">
             <Globe className="mr-3 animate-float" size={36} />
