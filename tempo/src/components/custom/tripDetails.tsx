@@ -66,23 +66,35 @@ function TripDetails() {
         if (!response.ok) throw new Error("Failed to fetch trip details");
         const data = await response.json();
 
-        const coverImageUrl = await googlePlacePhotos(
+        const destinationImage = await googlePlacePhotos(
           data.tripDetails.location.description
         );
-        data.generatedItinerary.cover_image_url = coverImageUrl;
+        data.generatedItinerary.cover_image_url = destinationImage;
 
         for (const hotel of data.generatedItinerary.hotels) {
-          const hotelImageUrl = await googlePlacePhotos(
-            hotel.hotel_name + " " + hotel.hotel_address
+          const hotelImage = await googlePlacePhotos(
+            `${hotel.hotel_name} ${hotel.hotel_address}`
           );
-          hotel.hotel_image_url = hotelImageUrl;
+          hotel.hotel_image_url = hotelImage;
         }
-        for (const day of Object.values(data.generatedItinerary.itinerary)) {
-          for (const activity of day.activities) {
-            const activityImageUrl = await googlePlacePhotos(
-              activity.place_name
-            );
-            activity.place_image_url = activityImageUrl;
+        const itinerary = data.generatedItinerary.itinerary;
+        type DayData = {
+          theme: string;
+          best_time_to_visit: string;
+          activities: {
+            place_name: string;
+            place_details: string;
+            ticket_pricing: string;
+            rating: number;
+            travel_time: string;
+            place_image_url?: string;
+          }[];
+        };
+
+        for (const dayData of Object.values(itinerary) as DayData[]) {
+          for (const activity of dayData.activities) {
+            const activityImage = await googlePlacePhotos(activity.place_name);
+            activity.place_image_url = activityImage || "/default-activity.jpg";
           }
         }
         setTripData(data);
