@@ -92,15 +92,12 @@ function TripDetails() {
         };
 
         for (const dayData of Object.values(itinerary) as DayData[]) {
-          for (const dayData of Object.values(itinerary) as DayData[]) {
-            for (const activity of dayData.activities) {
-              const activityImage = await googlePlacePhotos(
-                activity.place_name
-              );
-              activity.place_image_url = activityImage || defaultActivityImage;
-            }
+          for (const activity of dayData.activities) {
+            const activityImage = await googlePlacePhotos(activity.place_name);
+            activity.place_image_url = activityImage || defaultActivityImage;
           }
         }
+
         await fetch(`${API_URL}/trips/${tripId}`, {
           method: "PUT",
           credentials: "include",
@@ -158,7 +155,7 @@ function TripDetails() {
     <div className="min-h-screen bg-gray-50 pb-16">
       {/* Hero Section */}
       <div
-        className="bg-primary-dark text-white py-12 px-6 rounded-b-3xl shadow-lg relative"
+        className="bg-primary-dark text-white py-12 px-6 rounded-b-3xl shadow-lg relative min-h-[50vh]"
         style={{
           backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url(${generatedItinerary.cover_image_url})`,
           backgroundSize: "cover",
