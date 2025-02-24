@@ -42,7 +42,7 @@ function MyTrips() {
         });
         if (!response.ok) throw new Error("Failed to fetch trips");
         const data = await response.json();
-        console.log("Trip data:", data.trips);
+
         setTrips(data.trips);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load trips");
@@ -135,15 +135,6 @@ function MyTrips() {
               onClick={() => handleTripClick(trip._id)}
               className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 cursor-pointer overflow-hidden"
             >
-              <div
-                className="h-48 bg-cover bg-center"
-                style={{
-                  backgroundImage: `url(${
-                    trip.generatedItinerary.cover_image_url ||
-                    "/placeholder-trip.jpg"
-                  })`,
-                }}
-              />
               <div className="p-6">
                 <h3 className="text-xl font-bold text-gray-800 mb-3">
                   {trip.generatedItinerary.trip_name}
