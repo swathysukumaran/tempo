@@ -154,57 +154,53 @@ function TripDetails() {
     <div className="min-h-screen bg-gray-50 pb-16">
       {/* Hero Section */}
       <div
-        className="bg-primary text-white py-12 px-6 rounded-b-3xl shadow-lg relative"
+        className="bg-primary-dark text-white py-12 px-6 rounded-b-3xl shadow-lg relative"
         style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url(${generatedItinerary.cover_image_url})`,
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url(${generatedItinerary.cover_image_url})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
       >
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold mb-4 flex items-center">
-            <Globe className="mr-3 animate-float" size={36} />
+          <h1 className="text-3xl font-bold mb-4 flex items-center text-white">
+            <Globe className="mr-3 animate-float text-white" size={36} />
             {generatedItinerary.trip_name}
           </h1>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="flex items-center space-x-2">
-              <Clock className="text-white/70" size={24} />
-              <div>
-                <p className="text-xs text-white/70">Duration</p>
-                <p className="font-semibold">{generatedItinerary.duration}</p>
+            {[
+              {
+                Icon: Clock,
+                label: "Duration",
+                value: generatedItinerary.duration,
+              },
+              {
+                Icon: Users,
+                label: "Travelers",
+                value: generatedItinerary.travelers,
+              },
+              { Icon: Wallet, label: "Budget", value: tripDetails.budget },
+              {
+                Icon: MapPin,
+                label: "Location",
+                value: tripDetails.location.description,
+              },
+            ].map(({ Icon, label, value }, index) => (
+              <div key={index} className="flex items-center space-x-2">
+                <Icon className="text-white" size={24} />
+                <div>
+                  <p className="text-xs text-gray-200">{label}</p>
+                  <p className="font-semibold text-white">{value}</p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Users className="text-white/70" size={24} />
-              <div>
-                <p className="text-xs text-white/70">Travelers</p>
-                <p className="font-semibold">{generatedItinerary.travelers}</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Wallet className="text-white/70" size={24} />
-              <div>
-                <p className="text-xs text-white/70">Budget</p>
-                <p className="font-semibold">{tripDetails.budget}</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2">
-              <MapPin className="text-white/70" size={24} />
-              <div>
-                <p className="text-xs text-white/70">Location</p>
-                <p className="font-semibold">
-                  {tripDetails.location.description}
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
 
       {/* Hotels Section */}
       <section className="max-w-4xl mx-auto px-6 mt-8">
-        <h2 className="text-2xl font-bold mb-6 flex items-center text-primary">
-          <Hotel className="mr-3" size={32} />
+        <h2 className="text-2xl font-bold mb-6 flex items-center text-gray-800">
+          <Hotel className="mr-3 text-primary-dark" size={32} />
           Recommended Hotels
         </h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -219,24 +215,24 @@ function TripDetails() {
                   backgroundImage: `url(${hotel.hotel_image_url})`,
                 }}
               />
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">
+              <div className="p-4">
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
                   {hotel.hotel_name}
                 </h3>
-                <div className="flex items-center text-sm text-gray-600 mb-4">
-                  <MapPin size={16} className="mr-2 text-primary" />
+                <div className="flex items-center text-sm text-gray-700 mb-4">
+                  <MapPin size={16} className="mr-2 text-primary-dark" />
                   {hotel.hotel_address}
                 </div>
                 <div className="flex justify-between items-center mb-4">
-                  <div className="text-lg font-bold text-primary">
+                  <div className="text-lg font-bold text-primary-dark">
                     {hotel.price}
                   </div>
-                  <div className="flex items-center text-yellow-400">
+                  <div className="flex items-center text-yellow-700">
                     <Star size={16} className="mr-1" />
                     <span>{hotel.rating}/5</span>
                   </div>
                 </div>
-                <p className="text-sm text-gray-600">{hotel.description}</p>
+                <p className="text-sm text-gray-800">{hotel.description}</p>
               </div>
             </div>
           ))}
@@ -245,8 +241,8 @@ function TripDetails() {
 
       {/* Daily Itinerary */}
       <section className="max-w-4xl mx-auto px-6 mt-12">
-        <h2 className="text-2xl font-bold mb-8 flex items-center text-primary">
-          <Compass className="mr-3" size={32} />
+        <h2 className="text-2xl font-bold mb-8 flex items-center text-gray-800">
+          <Compass className="mr-3 text-primary-dark" size={32} />
           Daily Itinerary
         </h2>
         {Object.entries(generatedItinerary.itinerary).map(([day, dayData]) => (
@@ -254,17 +250,17 @@ function TripDetails() {
             key={day}
             className="mb-8 bg-white rounded-xl shadow-lg overflow-hidden"
           >
-            <div className="bg-primary/10 p-6">
+            <div className="bg-primary-light/10 p-6">
               <div className="flex justify-between items-center">
-                <h3 className="text-xl font-bold text-primary">
+                <h3 className="text-xl font-bold text-gray-800">
                   {day.replace("day", "Day ")}
                 </h3>
-                <div className="flex items-center text-gray-600">
-                  <Sun size={20} className="mr-2 text-yellow-500" />
+                <div className="flex items-center text-gray-700">
+                  <Sun size={20} className="mr-2 text-yellow-700" />
                   {dayData.theme}
                 </div>
               </div>
-              <p className="text-sm text-gray-500 mt-2">
+              <p className="text-sm text-gray-600 mt-2">
                 Best time: {dayData.best_time_to_visit}
               </p>
             </div>
@@ -272,7 +268,7 @@ function TripDetails() {
               {dayData.activities.map((activity, index) => (
                 <div
                   key={index}
-                  className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors flex items-start space-x-4"
+                  className="bg-gray-100 rounded-lg p-4 hover:bg-gray-200 transition-colors flex items-start space-x-4"
                 >
                   <div
                     className="hidden md:block h-24 w-24 flex-shrink-0 rounded-lg bg-cover bg-center"
@@ -281,39 +277,30 @@ function TripDetails() {
                     }}
                   />
                   <div className="flex-1">
-                    <div className="hidden md:block bg-primary/20 rounded-full p-3 self-start mt-2">
-                      {index % 3 === 0 ? (
-                        <Compass className="text-primary" size={24} />
-                      ) : index % 3 === 1 ? (
-                        <Sun className="text-yellow-500" size={24} />
-                      ) : (
-                        <Globe className="text-secondary" size={24} />
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center mb-2">
-                        <h4 className="text-lg font-semibold text-gray-800 mr-4">
-                          {activity.place_name}
-                        </h4>
-                        <div className="flex items-center text-yellow-500">
-                          <Star size={16} className="mr-1" />
-                          {activity.rating}/5
-                        </div>
+                    <div className="flex items-center mb-2">
+                      <h4 className="text-lg font-semibold text-gray-900 mr-4">
+                        {activity.place_name}
+                      </h4>
+                      <div className="flex items-center text-yellow-700">
+                        <Star size={16} className="mr-1" />
+                        {activity.rating}/5
                       </div>
-                      <p className="text-sm text-gray-600 mb-4">
-                        {activity.place_details}
-                      </p>
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <p className="font-semibold text-primary">Price</p>
-                          <p>{activity.ticket_pricing}</p>
-                        </div>
-                        <div>
-                          <p className="font-semibold text-primary">
-                            Travel Time
-                          </p>
-                          <p>{activity.travel_time}</p>
-                        </div>
+                    </div>
+                    <p className="text-sm text-gray-800 mb-4">
+                      {activity.place_details}
+                    </p>
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <p className="font-semibold text-primary-dark">Price</p>
+                        <p className="text-gray-800">
+                          {activity.ticket_pricing}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-primary-dark">
+                          Travel Time
+                        </p>
+                        <p className="text-gray-800">{activity.travel_time}</p>
                       </div>
                     </div>
                   </div>
