@@ -1,4 +1,4 @@
-
+import defaultActivityImage from "@/assets/default-activity.jpg";
 
 export const googlePlacePhotos=async(placeName:string):Promise<string | null>=>{
     const mapDiv = document.createElement('div');
@@ -15,12 +15,12 @@ export const googlePlacePhotos=async(placeName:string):Promise<string | null>=>{
                     const photoUrl=results[0].photos[0].getUrl();
                     resolve(photoUrl);
                 }else{
-                    resolve('/default-image.jpg');
+                    resolve(defaultActivityImage);
                 }
             });
         });
     }catch(error){
         console.error('Error fetching place photos:',error);
-        return '/default-image.jpg';
+        return defaultActivityImage;
     }
 }

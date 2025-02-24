@@ -1,7 +1,7 @@
 import { API_URL } from "@/config/api";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-
+import defaultActivityImage from "../../assets/default-activity.jpg";
 import {
   MapPin,
   Clock,
@@ -92,9 +92,13 @@ function TripDetails() {
         };
 
         for (const dayData of Object.values(itinerary) as DayData[]) {
-          for (const activity of dayData.activities) {
-            const activityImage = await googlePlacePhotos(activity.place_name);
-            activity.place_image_url = activityImage || "/default-activity.jpg";
+          for (const dayData of Object.values(itinerary) as DayData[]) {
+            for (const activity of dayData.activities) {
+              const activityImage = await googlePlacePhotos(
+                activity.place_name
+              );
+              activity.place_image_url = activityImage || defaultActivityImage;
+            }
           }
         }
         await fetch(`${API_URL}/trips/${tripId}`, {
@@ -273,7 +277,14 @@ function TripDetails() {
                   <div
                     className="hidden md:block h-24 w-24 flex-shrink-0 rounded-lg bg-cover bg-center"
                     style={{
-                      backgroundImage: `url(${activity.place_image_url})`,
+                      backgroundImage: `url(${
+                        activity.place_image_url || defaultActivityImage
+                      })`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      backgroundColor: activity.place_image_url
+                        ? "transparent"
+                        : "#f0f0f0",
                     }}
                   />
                   <div className="flex-1">
