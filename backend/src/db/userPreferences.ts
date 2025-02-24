@@ -19,8 +19,6 @@ const PreferencesSchema=new mongoose.Schema({
         activities: [],
         activityLevel: '',
         startTime: '',
-        foodApproach: '',
-        diningStyles: [],
         avoidances: []
         }
     },

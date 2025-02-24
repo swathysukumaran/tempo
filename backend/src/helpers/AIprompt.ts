@@ -5,13 +5,12 @@ Travel Style Preferences:
 - Activity Level: {activityLevel}
 - Preferred Activities: {activities}
 - Daily Start Time: {startTime}
-- Food Preferences: {foodApproach} with interest in {diningStyles}
 - Preferences to Avoid: {avoidances}
 
 Please provide:
 1. Hotel options that match the travel style and preferences:
    - Hotel name, address, price, hotel image url, geo coordinates, rating, descriptions
-   - Focus on {pace}-paced locations and {foodApproach}-friendly dining options nearby
+   - Focus on {pace}-paced locations and {-friendly dining options nearby
 
 2. Daily itinerary that:
    
