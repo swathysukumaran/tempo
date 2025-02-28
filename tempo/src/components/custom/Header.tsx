@@ -2,19 +2,27 @@ import React from "react";
 import { useState } from "react";
 import logo from "../../assets/logo.png";
 import { Button } from "../ui/button";
-import { API_URL } from "@/config/api";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Globe, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import Register from "./Register";
 import Login from "./Login";
 import { useAuth } from "../../context/AuthContext";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
 
 function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [dialogContent, setDialogContent] = useState(null);
+  const [dialogContent, setDialogContent] = useState<
+    "register" | "login" | null
+  >(null);
   const isLandingPage = location.pathname === "/";
 
   const landingNavItems = [
