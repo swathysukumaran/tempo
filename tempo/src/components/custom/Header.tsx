@@ -31,48 +31,152 @@ function Header() {
     : isLandingPage
     ? landingNavItems
     : [];
-  const logout = async () => {
-    try {
-      const response = await fetch(`${API_URL}/auth/logout`, {
-        method: "POST",
-        credentials: "include", // Important for cookies
-      });
-      return response.ok;
-    } catch (error) {
-      console.error("Logout error:", error);
-      return false;
-    }
+  const openRegisterDialog = () => {
+    setDialogContent("register");
   };
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate("/login");
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
+
+  const openLoginDialog = () => {
+    setDialogContent("login");
   };
+
   return (
-    <div className="p-2 shadow-sm flex justify-between items-center ">
-      <img
-        src={logo}
-        alt="logo"
-        onClick={() => navigate("/")}
-        className="w-auto h-12 mx-auto sm:h-16 md:h-20 cursor-pointer"
-      />
-      <div className="flex items-center gap-4">
-        <Button
-          variant="ghost"
-          className="flex items-center gap-2"
-          onClick={() => navigate("/saved-trips")}
-        >
-          <Globe size={20} />
-          My Trips
-        </Button>
-        <Button variant="ghost" onClick={handleLogout}>
-          Logout
-        </Button>
+    <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <img
+              src={logo}
+              alt="Tempo"
+              className="h-8 w-auto mr-2"
+              onClick={() => navigate(isAuthenticated ? "/home" : "/")}
+              style={{ cursor: "pointer" }}
+            />
+            <span className="text-xl font-bold text-gray-800">Tempo</span>
+          </div>
+
+          <nav className="hidden md:flex items-center space-x-8">
+            {navItems.map((item, index) => (
+              <a
+                key={index}
+                href={item.href}
+                className="text-gray-600 hover:text-gray-900"
+                onClick={(e) => {
+                  if (!item.href.startsWith("#")) {
+                    e.preventDefault();
+                    navigate(item.href);
+                  }
+                }}
+              >
+                {item.label}
+              </a>
+            ))}
+
+            {/* Authentication Buttons */}
+            {!isAuthenticated ? (
+              // Show login/register when not authenticated
+              <>
+                <Dialog
+                  open={dialogContent === "login"}
+                  onOpenChange={() =>
+                    dialogContent === "login" && setDialogContent(null)
+                  }
+                >
+                  <DialogTrigger asChild>
+                    <Button variant="outline" onClick={openLoginDialog}>
+                      Log in
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Log in to your account</DialogTitle>
+                    </DialogHeader>
+                    <Login onSuccess={() => setDialogContent(null)} />
+                  </DialogContent>
+                </Dialog>
+                <Dialog
+                  open={dialogContent === "register"}
+                  onOpenChange={() =>
+                    dialogContent === "register" && setDialogContent(null)
+                  }
+                >
+                  <DialogTrigger asChild>
+                    <Button onClick={openRegisterDialog}>Sign up</Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Create an account</DialogTitle>
+                    </DialogHeader>
+                    <Register onSuccess={() => setDialogContent(null)} />
+                  </DialogContent>
+                </Dialog>
+              </>
+            ) : (
+              // Show profile/logout when authenticated
+              <Button variant="outline" onClick={logout}>
+                Log out
+              </Button>
+            )}
+          </nav>
+
+          {/* Mobile menu toggle */}
+          <div className="md:hidden">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </Button>
+          </div>
+        </div>
+
+        {/* Mobile menu */}
+        {isMenuOpen && (
+          <div className="md:hidden mt-4 pb-4">
+            <nav className="flex flex-col space-y-4">
+              {navItems.map((item, index) => (
+                <a
+                  key={index}
+                  href={item.href}
+                  className="text-gray-600 hover:text-gray-900"
+                  onClick={(e) => {
+                    if (!item.href.startsWith("#")) {
+                      e.preventDefault();
+                      navigate(item.href);
+                    }
+                  }}
+                >
+                  {item.label}
+                </a>
+              ))}
+
+              {!isAuthenticated ? (
+                <>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={openLoginDialog}
+                  >
+                    Log in
+                  </Button>
+                  <Button className="w-full" onClick={openRegisterDialog}>
+                    Sign up
+                  </Button>
+                </>
+              ) : (
+                <Button variant="outline" className="w-full" onClick={logout}>
+                  Log out
+                </Button>
+              )}
+            </nav>
+          </div>
+        )}
       </div>
-    </div>
+    </header>
   );
 }
 
