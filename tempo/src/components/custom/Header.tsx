@@ -1,12 +1,36 @@
 import React from "react";
-
+import { useState } from "react";
 import logo from "../../assets/logo.png";
 import { Button } from "../ui/button";
 import { API_URL } from "@/config/api";
-import { useNavigate } from "react-router-dom";
-import { Globe } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Globe, Menu, X } from "lucide-react";
+import Register from "./Register";
+import Login from "./Login";
+import { useAuth } from "../../context/AuthContext";
+
 function Header() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { isAuthenticated, logout } = useAuth();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [dialogContent, setDialogContent] = useState(null);
+  const isLandingPage = location.pathname === "/";
+
+  const landingNavItems = [
+    { label: "How It Works", href: "#how-it-works" },
+    { label: "Features", href: "#features" },
+  ];
+  const appNavItems = [
+    { label: "Home", href: "/home" },
+    { label: "Saved Trips", href: "/saved-trips" },
+    { label: "Create Trip", href: "/create-trip" },
+  ];
+  const navItems = isAuthenticated
+    ? appNavItems
+    : isLandingPage
+    ? landingNavItems
+    : [];
   const logout = async () => {
     try {
       const response = await fetch(`${API_URL}/auth/logout`, {
