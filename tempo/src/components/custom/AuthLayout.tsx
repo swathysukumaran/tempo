@@ -4,7 +4,7 @@ import registerImage from "../../assets/register.jpeg";
 import logo from "../../assets/logo.png";
 function AuthLayout() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex">
       <div className="hidden md:block lg:w-1/2 ">
         <img
           src={registerImage}
