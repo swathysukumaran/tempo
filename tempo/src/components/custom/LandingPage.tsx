@@ -11,7 +11,9 @@ import {
 import { Button } from "../ui/button";
 import Login from "./Login";
 import Register from "./Register";
+import register from "../../assets/register.jpeg";
 import { Menu, X } from "lucide-react";
+import { Card, CardContent } from "../ui/card";
 
 function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -178,6 +180,22 @@ function LandingPage() {
           )}
         </div>
       </header>
+      <section>
+        <section className="flex flex-col md:flex-row items-center justify-between  mx-auto ">
+          <div className="w-full md:w-1/2">
+            <img src={register} alt=" a man relaxing on beach" />
+          </div>
+          <div className="w-full md:w-1/2 p-8">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+              Travel at your rhythm
+            </h1>
+            <p className="text-xl text-gray-600 py-2">
+              Discover personalized itineraries powered by AI, designed to match
+              your interests, pace, and travel style.
+            </p>
+          </div>
+        </section>
+      </section>
     </div>
   );
 }
