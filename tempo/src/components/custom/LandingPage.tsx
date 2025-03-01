@@ -12,7 +12,8 @@ import { Button } from "../ui/button";
 import Login from "./Login";
 import Register from "./Register";
 import register from "../../assets/register.jpeg";
-import { Menu, X } from "lucide-react";
+import { Clock, Heart, Menu, Sparkles, X } from "lucide-react";
+import { Card, CardContent } from "../ui/card";
 
 function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -223,6 +224,65 @@ function LandingPage() {
                   />
                 </DialogContent>
               </Dialog>
+            </div>
+          </div>
+        </section>
+
+        {/* What Makes Us Different */}
+        <section className="py-16 bg-white">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Travel That's Truly Personal
+              </h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                We don't just recommend popular places—we build experiences
+                around your unique travel style.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+              <Card className="border-none shadow-md">
+                <CardContent className="pt-6">
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                    <Heart className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-2">Preference-Driven</h3>
+                  <p className="text-gray-600">
+                    Tell us what you love, and we'll match activities,
+                    accommodations, and experiences that align with your
+                    interests.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-none shadow-md">
+                <CardContent className="pt-6">
+                  <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mb-4">
+                    <Sparkles className="h-6 w-6 text-indigo-600" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-2">
+                    AI-Powered Insights
+                  </h3>
+                  <p className="text-gray-600">
+                    Our AI analyzes thousands of options to find hidden gems and
+                    perfect matches that most travel sites miss.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-none shadow-md">
+                <CardContent className="pt-6">
+                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                    <Clock className="h-6 w-6 text-green-600" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-2">Perfect Pacing</h3>
+                  <p className="text-gray-600">
+                    We balance your itinerary based on your preferred pace,
+                    ensuring you're never rushed or bored.
+                  </p>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </section>
