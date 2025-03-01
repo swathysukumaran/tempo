@@ -18,13 +18,14 @@ import TripDetails from "./components/custom/tripDetails.tsx";
 import Onboarding from "./components/custom/Onboarding.tsx";
 import AuthLayout from "./components/custom/AuthLayout.tsx";
 import MyTrips from "./components/custom/MyTrips.tsx";
+import LandingPage from "./components/custom/LandingPage.tsx";
 
 // Create a layout component that conditionally renders Header
 const RootLayout = () => {
   const location = useLocation();
 
   // List of paths where Header should not be shown
-  const noHeaderPaths = ["/login", "/", "/register"];
+  const noHeaderPaths = ["/login", "/", "/register", "/landing"];
 
   return (
     <>
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
             element: <Login />,
           },
         ],
+      },
+      {
+        path: "/landing",
+        element: <LandingPage />,
       },
       {
         path: "/home",
