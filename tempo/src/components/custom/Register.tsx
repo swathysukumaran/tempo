@@ -12,8 +12,10 @@ import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../config/api";
-
-function Register() {
+interface RegisterProps {
+  onLoginClick?: () => void; // Optional function with no parameters and no return value
+}
+function Register({ onLoginClick }: RegisterProps) {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
@@ -109,7 +111,12 @@ function Register() {
             Already have an account?{" "}
             <Button
               variant="link"
-              onClick={() => navigate("/login")}
+              onClick={(e) => {
+                e.preventDefault();
+                if (onLoginClick) {
+                  onLoginClick();
+                }
+              }}
               className="p-0 text-primary hover:text-primary-dark"
             >
               Login

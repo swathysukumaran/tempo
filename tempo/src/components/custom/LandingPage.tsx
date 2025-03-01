@@ -13,11 +13,11 @@ import Login from "./Login";
 import Register from "./Register";
 import register from "../../assets/register.jpeg";
 import { Menu, X } from "lucide-react";
-import { Card, CardContent } from "../ui/card";
 
 function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [dialogContent, setDialogContent] = useState(null);
+  type DialogContentType = "login" | "register" | null;
+  const [dialogContent, setDialogContent] = useState<DialogContentType>(null);
 
   const openRegisterDialog = () => {
     setDialogContent("register");
@@ -87,7 +87,11 @@ function LandingPage() {
                       Enter your details to register
                     </DialogDescription>
                   </DialogHeader>
-                  <Register />
+                  <Register
+                    onLoginClick={() => {
+                      setDialogContent("login");
+                    }}
+                  />
                 </DialogContent>
               </Dialog>
             </nav>
@@ -212,7 +216,11 @@ function LandingPage() {
                       Enter your details to register
                     </DialogDescription>
                   </DialogHeader>
-                  <Register />
+                  <Register
+                    onLoginClick={() => {
+                      setDialogContent("login");
+                    }}
+                  />
                 </DialogContent>
               </Dialog>
             </div>
