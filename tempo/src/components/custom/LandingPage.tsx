@@ -193,6 +193,29 @@ function LandingPage() {
               Discover personalized itineraries powered by AI, designed to match
               your interests, pace, and travel style.
             </p>
+            <div className="pt-4 flex flex-col sm:flex-row gap-4">
+              <Dialog
+                open={dialogContent === "register"}
+                onOpenChange={() =>
+                  dialogContent === "register" && setDialogContent(null)
+                }
+              >
+                <DialogTrigger asChild>
+                  <Button className="text-lg" onClick={openRegisterDialog}>
+                    Plan your trip
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Create an account</DialogTitle>
+                    <DialogDescription>
+                      Enter your details to register
+                    </DialogDescription>
+                  </DialogHeader>
+                  <Register />
+                </DialogContent>
+              </Dialog>
+            </div>
           </div>
         </section>
       </section>
