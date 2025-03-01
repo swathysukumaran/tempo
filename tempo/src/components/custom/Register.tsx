@@ -47,7 +47,7 @@ function Register() {
     }
   };
   return (
-    <Card className="w-full max-w-md ">
+    <Card className="w-full bg-white max-w-md ">
       <CardHeader>
         <CardTitle>Create an account</CardTitle>
         <CardDescription>Enter your details to register</CardDescription>

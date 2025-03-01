@@ -61,7 +61,7 @@ function LandingPage() {
                     Log in
                   </Button>
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent className="bg-white text-gray-900">
                   <DialogHeader>
                     <DialogTitle>Log in to your account</DialogTitle>
                     <DialogDescription>
@@ -80,7 +80,7 @@ function LandingPage() {
                 <DialogTrigger asChild>
                   <Button onClick={openRegisterDialog}>Sign up</Button>
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent className="bg-white text-gray-900">
                   <DialogHeader>
                     <DialogTitle>Create an account</DialogTitle>
                     <DialogDescription>
@@ -144,7 +144,7 @@ function LandingPage() {
                       Log in
                     </Button>
                   </DialogTrigger>
-                  <DialogContent>
+                  <DialogContent className="bg-white text-gray-900">
                     <DialogHeader>
                       <DialogTitle>Log in to your account</DialogTitle>
                       <DialogDescription>
@@ -165,7 +165,7 @@ function LandingPage() {
                       Sign up
                     </Button>
                   </DialogTrigger>
-                  <DialogContent>
+                  <DialogContent className="bg-white text-gray-900">
                     <DialogHeader>
                       <DialogTitle>Create an account</DialogTitle>
                       <DialogDescription>
@@ -205,7 +205,7 @@ function LandingPage() {
                     Plan your trip
                   </Button>
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent className="bg-white text-gray-900">
                   <DialogHeader>
                     <DialogTitle>Create an account</DialogTitle>
                     <DialogDescription>
