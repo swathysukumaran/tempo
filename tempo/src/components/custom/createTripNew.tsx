@@ -1,17 +1,11 @@
 import React, { useState } from "react";
 import { Button } from "../ui/button";
 import {
-  Activity,
-  Briefcase,
   CheckCircle,
   ChevronLeft,
   ChevronRight,
-  Coffee,
   Info,
   MapPin,
-  Moon,
-  Mountain,
-  Star,
   X,
 } from "lucide-react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
@@ -20,7 +14,6 @@ import { Input } from "../ui/input";
 type StepId =
   | "destination"
   | "duration"
-  | "preferences"
   | "mustDoAvoid"
   | "accommodation"
   | "paceStructure"
@@ -31,7 +24,6 @@ type StepId =
 const steps: StepId[] = [
   "destination",
   "duration",
-  "preferences",
   "mustDoAvoid",
   "accommodation",
   "paceStructure",
@@ -48,7 +40,6 @@ type Option = {
 type TripFormData = {
   destination: Option | null;
   duration: string;
-  preferences: string[];
   mustDoText: string;
   mustAvoidText: string;
   accommodation: string;
@@ -62,7 +53,6 @@ function CreateTripNew() {
   const [formData, setFormData] = useState<TripFormData>({
     destination: null,
     duration: "",
-    preferences: [],
     mustDoText: "",
     mustAvoidText: "",
     accommodation: "",
@@ -237,99 +227,7 @@ function CreateTripNew() {
             </div>
           </div>
         );
-      case "preferences":
-        return (
-          <div className="space-y-8">
-            <div className="space-y-3">
-              <h2 className="text-h2 font-medium text-gray-800">
-                What matters most for this trip?
-              </h2>
-              <p className="text-body text-gray-500">
-                Select what you're most interested in experiencing during your
-                visit to {formData.destination?.label}.
-              </p>
-            </div>
 
-            <div className="flex flex-wrap gap-2 justify-center">
-              {[
-                {
-                  id: "nature",
-                  name: "Peace & Nature",
-                  icon: <Mountain className="h-4 w-4 mr-1" />,
-                },
-                {
-                  id: "culture",
-                  name: "Culture & History",
-                  icon: <Briefcase className="h-4 w-4 mr-1" />,
-                },
-                {
-                  id: "food",
-                  name: "Food & Local Experiences",
-                  icon: <Coffee className="h-4 w-4 mr-1" />,
-                },
-                {
-                  id: "adventure",
-                  name: "Adventure & Activities",
-                  icon: <Activity className="h-4 w-4 mr-1" />,
-                },
-                {
-                  id: "luxury",
-                  name: "Luxury & Comfort",
-                  icon: <Star className="h-4 w-4 mr-1" />,
-                },
-                {
-                  id: "social",
-                  name: "Social & Nightlife",
-                  icon: <Moon className="h-4 w-4 mr-1" />,
-                },
-              ].map((preference) => (
-                <button
-                  key={preference.id}
-                  className={`px-4 py-2 rounded-full transition-all flex items-center ${
-                    formData.preferences.includes(preference.id)
-                      ? "bg-primary text-white"
-                      : "bg-gray-50 border border-gray-100 text-gray-800 hover:bg-gray-100"
-                  }`}
-                  onClick={() => {
-                    // Toggle the preference
-                    const newPreferences = [...formData.preferences];
-                    const index = newPreferences.indexOf(preference.id);
-                    if (index === -1) {
-                      newPreferences.push(preference.id);
-                    } else {
-                      newPreferences.splice(index, 1);
-                    }
-                    updateFormData("preferences", newPreferences);
-                  }}
-                >
-                  {preference.icon}
-                  {preference.name}
-                </button>
-              ))}
-            </div>
-
-            <div className="mt-6 bg-gray-50 p-5 rounded-lg border border-gray-100 max-w-md mx-auto">
-              <p className="text-body text-gray-700 mb-3 text-center font-medium">
-                Anything specific about your preferences?
-              </p>
-              <textarea
-                placeholder="e.g., I want to focus on hidden gems and local cuisine"
-                value={formData.customNotes}
-                onChange={(e) => updateFormData("customNotes", e.target.value)}
-                className="w-full min-h-[80px] p-3 rounded-md border-2 border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 text-gray-700"
-              />
-            </div>
-
-            <div className="flex justify-center">
-              <div className="inline-flex items-center text-primary bg-primary/5 px-4 py-2 rounded-lg border border-primary/20">
-                <Info className="h-4 w-4 mr-2" />
-                <span className="text-small">
-                  Select at least one preference to continue
-                </span>
-              </div>
-            </div>
-          </div>
-        );
       case "mustDoAvoid":
         return (
           <div className="space-y-8">
@@ -396,8 +294,7 @@ function CreateTripNew() {
         return !!formData.destination;
       case "duration":
         return !!formData.duration;
-      case "preferences":
-        return formData.preferences.length > 0;
+
       case "mustDoAvoid":
         return true; // Optional step
       case "accommodation":
