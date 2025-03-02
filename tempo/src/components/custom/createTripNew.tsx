@@ -85,8 +85,10 @@ function CreateTripNew() {
         return (
           <div className="space-y-6">
             <div className="space-y-2">
-              <h2 className="text-2xl font-bold">Where are you headed?</h2>
-              <p className="text-gray-600">
+              <h2 className="text-2xl font-bold tracking-tight text-gray-900">
+                Where are you headed?
+              </h2>
+              <p className="text-gray-500 leading-relaxed">
                 Let's start planning your perfect trip by choosing a
                 destination.
               </p>
@@ -103,7 +105,17 @@ function CreateTripNew() {
                       ...provided,
                       padding: "8px",
                       borderRadius: "0.5rem",
+
                       border: "1px solid #e2e8f0",
+                      boxShadow: "none",
+                      transition: "all 150ms ease",
+                      "&:hover": {
+                        borderColor: "#94a3b8",
+                      },
+                    }),
+                    placeholder: (provided) => ({
+                      ...provided,
+                      color: "#94a3b8",
                     }),
                   },
                 }}
@@ -243,7 +255,7 @@ function CreateTripNew() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col ">
       <header className="bg-white border-b p-4">
         <h1 className="text-xl font-bold">Plan Your Trip</h1>
         <div className="text-sm text-gray-500">
