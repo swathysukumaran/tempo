@@ -1,6 +1,18 @@
 import React, { useState } from "react";
 import { Button } from "../ui/button";
-import { Calendar, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
+import {
+  Activity,
+  Briefcase,
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  Coffee,
+  Info,
+  MapPin,
+  Moon,
+  Mountain,
+  Star,
+} from "lucide-react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 
 import { Input } from "../ui/input";
@@ -260,8 +272,121 @@ function CreateTripNew() {
             </div>
           </div>
         );
+      case "preferences":
+        return (
+          <div className="space-y-8">
+            <div className="space-y-3">
+              <h2 className="text-h2 font-medium text-gray-800">
+                What matters most for this trip?
+              </h2>
+              <p className="text-body text-gray-500">
+                Select what you're most interested in experiencing during your
+                visit to {formData.destination?.label}.
+              </p>
+            </div>
 
-      // Add other cases later
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {[
+                {
+                  id: "nature",
+                  name: "Peace & Nature",
+                  icon: <Mountain className="h-5 w-5" />,
+                  description: "Relaxing in natural settings",
+                },
+                {
+                  id: "culture",
+                  name: "Culture & History",
+                  icon: <Briefcase className="h-5 w-5" />,
+                  description: "Museums, historical sites, local traditions",
+                },
+                {
+                  id: "food",
+                  name: "Food & Local Experiences",
+                  icon: <Coffee className="h-5 w-5" />,
+                  description: "Culinary adventures and authentic experiences",
+                },
+                {
+                  id: "adventure",
+                  name: "Adventure & Activities",
+                  icon: <Activity className="h-5 w-5" />,
+                  description: "Thrilling and active experiences",
+                },
+                {
+                  id: "luxury",
+                  name: "Luxury & Comfort",
+                  icon: <Star className="h-5 w-5" />,
+                  description: "Premium experiences and relaxation",
+                },
+                {
+                  id: "social",
+                  name: "Social & Nightlife",
+                  icon: <Moon className="h-5 w-5" />,
+                  description: "Meeting people and evening entertainment",
+                },
+              ].map((preference) => (
+                <button
+                  key={preference.id}
+                  className={`p-4 border rounded-lg transition-all ${
+                    formData.preferences.includes(preference.id)
+                      ? "border-primary bg-primary/5 text-primary-dark"
+                      : "border-gray-100 text-gray-700 hover:border-primary/30"
+                  }`}
+                  onClick={() => {
+                    // Toggle the preference
+                    const newPreferences = [...formData.preferences];
+                    const index = newPreferences.indexOf(preference.id);
+                    if (index === -1) {
+                      newPreferences.push(preference.id);
+                    } else {
+                      newPreferences.splice(index, 1);
+                    }
+                    updateFormData("preferences", newPreferences);
+                  }}
+                >
+                  <div className="flex items-start space-x-3">
+                    <div
+                      className={`rounded-full p-2 ${
+                        formData.preferences.includes(preference.id)
+                          ? "bg-primary/20"
+                          : "bg-gray-50"
+                      }`}
+                    >
+                      {preference.icon}
+                    </div>
+                    <div className="text-left">
+                      <h3 className="font-medium">{preference.name}</h3>
+                      <p className="text-small text-gray-500 mt-1">
+                        {preference.description}
+                      </p>
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            <div className="mt-6 bg-gray-50 p-5 rounded-lg border border-gray-100 max-w-md mx-auto">
+              <p className="text-body text-gray-700 mb-3 text-center font-medium">
+                Anything specific about your preferences?
+              </p>
+              <textarea
+                placeholder="e.g., I want to focus on hidden gems and local cuisine"
+                value={formData.customNotes}
+                onChange={(e) => updateFormData("customNotes", e.target.value)}
+                className="w-full min-h-[80px] p-3 rounded-md border-2 border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 text-gray-700"
+              />
+            </div>
+
+            <div className="flex justify-center">
+              <div className="inline-flex items-center text-primary bg-primary/5 px-4 py-2 rounded-lg border border-primary/20">
+                <Info className="h-4 w-4 mr-2" />
+                <span className="text-small">
+                  Select at least one preference to continue
+                </span>
+              </div>
+            </div>
+          </div>
+        );
+
       default:
         return <div>Step content not implemented yet</div>;
     }
