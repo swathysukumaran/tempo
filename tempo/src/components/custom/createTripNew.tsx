@@ -171,10 +171,12 @@ function CreateTripNew() {
         );
       case "duration":
         return (
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <h2 className="text-2xl font-bold">How long are you staying?</h2>
-              <p className="text-gray-600">
+          <div className="space-y-8">
+            <div className="space-y-3">
+              <h2 className="text-h2 font-medium text-gray-800">
+                How long are you staying?
+              </h2>
+              <p className="text-body text-gray-500">
                 Choose or enter the length of your trip to{" "}
                 {formData.destination?.label}.
               </p>
@@ -207,41 +209,54 @@ function CreateTripNew() {
                   icon: <Calendar className="h-5 w-5" />,
                 },
               ].map((option) => (
-                <div
+                <button
                   key={option.id}
-                  className={`p-4 border rounded-lg cursor-pointer hover:shadow-md ${
+                  className={`p-4 border rounded-lg transition-all hover:border-primary/40 ${
                     formData.duration === option.value
-                      ? "border-blue-500 bg-blue-50"
-                      : ""
+                      ? "border-primary bg-primary/5 text-primary-dark"
+                      : "border-gray-100 text-gray-700"
                   }`}
                   onClick={() => updateFormData("duration", option.value)}
                 >
                   <div className="flex flex-col items-center justify-center">
-                    {option.icon}
-                    <h3 className="mt-2 font-medium">{option.label}</h3>
-                    <p className="text-xs text-gray-500">
+                    <div
+                      className={`p-2 rounded-full mb-2 ${
+                        formData.duration === option.value
+                          ? "bg-primary/10"
+                          : "bg-gray-50"
+                      }`}
+                    >
+                      {option.icon}
+                    </div>
+                    <h3 className="font-medium">{option.label}</h3>
+                    <p className="text-small mt-1 text-gray-500">
                       {option.value === "10+"
                         ? "10+ days"
                         : `${option.value} days`}
                     </p>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
 
-            <div className="flex flex-col items-center justify-center space-y-2 max-w-xs mx-auto">
-              <p className="text-sm text-center">
+            <div className="mt-8 bg-gray-50 p-5 rounded-lg border border-gray-100 max-w-md mx-auto">
+              <p className="text-body text-gray-700 mb-3 text-center font-medium">
                 Or enter a specific number of days
               </p>
-              <Input
-                type="number"
-                placeholder="Number of days"
-                min="1"
-                max="30"
-                value={formData.duration === "10+" ? "" : formData.duration}
-                onChange={(e) => updateFormData("duration", e.target.value)}
-                className="w-full text-center"
-              />
+              <div className="flex items-center">
+                <Input
+                  type="number"
+                  placeholder="Number of days"
+                  min="1"
+                  max="30"
+                  value={formData.duration === "10+" ? "" : formData.duration}
+                  onChange={(e) => updateFormData("duration", e.target.value)}
+                  className="flex-1 text-center border-gray-200 border-2 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                />
+              </div>
+              <p className="text-small text-gray-500 mt-2 text-center">
+                Enter any number between 1-30 days
+              </p>
             </div>
           </div>
         );

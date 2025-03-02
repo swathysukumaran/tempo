@@ -33,7 +33,7 @@ function Header() {
         src={logo}
         alt="logo"
         onClick={() => navigate("/")}
-        className="w-auto h-12 mx-auto sm:h-16 md:h-20 cursor-pointer"
+        className="w-auto h-12  sm:h-16 md:h-20 cursor-pointer"
       />
       <div className="flex items-center gap-4">
         <Button
