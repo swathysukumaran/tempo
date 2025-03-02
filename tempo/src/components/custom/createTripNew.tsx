@@ -3,7 +3,7 @@ import { Button } from "../ui/button";
 import {
   Activity,
   Briefcase,
-  Calendar,
+  CheckCircle,
   ChevronLeft,
   ChevronRight,
   Coffee,
@@ -12,6 +12,7 @@ import {
   Moon,
   Mountain,
   Star,
+  X,
 } from "lucide-react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 
@@ -48,8 +49,8 @@ type TripFormData = {
   destination: Option | null;
   duration: string;
   preferences: string[];
-  mustDo: string[];
-  mustAvoid: string[];
+  mustDoText: string;
+  mustAvoidText: string;
   accommodation: string;
   pace: string;
   structure: string;
@@ -62,8 +63,8 @@ function CreateTripNew() {
     destination: null,
     duration: "",
     preferences: [],
-    mustDo: [],
-    mustAvoid: [],
+    mustDoText: "",
+    mustAvoidText: "",
     accommodation: "",
     pace: "",
     structure: "",
@@ -329,7 +330,62 @@ function CreateTripNew() {
             </div>
           </div>
         );
+      case "mustDoAvoid":
+        return (
+          <div className="space-y-8">
+            <div className="space-y-3">
+              <h2 className="text-h2 font-medium text-gray-800">
+                Must-Do Activities & Things to Avoid
+              </h2>
+              <p className="text-body text-gray-500">
+                Tell us about specific activities or experiences for your trip
+                to {formData.destination?.label}.
+              </p>
+            </div>
 
+            <div className="space-y-6 max-w-2xl mx-auto">
+              {/* Must-Do Activities */}
+              <div className="bg-gray-50 p-5 rounded-lg border border-gray-100">
+                <h3 className="text-h3 font-medium text-gray-700 flex items-center mb-3">
+                  <CheckCircle className="h-5 w-5 mr-2 text-green-500" />
+                  Must-Do Activities
+                </h3>
+                <textarea
+                  placeholder="For example: I want to visit hot springs, try local street food, and see the sunrise from a mountain"
+                  value={formData.mustDoText || ""}
+                  onChange={(e) => updateFormData("mustDoText", e.target.value)}
+                  className="w-full min-h-[100px] p-3 rounded-md border-2 border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 text-gray-700"
+                />
+              </div>
+
+              {/* Things to Avoid */}
+              <div className="bg-gray-50 p-5 rounded-lg border border-gray-100">
+                <h3 className="text-h3 font-medium text-gray-700 flex items-center mb-3">
+                  <X className="h-5 w-5 mr-2 text-secondary" />
+                  Things to Avoid
+                </h3>
+                <textarea
+                  placeholder="For example: I want to avoid crowded tourist areas, extreme sports, and very early morning activities"
+                  value={formData.mustAvoidText || ""}
+                  onChange={(e) =>
+                    updateFormData("mustAvoidText", e.target.value)
+                  }
+                  className="w-full min-h-[100px] p-3 rounded-md border-2 border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 text-gray-700"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-center">
+              <div className="inline-flex items-center text-gray-500 bg-gray-50 px-4 py-2 rounded-lg border border-gray-100">
+                <Info className="h-4 w-4 mr-2" />
+                <span className="text-small">
+                  This step is optional. Continue if you don't have strong
+                  preferences.
+                </span>
+              </div>
+            </div>
+          </div>
+        );
       default:
         return <div>Step content not implemented yet</div>;
     }
