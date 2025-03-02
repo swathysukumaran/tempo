@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { Calendar, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
-import { Badge } from "../ui/badge";
+
 import { Input } from "../ui/input";
 type StepId =
   | "destination"
@@ -83,12 +83,12 @@ function CreateTripNew() {
     switch (currentStep) {
       case "destination":
         return (
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <h2 className="text-2xl font-bold tracking-tight text-gray-900">
+          <div className="space-y-8">
+            <div className="space-y-3">
+              <h2 className="text-h2 font-medium text-gray-800">
                 Where are you headed?
               </h2>
-              <p className="text-gray-500 leading-relaxed">
+              <p className="text-body text-gray-500">
                 Let's start planning your perfect trip by choosing a
                 destination.
               </p>
@@ -104,53 +104,71 @@ function CreateTripNew() {
                     control: (provided) => ({
                       ...provided,
                       padding: "8px",
-                      borderRadius: "0.5rem",
-
-                      border: "1px solid #e2e8f0",
+                      borderRadius: "8px",
+                      border: "1px solid #F3F4F6",
                       boxShadow: "none",
                       transition: "all 150ms ease",
                       "&:hover": {
-                        borderColor: "#94a3b8",
+                        borderColor: "#0D9488",
+                      },
+                      "&:focus-within": {
+                        borderColor: "#0D9488",
+                        boxShadow: "0 0 0 1px #0D9488",
                       },
                     }),
                     placeholder: (provided) => ({
                       ...provided,
-                      color: "#94a3b8",
+                      color: "#6B7280",
+                    }),
+                    option: (provided, state) => ({
+                      ...provided,
+                      backgroundColor: state.isFocused ? "#F3F4F6" : "white",
+                      color: "#1F2937",
+                      "&:hover": {
+                        backgroundColor: "#F3F4F6",
+                      },
                     }),
                   },
                 }}
               />
             </div>
 
-            <div className="bg-gray-100 p-4 rounded-lg">
-              <div className="flex items-center space-x-2">
-                <MapPin className="h-5 w-5 text-blue-600" />
-                <span className="font-medium">Popular destinations:</span>
+            <div className="bg-gray-50 p-5 rounded-lg border border-gray-100">
+              <div className="flex items-center space-x-2 mb-3">
+                <MapPin className="h-5 w-5 text-primary" />
+                <span className="font-medium text-gray-700">
+                  Popular destinations
+                </span>
               </div>
-              <div className="flex flex-wrap gap-2 mt-2">
-                {["Tokyo, Japan", "Paris, France", "Bali, Indonesia"].map(
-                  (place) => (
-                    <Badge
-                      key={place}
-                      variant="outline"
-                      className="cursor-pointer hover:bg-blue-100"
-                      onClick={() => {
-                        // Mock the Google Places result
-                        updateFormData("destination", {
-                          label: place,
-                          value: place,
-                        });
-                      }}
-                    >
-                      {place}
-                    </Badge>
-                  )
-                )}
+              <div className="flex flex-wrap gap-2">
+                {[
+                  "Tokyo, Japan",
+                  "Paris, France",
+                  "Bali, Indonesia",
+                  "New York, USA",
+                  "Rome, Italy",
+                ].map((place) => (
+                  <button
+                    key={place}
+                    className={`px-3 py-1.5 text-small rounded-md transition-colors ${
+                      formData.destination?.label === place
+                        ? "bg-primary/10 text-primary border border-primary/20"
+                        : "bg-white text-gray-700 border border-gray-100 hover:border-primary/20 hover:text-primary"
+                    }`}
+                    onClick={() => {
+                      updateFormData("destination", {
+                        label: place,
+                        value: place,
+                      });
+                    }}
+                  >
+                    {place}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
         );
-
       case "duration":
         return (
           <div className="space-y-6">
