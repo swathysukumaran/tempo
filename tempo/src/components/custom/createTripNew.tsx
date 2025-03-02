@@ -249,51 +249,45 @@ function CreateTripNew() {
               </p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="flex flex-wrap gap-2 justify-center">
               {[
                 {
                   id: "nature",
                   name: "Peace & Nature",
-                  icon: <Mountain className="h-5 w-5" />,
-                  description: "Relaxing in natural settings",
+                  icon: <Mountain className="h-4 w-4 mr-1" />,
                 },
                 {
                   id: "culture",
                   name: "Culture & History",
-                  icon: <Briefcase className="h-5 w-5" />,
-                  description: "Museums, historical sites, local traditions",
+                  icon: <Briefcase className="h-4 w-4 mr-1" />,
                 },
                 {
                   id: "food",
                   name: "Food & Local Experiences",
-                  icon: <Coffee className="h-5 w-5" />,
-                  description: "Culinary adventures and authentic experiences",
+                  icon: <Coffee className="h-4 w-4 mr-1" />,
                 },
                 {
                   id: "adventure",
                   name: "Adventure & Activities",
-                  icon: <Activity className="h-5 w-5" />,
-                  description: "Thrilling and active experiences",
+                  icon: <Activity className="h-4 w-4 mr-1" />,
                 },
                 {
                   id: "luxury",
                   name: "Luxury & Comfort",
-                  icon: <Star className="h-5 w-5" />,
-                  description: "Premium experiences and relaxation",
+                  icon: <Star className="h-4 w-4 mr-1" />,
                 },
                 {
                   id: "social",
                   name: "Social & Nightlife",
-                  icon: <Moon className="h-5 w-5" />,
-                  description: "Meeting people and evening entertainment",
+                  icon: <Moon className="h-4 w-4 mr-1" />,
                 },
               ].map((preference) => (
                 <button
                   key={preference.id}
-                  className={`p-4 border rounded-lg transition-all ${
+                  className={`px-4 py-2 rounded-full transition-all flex items-center ${
                     formData.preferences.includes(preference.id)
-                      ? "border-primary bg-primary/5 text-primary-dark"
-                      : "border-gray-100 text-gray-700 hover:border-primary/30"
+                      ? "bg-primary text-white"
+                      : "bg-gray-50 border border-gray-100 text-gray-800 hover:bg-gray-100"
                   }`}
                   onClick={() => {
                     // Toggle the preference
@@ -307,23 +301,8 @@ function CreateTripNew() {
                     updateFormData("preferences", newPreferences);
                   }}
                 >
-                  <div className="flex items-start space-x-3">
-                    <div
-                      className={`rounded-full p-2 ${
-                        formData.preferences.includes(preference.id)
-                          ? "bg-primary/20"
-                          : "bg-gray-50"
-                      }`}
-                    >
-                      {preference.icon}
-                    </div>
-                    <div className="text-left">
-                      <h3 className="font-medium">{preference.name}</h3>
-                      <p className="text-small text-gray-500 mt-1">
-                        {preference.description}
-                      </p>
-                    </div>
-                  </div>
+                  {preference.icon}
+                  {preference.name}
                 </button>
               ))}
             </div>
