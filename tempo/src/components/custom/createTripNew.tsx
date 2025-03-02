@@ -194,59 +194,23 @@ function CreateTripNew() {
               </p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
+            <div className="flex flex-wrap gap-2 justify-center">
               {[
-                {
-                  id: "weekend",
-                  label: "Weekend",
-                  value: "2",
-                  icon: <Calendar className="h-5 w-5" />,
-                },
-                {
-                  id: "short",
-                  label: "Short Trip",
-                  value: "4",
-                  icon: <Calendar className="h-5 w-5" />,
-                },
-                {
-                  id: "week",
-                  label: "One Week",
-                  value: "7",
-                  icon: <Calendar className="h-5 w-5" />,
-                },
-                {
-                  id: "long",
-                  label: "Extended",
-                  value: "10+",
-                  icon: <Calendar className="h-5 w-5" />,
-                },
+                { id: "weekend", label: "Weekend (2 days)", value: "2" },
+                { id: "short", label: "Short Trip (4 days)", value: "4" },
+                { id: "week", label: "One Week (7 days)", value: "7" },
+                { id: "long", label: "Extended (10+ days)", value: "10+" },
               ].map((option) => (
                 <button
                   key={option.id}
-                  className={`p-4 border rounded-lg transition-all hover:border-primary/40 ${
+                  className={`px-4 py-2 rounded-full transition-all ${
                     formData.duration === option.value
-                      ? "border-primary bg-primary/5 text-primary-dark"
-                      : "border-gray-100 text-gray-700"
+                      ? "bg-primary text-white"
+                      : "bg-gray-50 border border-gray-100 text-gray-800 hover:bg-gray-100"
                   }`}
                   onClick={() => updateFormData("duration", option.value)}
                 >
-                  <div className="flex flex-col items-center justify-center">
-                    <div
-                      className={`p-2 rounded-full mb-2 ${
-                        formData.duration === option.value
-                          ? "bg-primary/10"
-                          : "bg-gray-50"
-                      }`}
-                    >
-                      {option.icon}
-                    </div>
-                    <h3 className="font-medium">{option.label}</h3>
-                    <p className="text-small mt-1 text-gray-500">
-                      {option.value === "10+"
-                        ? "10+ days"
-                        : `${option.value} days`}
-                    </p>
-                  </div>
+                  {option.label}
                 </button>
               ))}
             </div>
