@@ -221,6 +221,26 @@ function CreateTripNew() {
         return <div>Step content not implemented yet</div>;
     }
   };
+  const canProceed = () => {
+    switch (currentStep) {
+      case "destination":
+        return !!formData.destination;
+      case "duration":
+        return !!formData.duration;
+      case "preferences":
+        return formData.preferences.length > 0;
+      case "mustDoAvoid":
+        return true; // Optional step
+      case "accommodation":
+        return !!formData.accommodation;
+      case "paceStructure":
+        return !!formData.pace && !!formData.structure;
+      case "budget":
+        return !!formData.budget;
+      default:
+        return true;
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -251,7 +271,7 @@ function CreateTripNew() {
 
         <Button
           onClick={goToNextStep}
-          disabled={currentStep === steps[steps.length - 1]}
+          disabled={!canProceed() || currentStep === steps[steps.length - 1]}
         >
           Next
           <ChevronRight className="ml-2 h-4 w-4" />
