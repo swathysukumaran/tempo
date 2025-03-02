@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Button } from "../ui/button";
-import { ChevronLeft, ChevronRight, MapPin } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { Badge } from "../ui/badge";
+import { Input } from "../ui/input";
 type StepId =
   | "destination"
   | "duration"
@@ -134,6 +135,83 @@ function CreateTripNew() {
                   )
                 )}
               </div>
+            </div>
+          </div>
+        );
+
+      case "duration":
+        return (
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <h2 className="text-2xl font-bold">How long are you staying?</h2>
+              <p className="text-gray-600">
+                Choose or enter the length of your trip to{" "}
+                {formData.destination?.label}.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
+              {[
+                {
+                  id: "weekend",
+                  label: "Weekend",
+                  value: "2",
+                  icon: <Calendar className="h-5 w-5" />,
+                },
+                {
+                  id: "short",
+                  label: "Short Trip",
+                  value: "4",
+                  icon: <Calendar className="h-5 w-5" />,
+                },
+                {
+                  id: "week",
+                  label: "One Week",
+                  value: "7",
+                  icon: <Calendar className="h-5 w-5" />,
+                },
+                {
+                  id: "long",
+                  label: "Extended",
+                  value: "10+",
+                  icon: <Calendar className="h-5 w-5" />,
+                },
+              ].map((option) => (
+                <div
+                  key={option.id}
+                  className={`p-4 border rounded-lg cursor-pointer hover:shadow-md ${
+                    formData.duration === option.value
+                      ? "border-blue-500 bg-blue-50"
+                      : ""
+                  }`}
+                  onClick={() => updateFormData("duration", option.value)}
+                >
+                  <div className="flex flex-col items-center justify-center">
+                    {option.icon}
+                    <h3 className="mt-2 font-medium">{option.label}</h3>
+                    <p className="text-xs text-gray-500">
+                      {option.value === "10+"
+                        ? "10+ days"
+                        : `${option.value} days`}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex flex-col items-center justify-center space-y-2 max-w-xs mx-auto">
+              <p className="text-sm text-center">
+                Or enter a specific number of days
+              </p>
+              <Input
+                type="number"
+                placeholder="Number of days"
+                min="1"
+                max="30"
+                value={formData.duration === "10+" ? "" : formData.duration}
+                onChange={(e) => updateFormData("duration", e.target.value)}
+                className="w-full text-center"
+              />
             </div>
           </div>
         );
