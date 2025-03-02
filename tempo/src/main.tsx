@@ -19,6 +19,7 @@ import Onboarding from "./components/custom/Onboarding.tsx";
 import AuthLayout from "./components/custom/AuthLayout.tsx";
 import MyTrips from "./components/custom/MyTrips.tsx";
 import LandingPage from "./components/custom/LandingPage.tsx";
+import CreateTripNew from "./components/custom/createTripNew.tsx";
 
 // Create a layout component that conditionally renders Header
 const RootLayout = () => {
@@ -59,6 +60,10 @@ const router = createBrowserRouter([
       {
         path: "/home",
         element: <App />,
+      },
+      {
+        path: "/create-trip-new",
+        element: <CreateTripNew />,
       },
       {
         path: "/create-trip",
