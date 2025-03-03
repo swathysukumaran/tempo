@@ -19,8 +19,9 @@ function TripDetails() {
   interface TripData {
     generatedItinerary: {
       trip_name: string;
+      destination: string;
       duration: string;
-      travelers: number;
+      travelers: string; // Changed from number to match form input
       cover_image_url?: string;
       hotels: {
         hotel_name: string;
@@ -46,10 +47,15 @@ function TripDetails() {
       };
     };
     tripDetails: {
-      budget: string;
+      budget: "budget" | "moderate" | "luxury"; // Matching our form's budget options
       location: {
         description: string;
+        full_destination_name: string;
       };
+      timeframe: string;
+      startDate?: string;
+      endDate?: string;
+      preferences: string;
     };
   }
 
