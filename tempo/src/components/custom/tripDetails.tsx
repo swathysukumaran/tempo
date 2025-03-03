@@ -167,11 +167,12 @@ function TripDetails() {
     );
   const { generatedItinerary, tripDetails } = tripData;
 
+  // Updated component with better contrast using shadows and borders instead of backgrounds
   return (
-    <div className="min-h-screen bg-gray-50 pb-16">
-      {/* Hero Section */}
+    <div className="min-h-screen bg-white pb-16">
+      {/* Hero Section - using stronger shadow instead of colored background */}
       <div
-        className="bg-primary-dark text-white py-12 px-6 rounded-b-3xl shadow-lg relative min-h-[50vh]"
+        className="text-white py-12 px-6 rounded-b-3xl shadow-xl relative min-h-[50vh]"
         style={{
           backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url(${generatedItinerary.cover_image_url})`,
           backgroundSize: "cover",
@@ -218,18 +219,18 @@ function TripDetails() {
 
       {/* Hotels Section */}
       <section className="max-w-4xl mx-auto px-6 mt-8">
-        <h2 className="text-2xl font-bold mb-6 flex items-center text-gray-800">
-          <Hotel className="mr-3 text-primary-dark" size={32} />
+        <h2 className="text-2xl font-bold mb-6 flex items-center text-gray-800 border-b pb-3 border-gray-200">
+          <Hotel className="mr-3 text-primary" size={32} />
           Recommended Hotels
         </h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {generatedItinerary.hotels.map((hotel, index) => (
             <div
               key={index}
-              className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-2 p-6"
+              className="bg-white rounded-xl shadow-lg hover:shadow-xl border border-gray-200 transition-all transform hover:-translate-y-2"
             >
               <div
-                className="h-48 w-full bg-cover bg-center"
+                className="h-48 w-full bg-cover bg-center rounded-t-xl"
                 style={{
                   backgroundImage: `url(${hotel.hotel_image_url})`,
                 }}
@@ -239,14 +240,14 @@ function TripDetails() {
                   {hotel.hotel_name}
                 </h3>
                 <div className="flex items-center text-sm text-gray-700 mb-4">
-                  <MapPin size={16} className="mr-2 text-primary-dark" />
+                  <MapPin size={16} className="mr-2 text-primary" />
                   {hotel.hotel_address}
                 </div>
                 <div className="flex justify-between items-center mb-4">
-                  <div className="text-lg font-bold text-primary-dark">
+                  <div className="text-lg font-bold text-primary">
                     {hotel.price}
                   </div>
-                  <div className="flex items-center text-yellow-700">
+                  <div className="flex items-center text-yellow-600">
                     <Star size={16} className="mr-1" />
                     <span>{hotel.rating}/5</span>
                   </div>
@@ -260,22 +261,22 @@ function TripDetails() {
 
       {/* Daily Itinerary */}
       <section className="max-w-4xl mx-auto px-6 mt-12">
-        <h2 className="text-2xl font-bold mb-8 flex items-center text-gray-800">
-          <Compass className="mr-3 text-primary-dark" size={32} />
+        <h2 className="text-2xl font-bold mb-8 flex items-center text-gray-800 border-b pb-3 border-gray-200">
+          <Compass className="mr-3 text-primary" size={32} />
           Daily Itinerary
         </h2>
         {Object.entries(generatedItinerary.itinerary).map(([day, dayData]) => (
           <div
             key={day}
-            className="mb-8 bg-white rounded-xl shadow-lg overflow-hidden"
+            className="mb-8 bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200"
           >
-            <div className="bg-primary-light/10 p-6">
+            <div className="border-b border-gray-200 p-6">
               <div className="flex justify-between items-center">
                 <h3 className="text-xl font-bold text-gray-800">
                   {day.replace("day", "Day ")}
                 </h3>
                 <div className="flex items-center text-gray-700">
-                  <Sun size={20} className="mr-2 text-yellow-700" />
+                  <Sun size={20} className="mr-2 text-yellow-600" />
                   {dayData.theme}
                 </div>
               </div>
@@ -287,10 +288,10 @@ function TripDetails() {
               {dayData.activities.map((activity, index) => (
                 <div
                   key={index}
-                  className="bg-gray-100 rounded-lg p-4 hover:bg-gray-200 transition-colors flex items-start space-x-4"
+                  className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all flex items-start space-x-4"
                 >
                   <div
-                    className="hidden md:block h-24 w-24 flex-shrink-0 rounded-lg bg-cover bg-center"
+                    className="hidden md:block h-24 w-24 flex-shrink-0 rounded-lg bg-cover bg-center border border-gray-200"
                     style={{
                       backgroundImage: `url(${
                         activity.place_image_url || defaultActivityImage
@@ -307,7 +308,7 @@ function TripDetails() {
                       <h4 className="text-lg font-semibold text-gray-900 mr-4">
                         {activity.place_name}
                       </h4>
-                      <div className="flex items-center text-yellow-700">
+                      <div className="flex items-center text-yellow-600">
                         <Star size={16} className="mr-1" />
                         {activity.rating}/5
                       </div>
@@ -317,13 +318,13 @@ function TripDetails() {
                     </p>
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
-                        <p className="font-semibold text-primary-dark">Price</p>
+                        <p className="font-semibold text-primary">Price</p>
                         <p className="text-gray-800">
                           {activity.ticket_pricing}
                         </p>
                       </div>
                       <div>
-                        <p className="font-semibold text-primary-dark">
+                        <p className="font-semibold text-primary">
                           Travel Time
                         </p>
                         <p className="text-gray-800">{activity.travel_time}</p>
