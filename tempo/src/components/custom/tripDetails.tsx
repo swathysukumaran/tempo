@@ -17,11 +17,25 @@ import { googlePlacePhotos } from "@/config/googlePlaces";
 function TripDetails() {
   const { tripId } = useParams();
   interface TripData {
+    _id: string;
+    userId: string;
+    tripDetails: {
+      budget: "budget" | "moderate" | "luxury";
+      location: {
+        description?: string; // Making optional as it might be missing
+        full_destination_name?: string;
+      };
+      timeframe: string;
+      startDate: string | null;
+      endDate: string | null;
+      preferences: string;
+      transportation?: object; // Adding new field
+    };
     generatedItinerary: {
       trip_name: string;
       destination: string;
       duration: string;
-      travelers: string; // Changed from number to match form input
+      travelers: string;
       cover_image_url?: string;
       hotels: {
         hotel_name: string;
@@ -41,22 +55,13 @@ function TripDetails() {
             ticket_pricing: string;
             rating: number;
             travel_time: string;
-            place_image_url: string;
+            place_image_url: string | null; // Updated to allow null
           }[];
         };
       };
     };
-    tripDetails: {
-      budget: "budget" | "moderate" | "luxury"; // Matching our form's budget options
-      location: {
-        description: string;
-        full_destination_name: string;
-      };
-      timeframe: string;
-      startDate?: string;
-      endDate?: string;
-      preferences: string;
-    };
+    createdAt: string;
+    __v: number;
   }
 
   const [tripData, setTripData] = useState<TripData | null>(null);
@@ -73,7 +78,8 @@ function TripDetails() {
         const data = await response.json();
 
         const destinationImage = await googlePlacePhotos(
-          data.tripDetails.location.description
+          data.tripDetails.location?.description ||
+            data.generatedItinerary.destination
         );
         data.generatedItinerary.cover_image_url = destinationImage;
 
@@ -189,7 +195,9 @@ function TripDetails() {
               {
                 Icon: MapPin,
                 label: "Location",
-                value: tripDetails.location.description,
+                value:
+                  tripDetails.location?.description ||
+                  generatedItinerary.destination,
               },
             ].map(({ Icon, label, value }, index) => (
               <div key={index} className="flex items-center space-x-2">
