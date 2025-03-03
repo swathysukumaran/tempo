@@ -56,7 +56,7 @@ function SimplifiedTripPlanner() {
               </p>
             </div>
 
-            <div className="w-full max-w-md mx-auto">
+            <div className="w-full max-w-xl mx-auto">
               <GooglePlacesAutocomplete
                 selectProps={{
                   value: formData.destination,
@@ -95,7 +95,7 @@ function SimplifiedTripPlanner() {
               />
             </div>
 
-            <div className="bg-gray-50 p-5 rounded-lg border border-gray-100 max-w-md mx-auto">
+            <div className="bg-gray-50 p-5 rounded-lg border border-gray-100 max-w-xl mx-auto">
               <div className="flex items-center space-x-2 mb-3">
                 <MapPin className="h-5 w-5 text-primary" />
                 <span className="font-medium text-gray-700">
@@ -143,7 +143,7 @@ function SimplifiedTripPlanner() {
               </p>
             </div>
 
-            <div className="max-w-md mx-auto space-y-6">
+            <div className="max-w-xl mx-auto space-y-6">
               <div className="bg-gray-50 p-5 rounded-lg border border-gray-100">
                 <label className="block text-body text-gray-700 mb-2">
                   When and how long are you planning to travel?
@@ -217,7 +217,7 @@ function SimplifiedTripPlanner() {
               </p>
             </div>
 
-            <div className="max-w-md mx-auto space-y-6">
+            <div className="max-w-xl mx-auto space-y-6">
               <div className="bg-gray-50 p-5 rounded-lg border border-gray-100">
                 <label className="block text-body text-gray-700 mb-2">
                   Describe how you want to experience this trip
@@ -281,7 +281,7 @@ function SimplifiedTripPlanner() {
               </p>
             </div>
 
-            <div className="max-w-md mx-auto space-y-6">
+            <div className="max-w-xl mx-auto space-y-6">
               <div className="bg-gray-50 p-5 rounded-lg border border-gray-100">
                 <div className="flex justify-between items-center mb-3">
                   <h3 className="text-body font-medium text-gray-700">
@@ -362,7 +362,7 @@ function SimplifiedTripPlanner() {
       </header>
 
       <main className="flex-1 p-4">
-        <div className="max-w-xl mx-auto">{renderStepContent()}</div>
+        <div className=" mx-auto">{renderStepContent()}</div>
       </main>
 
       <footer className="bg-white border-t p-4 flex justify-between">
@@ -375,10 +375,7 @@ function SimplifiedTripPlanner() {
           Back
         </Button>
 
-        <Button
-          onClick={goToNextStep}
-          disabled={currentStepIndex === steps.length - 1}
-        >
+        <Button onClick={goToNextStep} disabled={!canProceed()}>
           Next
           <ChevronRight className="ml-2 h-4 w-4" />
         </Button>
