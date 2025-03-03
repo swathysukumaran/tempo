@@ -1,99 +1,58 @@
 import React, { useState } from "react";
 import { Button } from "../ui/button";
-import {
-  CheckCircle,
-  ChevronLeft,
-  ChevronRight,
-  Info,
-  MapPin,
-  X,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 
-import { Input } from "../ui/input";
-type StepId =
-  | "destination"
-  | "duration"
-  | "mustDoAvoid"
-  | "accommodation"
-  | "paceStructure"
-  | "budget"
-  | "summary";
-
-// Define all steps
-const steps: StepId[] = [
-  "destination",
-  "duration",
-  "mustDoAvoid",
-  "accommodation",
-  "paceStructure",
-  "budget",
-  "summary",
-];
-
-type Option = {
-  label: string;
-  value: string;
-  description?: string;
-};
+// Define the steps
+const steps = ["destination", "details", "preferences", "summary"];
 
 type TripFormData = {
-  destination: Option | null;
-  duration: string;
-  mustDoText: string;
-  mustAvoidText: string;
-  accommodation: string;
-  pace: string;
-  structure: string;
-  budget: string;
-  customNotes: string;
+  destination: { label: string; value: string } | null;
+  timeframe: string;
+  startDate?: string;
+  endDate?: string;
+  travelers?: string;
+  preferences: string;
+  budget?: "budget" | "moderate" | "luxury";
 };
-function CreateTripNew() {
-  const [currentStep, setCurrentStep] = useState<StepId>("destination");
+
+function SimplifiedTripPlanner() {
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [formData, setFormData] = useState<TripFormData>({
     destination: null,
-    duration: "",
-    mustDoText: "",
-    mustAvoidText: "",
-    accommodation: "",
-    pace: "",
-    structure: "",
-    budget: "",
-    customNotes: "",
+    timeframe: "",
+    preferences: "",
   });
+
+  const currentStep = steps[currentStepIndex];
+
   const goToNextStep = () => {
-    const currentIndex = steps.indexOf(currentStep);
-    if (currentIndex < steps.length - 1) {
-      setCurrentStep(steps[currentIndex + 1]);
+    if (currentStepIndex < steps.length - 1) {
+      setCurrentStepIndex((prev) => prev + 1);
     }
   };
 
   const goToPreviousStep = () => {
-    const currentIndex = steps.indexOf(currentStep);
-    if (currentIndex > 0) {
-      setCurrentStep(steps[currentIndex - 1]);
+    if (currentStepIndex > 0) {
+      setCurrentStepIndex((prev) => prev - 1);
     }
   };
 
-  // Update form data
-  const updateFormData = (
-    field: keyof TripFormData,
-    value: string | string[] | Option | null
-  ) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+  const updateFormData = (updates: Partial<TripFormData>) => {
+    setFormData((prev) => ({ ...prev, ...updates }));
   };
+
   const renderStepContent = () => {
     switch (currentStep) {
       case "destination":
         return (
           <div className="space-y-8">
-            <div className="space-y-3">
+            <div className="space-y-3 text-center">
               <h2 className="text-h2 font-medium text-gray-800">
-                Where are you headed?
+                Where would you like to go?
               </h2>
               <p className="text-body text-gray-500">
-                Let's start planning your perfect trip by choosing a
-                destination.
+                Let's start planning your perfect trip
               </p>
             </div>
 
@@ -101,8 +60,8 @@ function CreateTripNew() {
               <GooglePlacesAutocomplete
                 selectProps={{
                   value: formData.destination,
-                  onChange: (value) => updateFormData("destination", value),
-                  placeholder: "Search for a destination...",
+                  onChange: (value) => updateFormData({ destination: value }),
+                  placeholder: "🔍 Search for a destination...",
                   styles: {
                     control: (provided) => ({
                       ...provided,
@@ -136,14 +95,14 @@ function CreateTripNew() {
               />
             </div>
 
-            <div className="bg-gray-50 p-5 rounded-lg border border-gray-100">
+            <div className="bg-gray-50 p-5 rounded-lg border border-gray-100 max-w-md mx-auto">
               <div className="flex items-center space-x-2 mb-3">
                 <MapPin className="h-5 w-5 text-primary" />
                 <span className="font-medium text-gray-700">
                   Popular destinations
                 </span>
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 justify-center">
                 {[
                   "Tokyo, Japan",
                   "Paris, France",
@@ -158,12 +117,11 @@ function CreateTripNew() {
                         ? "bg-primary/10 text-primary border border-primary/20"
                         : "bg-white text-gray-700 border border-gray-100 hover:border-primary/20 hover:text-primary"
                     }`}
-                    onClick={() => {
-                      updateFormData("destination", {
-                        label: place,
-                        value: place,
-                      });
-                    }}
+                    onClick={() =>
+                      updateFormData({
+                        destination: { label: place, value: place },
+                      })
+                    }
                   >
                     {place}
                   </button>
@@ -172,164 +130,241 @@ function CreateTripNew() {
             </div>
           </div>
         );
-      case "duration":
+
+      case "details":
         return (
           <div className="space-y-8">
-            <div className="space-y-3">
+            <div className="space-y-3 text-center">
               <h2 className="text-h2 font-medium text-gray-800">
-                How long are you staying?
+                Tell us about your trip to {formData.destination?.label}
               </h2>
               <p className="text-body text-gray-500">
-                Choose or enter the length of your trip to{" "}
-                {formData.destination?.label}.
+                We'll use this to create your perfect itinerary
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-2 justify-center">
-              {[
-                { id: "weekend", label: "Weekend (2 days)", value: "2" },
-                { id: "short", label: "Short Trip (4 days)", value: "4" },
-                { id: "week", label: "One Week (7 days)", value: "7" },
-                { id: "long", label: "Extended (10+ days)", value: "10+" },
-              ].map((option) => (
-                <button
-                  key={option.id}
-                  className={`px-4 py-2 rounded-full transition-all ${
-                    formData.duration === option.value
-                      ? "bg-primary text-white"
-                      : "bg-gray-50 border border-gray-100 text-gray-800 hover:bg-gray-100"
-                  }`}
-                  onClick={() => updateFormData("duration", option.value)}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
-
-            <div className="mt-8 bg-gray-50 p-5 rounded-lg border border-gray-100 max-w-md mx-auto">
-              <p className="text-body text-gray-700 mb-3 text-center font-medium">
-                Or enter a specific number of days
-              </p>
-              <div className="flex items-center">
-                <Input
-                  type="number"
-                  placeholder="Number of days"
-                  min="1"
-                  max="30"
-                  value={formData.duration === "10+" ? "" : formData.duration}
-                  onChange={(e) => updateFormData("duration", e.target.value)}
-                  className="flex-1 text-center border-gray-200 border-2 focus:border-primary focus:ring-2 focus:ring-primary/20"
-                />
-              </div>
-              <p className="text-small text-gray-500 mt-2 text-center">
-                Enter any number between 1-30 days
-              </p>
-            </div>
-          </div>
-        );
-
-      case "mustDoAvoid":
-        return (
-          <div className="space-y-8">
-            <div className="space-y-3">
-              <h2 className="text-h2 font-medium text-gray-800">
-                Must-Do Activities & Things to Avoid
-              </h2>
-              <p className="text-body text-gray-500">
-                Tell us about specific activities or experiences for your trip
-                to {formData.destination?.label}.
-              </p>
-            </div>
-
-            <div className="space-y-6 max-w-2xl mx-auto">
-              {/* Must-Do Activities */}
+            <div className="max-w-md mx-auto space-y-6">
               <div className="bg-gray-50 p-5 rounded-lg border border-gray-100">
-                <h3 className="text-h3 font-medium text-gray-700 flex items-center mb-3">
-                  <CheckCircle className="h-5 w-5 mr-2 text-green-500" />
-                  Must-Do Activities
-                </h3>
+                <label className="block text-body text-gray-700 mb-2">
+                  When and how long are you planning to travel?
+                </label>
                 <textarea
-                  placeholder="For example: I want to visit hot springs, try local street food, and see the sunrise from a mountain"
-                  value={formData.mustDoText || ""}
-                  onChange={(e) => updateFormData("mustDoText", e.target.value)}
-                  className="w-full min-h-[100px] p-3 rounded-md border-2 border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 text-gray-700"
-                />
-              </div>
-
-              {/* Things to Avoid */}
-              <div className="bg-gray-50 p-5 rounded-lg border border-gray-100">
-                <h3 className="text-h3 font-medium text-gray-700 flex items-center mb-3">
-                  <X className="h-5 w-5 mr-2 text-secondary" />
-                  Things to Avoid
-                </h3>
-                <textarea
-                  placeholder="For example: I want to avoid crowded tourist areas, extreme sports, and very early morning activities"
-                  value={formData.mustAvoidText || ""}
+                  placeholder="E.g., About a week in July, 10 days in winter, Long weekend in spring, Not sure yet"
+                  value={formData.timeframe}
                   onChange={(e) =>
-                    updateFormData("mustAvoidText", e.target.value)
+                    updateFormData({ timeframe: e.target.value })
                   }
-                  className="w-full min-h-[100px] p-3 rounded-md border-2 border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 text-gray-700"
+                  className="w-full min-h-[100px] p-3 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
               </div>
-            </div>
 
-            <div className="flex justify-center">
-              <div className="inline-flex items-center text-gray-500 bg-gray-50 px-4 py-2 rounded-lg border border-gray-100">
-                <Info className="h-4 w-4 mr-2" />
-                <span className="text-small">
-                  This step is optional. Continue if you don't have strong
-                  preferences.
-                </span>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-small text-gray-500 mb-1">
+                    Start Date
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.startDate || ""}
+                    onChange={(e) =>
+                      updateFormData({ startDate: e.target.value })
+                    }
+                    className="w-full p-2 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  />
+                </div>
+                <div>
+                  <label className="block text-small text-gray-500 mb-1">
+                    End Date
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.endDate || ""}
+                    onChange={(e) =>
+                      updateFormData({ endDate: e.target.value })
+                    }
+                    className="w-full p-2 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  />
+                </div>
+              </div>
+
+              <div className="bg-gray-50 p-5 rounded-lg border border-gray-100">
+                <label className="block text-body text-gray-700 mb-2">
+                  Who will be traveling? (optional)
+                </label>
+                <input
+                  type="text"
+                  placeholder="E.g., Solo, couple, family with kids"
+                  value={formData.travelers || ""}
+                  onChange={(e) =>
+                    updateFormData({ travelers: e.target.value })
+                  }
+                  className="w-full p-2 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                />
               </div>
             </div>
           </div>
         );
+
+      case "preferences":
+        return (
+          <div className="space-y-8">
+            <div className="space-y-3 text-center">
+              <h2 className="text-h2 font-medium text-gray-800">
+                Tell us about your travel preferences
+              </h2>
+              <p className="text-body text-gray-500">
+                This helps us create a personalized itinerary
+              </p>
+            </div>
+
+            <div className="max-w-md mx-auto space-y-6">
+              <div className="bg-gray-50 p-5 rounded-lg border border-gray-100">
+                <label className="block text-body text-gray-700 mb-2">
+                  Describe how you want to experience this trip
+                </label>
+                <textarea
+                  placeholder="Consider including:
+• Activities you enjoy
+• Places you must visit
+• Things you want to avoid
+• Accommodation preferences
+• Budget expectations
+• Travel pace and style"
+                  value={formData.preferences}
+                  onChange={(e) =>
+                    updateFormData({ preferences: e.target.value })
+                  }
+                  className="w-full min-h-[200px] p-3 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                />
+              </div>
+
+              <div className="space-y-3">
+                <label className="block text-body text-gray-700">
+                  What's your budget range?
+                </label>
+                <div className="flex gap-3">
+                  {["budget", "moderate", "luxury"].map((budgetOption) => (
+                    <button
+                      key={budgetOption}
+                      className={`flex-1 p-3 rounded-md capitalize text-small ${
+                        formData.budget === budgetOption
+                          ? "bg-primary text-white"
+                          : "bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100"
+                      }`}
+                      onClick={() =>
+                        updateFormData({ budget: budgetOption as any })
+                      }
+                    >
+                      {budgetOption}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case "summary":
+        return (
+          <div className="space-y-8">
+            <div className="space-y-3 text-center">
+              <h2 className="text-h2 font-medium text-gray-800">
+                Review Your Trip Details
+              </h2>
+              <p className="text-body text-gray-500">
+                Make any final adjustments before we create your plan
+              </p>
+            </div>
+
+            <div className="max-w-md mx-auto space-y-6">
+              <div className="bg-gray-50 p-5 rounded-lg border border-gray-100">
+                <div className="flex justify-between items-center mb-3">
+                  <h3 className="text-body font-medium text-gray-700">
+                    Destination
+                  </h3>
+                  <button className="text-primary text-small">Edit ✎</button>
+                </div>
+                <p className="text-body">{formData.destination?.label}</p>
+              </div>
+
+              <div className="bg-gray-50 p-5 rounded-lg border border-gray-100">
+                <div className="flex justify-between items-center mb-3">
+                  <h3 className="text-body font-medium text-gray-700">
+                    Trip Timing
+                  </h3>
+                  <button className="text-primary text-small">Edit ✎</button>
+                </div>
+                <p className="text-body">{formData.timeframe}</p>
+                {formData.startDate && formData.endDate && (
+                  <p className="text-small text-gray-500 mt-1">
+                    {formData.startDate} to {formData.endDate}
+                  </p>
+                )}
+                {formData.travelers && (
+                  <p className="text-small text-gray-500 mt-1">
+                    Travelers: {formData.travelers}
+                  </p>
+                )}
+              </div>
+
+              <div className="bg-gray-50 p-5 rounded-lg border border-gray-100">
+                <div className="flex justify-between items-center mb-3">
+                  <h3 className="text-body font-medium text-gray-700">
+                    Travel Preferences
+                  </h3>
+                  <button className="text-primary text-small">Edit ✎</button>
+                </div>
+                <p className="text-body">{formData.preferences}</p>
+                {formData.budget && (
+                  <p className="text-small text-gray-500 mt-1">
+                    Budget Range: {formData.budget}
+                  </p>
+                )}
+              </div>
+
+              <Button className="w-full">
+                Generate My Personalized Itinerary
+              </Button>
+            </div>
+          </div>
+        );
+
       default:
-        return <div>Step content not implemented yet</div>;
+        return null;
     }
   };
+
   const canProceed = () => {
     switch (currentStep) {
       case "destination":
         return !!formData.destination;
-      case "duration":
-        return !!formData.duration;
-
-      case "mustDoAvoid":
-        return true; // Optional step
-      case "accommodation":
-        return !!formData.accommodation;
-      case "paceStructure":
-        return !!formData.pace && !!formData.structure;
-      case "budget":
-        return !!formData.budget;
+      case "details":
+        return !!formData.timeframe;
+      case "preferences":
+        return !!formData.preferences && !!formData.budget;
       default:
         return true;
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col ">
-      <header className="bg-white border-b p-4">
-        <h1 className="text-xl font-bold">Plan Your Trip</h1>
-        <div className="text-sm text-gray-500">
-          Step {steps.indexOf(currentStep) + 1} of {steps.length}
+    <div className="min-h-screen flex flex-col font-sans">
+      <header className="bg-white border-b p-4 text-center">
+        <h1 className="text-h1 font-bold">Plan Your Trip</h1>
+        <div className="text-small text-gray-500">
+          Step {currentStepIndex + 1} of {steps.length}
         </div>
       </header>
 
       <main className="flex-1 p-4">
-        <div className="max-w-4xl mx-auto">{renderStepContent()}</div>
-        <div>
-          Current step: {currentStep}
-          {/* Step content will go here */}
-        </div>
+        <div className="max-w-xl mx-auto">{renderStepContent()}</div>
       </main>
 
       <footer className="bg-white border-t p-4 flex justify-between">
         <Button
           variant="outline"
           onClick={goToPreviousStep}
-          disabled={currentStep === steps[0]}
+          disabled={currentStepIndex === 0}
         >
           <ChevronLeft className="mr-2 h-4 w-4" />
           Back
@@ -337,7 +372,7 @@ function CreateTripNew() {
 
         <Button
           onClick={goToNextStep}
-          disabled={!canProceed() || currentStep === steps[steps.length - 1]}
+          disabled={!canProceed() || currentStepIndex === steps.length - 1}
         >
           Next
           <ChevronRight className="ml-2 h-4 w-4" />
@@ -347,4 +382,4 @@ function CreateTripNew() {
   );
 }
 
-export default CreateTripNew;
+export default SimplifiedTripPlanner;
