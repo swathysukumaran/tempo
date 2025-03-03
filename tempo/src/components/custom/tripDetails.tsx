@@ -12,8 +12,10 @@ import {
   Star,
   Globe,
   Compass,
+  Edit,
 } from "lucide-react";
 import { googlePlacePhotos } from "@/config/googlePlaces";
+import { Button } from "../ui/button";
 function TripDetails() {
   const { tripId } = useParams();
   interface TripData {
@@ -67,7 +69,45 @@ function TripDetails() {
   const [tripData, setTripData] = useState<TripData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  // Add these state variables at the top of your component
+  const [changeRequest, setChangeRequest] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Add this handler function
+  const handleSubmitChanges = async () => {
+    if (!changeRequest.trim()) return;
+
+    try {
+      setIsSubmitting(true);
+
+      const response = await fetch(`${API_URL}/update-itinerary/${tripId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          changeRequest,
+        }),
+      });
+
+      if (!response.ok) throw new Error("Failed to update itinerary");
+
+      // Refresh the page or fetch updated data
+      const updatedData = await response.json();
+      setTripData(updatedData);
+      setChangeRequest("");
+
+      // Show success message
+      // You can use a toast or other notification system here
+      alert("Your itinerary has been updated successfully!");
+    } catch (err) {
+      console.error("Error updating itinerary:", err);
+      alert("Failed to update itinerary. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   useEffect(() => {
     const fetchTripDetails = async () => {
       try {
@@ -336,6 +376,36 @@ function TripDetails() {
             </div>
           </div>
         ))}
+      </section>
+      {/* Add this section at the bottom of your TripDetails component, before the closing div */}
+      <section className="max-w-4xl mx-auto px-6 mt-12">
+        <div className="border border-gray-200 rounded-xl shadow-lg p-6">
+          <h2 className="text-2xl font-bold mb-4 flex items-center text-gray-800">
+            <Edit className="mr-3 text-primary" size={32} />
+            Request Changes to Your Itinerary
+          </h2>
+          <p className="text-gray-600 mb-4">
+            Not quite what you're looking for? Describe the changes you'd like
+            to make, and we'll update your itinerary.
+          </p>
+
+          <textarea
+            className="w-full border border-gray-200 rounded-lg p-4 min-h-[150px] focus:border-primary focus:ring-1 focus:ring-primary/20"
+            placeholder="Examples: 'Include a day trip to ....'"
+            value={changeRequest}
+            onChange={(e) => setChangeRequest(e.target.value)}
+          />
+
+          <div className="flex justify-end mt-4">
+            <Button
+              onClick={handleSubmitChanges}
+              disabled={isSubmitting}
+              className="bg-primary text-white hover:bg-primary-dark"
+            >
+              {isSubmitting ? "Updating Itinerary..." : "Submit Changes"}
+            </Button>
+          </div>
+        </div>
       </section>
     </div>
   );
