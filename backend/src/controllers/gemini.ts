@@ -9,14 +9,9 @@ import { getPreferences } from '../db/userPreferences';
 export const createTrip = async (req: express.Request, res: express.Response) => {
 
     try{
-        const {location, noOfDays, budget, traveler} = req.body;
+        const {location,timeframe,startDate,endDate,  travelers,
+    preferences,budget} = req.body;
         const userId = get(req, 'identity._id');
-        const userPreferences = await getPreferences(userId);
-
-        if (!userPreferences) {
-            res.status(400).json({ error: "User preferences not found" });
-            return;
-        }
         const FINAL_PROMPT = AI_PROMPT
     .replace(/{location}/g, location.description || "")
     .replace(/{totalDays}/g, noOfDays)

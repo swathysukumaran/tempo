@@ -50,7 +50,7 @@ function SimplifiedTripPlanner() {
   const handleSubmit = async () => {
     console.log("Generating trip with data:", formData);
     const tripData = {
-      location: formData.destination?.label,
+      location: formData.destination,
       timeframe: formData.timeframe,
       startDate: formData.startDate,
       endDate: formData.endDate,
