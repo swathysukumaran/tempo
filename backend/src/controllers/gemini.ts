@@ -2,7 +2,7 @@ import express from 'express';
 import { AI_PROMPT, UPDATE_PROMPT } from '../helpers/AIprompt';
 import { chatSession } from '../helpers/AIModel';
 import { get } from 'lodash';
-import { createNewTrip, getTripById, updateTrip } from '../db/trip';
+import { createNewTrip, getTripById, updateTripItinerary } from '../db/trip';
 import { getPreferences } from '../db/userPreferences';
 
 
@@ -54,7 +54,7 @@ export const createTrip = async (req: express.Request, res: express.Response) =>
 
 }
 
-export const updateTripItinerary = async (req: express.Request, res: express.Response) => {
+export const updateTrip = async (req: express.Request, res: express.Response) => {
 
     try{
         const { tripId } = req.params;
@@ -76,7 +76,7 @@ export const updateTripItinerary = async (req: express.Request, res: express.Res
             const aiResponse = resultText.replace(/```json\n|\n```/g, '');
             const parsedResponse=JSON.parse(aiResponse);
             const generatedItinerary=parsedResponse.generatedItinerary;
-            const trip=await updateTrip(userId,tripId,generatedItinerary);
+            const trip=await updateTripItinerary(userId,tripId,generatedItinerary);
             res.status(200).json(trip);
             return;
             } else {
