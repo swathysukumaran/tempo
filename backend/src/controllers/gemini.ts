@@ -64,7 +64,8 @@ export const updateTrip = async (req: express.Request, res: express.Response) =>
         const trip = await getTripById( tripId);
     
         if (!trip) {
-        return res.status(404).json({ error: "Trip not found" });
+         res.status(404).json({ error: "Trip not found" });
+         return;
         }
         const FINAL_PROMPT = UPDATE_PROMPT(trip, changeRequest);
         console.log(FINAL_PROMPT);

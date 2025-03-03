@@ -80,7 +80,7 @@ function TripDetails() {
     try {
       setIsSubmitting(true);
 
-      const response = await fetch(`${API_URL}/update-itinerary/${tripId}`, {
+      const response = await fetch(`${API_URL}/ai/update-trip/${tripId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
