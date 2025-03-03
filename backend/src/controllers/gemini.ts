@@ -13,17 +13,14 @@ export const createTrip = async (req: express.Request, res: express.Response) =>
     preferences,budget} = req.body;
         const userId = get(req, 'identity._id');
         const FINAL_PROMPT = AI_PROMPT
-    .replace(/{location}/g, location.description || "")
-    .replace(/{totalDays}/g, noOfDays)
-    .replace(/{traveler}/g, traveler)
-    .replace(/{budget}/g, budget)
-    .replace(/{pace}/g, userPreferences.pace)
-   
-    .replace(/{activities}/g, userPreferences.activities.join(", "))
-    .replace(/{startTime}/g, userPreferences.startTime)
-    
-    
-    .replace(/{avoidances}/g, userPreferences.avoidances.join(", "));
+    .replace(/{{formData.destination}}/g, location.description || "")
+    .replace(/{{formData.timeframe}}/g, timeframe)
+    .replace(/{{formData.startDate}}/g, startDate)
+    .replace(/{{formData.endDate}}/g, endDate)
+    .replace(/{{formData.travelers}}/g, travelers)
+    .replace(/{{formData.preferences}}/g, preferences)
+    .replace(/{{formData.budget}}/g, budget)
+    ;
 
                 console.log(FINAL_PROMPT);
 
@@ -37,7 +34,8 @@ export const createTrip = async (req: express.Request, res: express.Response) =>
         
             const generatedItinerary=JSON.parse(aiResponse);
             console.log(generatedItinerary);
-            const trip=await createNewTrip(userId,{location,noOfDays,budget,traveler},generatedItinerary);
+            const trip=await createNewTrip(userId,{location,timeframe,startDate,endDate,  travelers,
+    preferences,budget},generatedItinerary);
             res.status(200).json({
                 tripId: trip._id,
             });
