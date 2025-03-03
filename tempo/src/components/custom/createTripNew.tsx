@@ -70,20 +70,20 @@ function SimplifiedTripPlanner() {
                       ...provided,
                       padding: "8px",
                       borderRadius: "8px",
-                      border: "1px solid #F3F4F6",
+                      border: "1px solid #6B7280",
                       boxShadow: "none",
                       transition: "all 150ms ease",
                       "&:hover": {
-                        borderColor: "#0D9488",
+                        borderColor: "#0F766E",
                       },
                       "&:focus-within": {
                         borderColor: "#0D9488",
-                        boxShadow: "0 0 0 1px #0D9488",
+                        boxShadow: "0 0 0 2px rgba(13, 148, 136, 0.3)",
                       },
                     }),
                     placeholder: (provided) => ({
                       ...provided,
-                      color: "#6B7280",
+                      color: "#374151",
                     }),
                     option: (provided, state) => ({
                       ...provided,
@@ -163,7 +163,7 @@ function SimplifiedTripPlanner() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-small text-gray-500 mb-1">
+                  <label className="block text-small text-gray-700 mb-1">
                     Start Date
                   </label>
                   <input
@@ -172,11 +172,11 @@ function SimplifiedTripPlanner() {
                     onChange={(e) =>
                       updateFormData({ startDate: e.target.value })
                     }
-                    className="w-full p-2 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="w-full p-2 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/30 text-gray-900"
                   />
                 </div>
                 <div>
-                  <label className="block text-small text-gray-500 mb-1">
+                  <label className="block text-small text-gray-700 mb-1">
                     End Date
                   </label>
                   <input
@@ -307,17 +307,25 @@ function SimplifiedTripPlanner() {
           variant="outline"
           onClick={goToPreviousStep}
           disabled={currentStepIndex === 0}
+          className="text-gray-800 hover:bg-gray-100 disabled:opacity-50"
         >
           <ChevronLeft className="mr-2 h-4 w-4" />
           Back
         </Button>
 
         {currentStepIndex === steps.length - 1 ? (
-          <Button onClick={handleSubmit}>
-            Generate My Personalized Itinerary
+          <Button
+            onClick={handleSubmit}
+            className="bg-primary hover:bg-primary-dark text-white"
+          >
+            Generate My Itinerary
           </Button>
         ) : (
-          <Button onClick={goToNextStep} disabled={!canProceed()}>
+          <Button
+            onClick={goToNextStep}
+            disabled={!canProceed()}
+            className="text-white bg-primary hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed"
+          >
             Next
             <ChevronRight className="ml-2 h-4 w-4" />
           </Button>
