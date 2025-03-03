@@ -252,7 +252,12 @@ function SimplifiedTripPlanner() {
                           : "bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100"
                       }`}
                       onClick={() =>
-                        updateFormData({ budget: budgetOption as any })
+                        updateFormData({
+                          budget: budgetOption as
+                            | "budget"
+                            | "moderate"
+                            | "luxury",
+                        })
                       }
                     >
                       {budgetOption}
