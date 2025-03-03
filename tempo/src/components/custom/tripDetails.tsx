@@ -76,20 +76,23 @@ function TripDetails() {
         });
         if (!response.ok) throw new Error("Failed to fetch trip details");
         const data = await response.json();
-
+        console.log("Trip Data", data);
         const destinationImage = await googlePlacePhotos(
-          data.tripDetails.location?.description ||
-            data.generatedItinerary.destination
+          data.tripDetails.location?.label
         );
+        console.log("Destination Image", destinationImage);
         data.generatedItinerary.cover_image_url = destinationImage;
 
         for (const hotel of data.generatedItinerary.hotels) {
+          console.log("Hotel", hotel.hotel_name, hotel.hotel_address);
           const hotelImage = await googlePlacePhotos(
             `${hotel.hotel_name} ${hotel.hotel_address}`
           );
           hotel.hotel_image_url = hotelImage;
+          console.log("Hotel Image", hotelImage);
         }
         const itinerary = data.generatedItinerary.itinerary;
+        console.log("Itinerary", itinerary);
         type DayData = {
           theme: string;
           best_time_to_visit: string;
@@ -163,6 +166,7 @@ function TripDetails() {
       </div>
     );
   const { generatedItinerary, tripDetails } = tripData;
+
   return (
     <div className="min-h-screen bg-gray-50 pb-16">
       {/* Hero Section */}
