@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
-
+import { toast } from "sonner";
+import { API_URL } from "@/config/api";
+import { useNavigate } from "react-router-dom";
 // Define the steps
 const steps = ["destination", "details", "preferences"];
 
@@ -21,11 +23,15 @@ function SimplifiedTripPlanner() {
   const [formData, setFormData] = useState<TripFormData>({
     destination: null,
     timeframe: "",
+    startDate: "",
+    endDate: "",
+    travelers: "",
     preferences: "",
+    budget: undefined,
   });
 
   const currentStep = steps[currentStepIndex];
-
+  const navigate = useNavigate();
   const goToNextStep = () => {
     if (currentStepIndex < steps.length - 1) {
       setCurrentStepIndex((prev) => prev + 1);
@@ -41,9 +47,34 @@ function SimplifiedTripPlanner() {
   const updateFormData = (updates: Partial<TripFormData>) => {
     setFormData((prev) => ({ ...prev, ...updates }));
   };
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log("Generating trip with data:", formData);
-    alert("Trip plan generated! (Placeholder)");
+    const tripData = {
+      location: formData.destination?.label,
+      timeframe: formData.timeframe,
+      startDate: formData.startDate,
+      endDate: formData.endDate,
+      travelers: formData.travelers,
+      preferences: formData.preferences,
+      budget: formData.budget,
+    };
+    try {
+      const response = await fetch(`${API_URL}/ai/create-trip`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(tripData),
+      });
+      if (!response.ok) throw new Error("Failed to generate trip");
+      const trip = await response.json();
+      console.log(trip);
+      navigate(`/trip-details/${trip.tripId}`);
+    } catch (error) {
+      toast("Something went wrong");
+      console.log(error);
+    }
   };
   const renderStepContent = () => {
     switch (currentStep) {
