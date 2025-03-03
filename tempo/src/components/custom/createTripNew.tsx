@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 
 // Define the steps
-const steps = ["destination", "details", "preferences", "summary"];
+const steps = ["destination", "details", "preferences"];
 
 type TripFormData = {
   destination: { label: string; value: string } | null;
@@ -41,7 +41,10 @@ function SimplifiedTripPlanner() {
   const updateFormData = (updates: Partial<TripFormData>) => {
     setFormData((prev) => ({ ...prev, ...updates }));
   };
-
+  const handleSubmit = () => {
+    console.log("Generating trip with data:", formData);
+    alert("Trip plan generated! (Placeholder)");
+  };
   const renderStepContent = () => {
     switch (currentStep) {
       case "destination":
@@ -269,137 +272,6 @@ function SimplifiedTripPlanner() {
           </div>
         );
 
-      case "summary":
-        return (
-          <div className="space-y-8">
-            <div className="space-y-3 text-center">
-              <h2 className="text-h2 font-medium text-gray-800">
-                Review Your Trip Details
-              </h2>
-              <p className="text-body text-gray-500">
-                Make any final adjustments before we create your plan
-              </p>
-            </div>
-
-            <div className="max-w-md mx-auto space-y-6">
-              {/* Destination Section */}
-              <div className="bg-gray-50 p-5 rounded-lg border border-gray-100">
-                <div className="flex justify-between items-center mb-3">
-                  <h3 className="text-body font-medium text-gray-700">
-                    Destination
-                  </h3>
-                </div>
-                <input
-                  type="text"
-                  value={formData.destination?.label || ""}
-                  onChange={(e) =>
-                    updateFormData({
-                      destination: {
-                        label: e.target.value,
-                        value: e.target.value,
-                      },
-                    })
-                  }
-                  className="w-full p-2 bg-white rounded-md border border-gray-200 text-body"
-                  placeholder="Enter destination"
-                />
-              </div>
-
-              {/* Trip Timing Section */}
-              <div className="bg-gray-50 p-5 rounded-lg border border-gray-100">
-                <div className="flex justify-between items-center mb-3">
-                  <h3 className="text-body font-medium text-gray-700">
-                    Trip Timing
-                  </h3>
-                </div>
-                <div className="space-y-2">
-                  <input
-                    type="text"
-                    value={formData.timeframe}
-                    onChange={(e) =>
-                      updateFormData({ timeframe: e.target.value })
-                    }
-                    className="w-full p-2 bg-white rounded-md border border-gray-200 text-body"
-                    placeholder="Enter trip timeframe"
-                  />
-                  <div className="grid grid-cols-2 gap-2">
-                    <input
-                      type="date"
-                      value={formData.startDate || ""}
-                      onChange={(e) =>
-                        updateFormData({ startDate: e.target.value })
-                      }
-                      className="w-full p-2 bg-white rounded-md border border-gray-200 text-small text-gray-500"
-                    />
-                    <input
-                      type="date"
-                      value={formData.endDate || ""}
-                      onChange={(e) =>
-                        updateFormData({ endDate: e.target.value })
-                      }
-                      className="w-full p-2 bg-white rounded-md border border-gray-200 text-small text-gray-500"
-                    />
-                  </div>
-                  <input
-                    type="text"
-                    value={formData.travelers || ""}
-                    onChange={(e) =>
-                      updateFormData({ travelers: e.target.value })
-                    }
-                    className="w-full p-2 bg-white rounded-md border border-gray-200 text-small text-gray-500"
-                    placeholder="Travelers (optional)"
-                  />
-                </div>
-              </div>
-
-              {/* Travel Preferences Section */}
-              <div className="bg-gray-50 p-5 rounded-lg border border-gray-100">
-                <div className="flex justify-between items-center mb-3">
-                  <h3 className="text-body font-medium text-gray-700">
-                    Travel Preferences
-                  </h3>
-                </div>
-                <div className="space-y-2">
-                  <textarea
-                    value={formData.preferences}
-                    onChange={(e) =>
-                      updateFormData({ preferences: e.target.value })
-                    }
-                    className="w-full p-2 bg-white rounded-md border border-gray-200 text-body min-h-[100px]"
-                    placeholder="Describe your travel preferences"
-                  />
-                  <div className="flex gap-3">
-                    {["budget", "moderate", "luxury"].map((budgetOption) => (
-                      <button
-                        key={budgetOption}
-                        className={`flex-1 p-3 rounded-md capitalize text-small ${
-                          formData.budget === budgetOption
-                            ? "bg-primary text-white"
-                            : "bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100"
-                        }`}
-                        onClick={() =>
-                          updateFormData({
-                            budget: budgetOption as
-                              | "budget"
-                              | "moderate"
-                              | "luxury",
-                          })
-                        }
-                      >
-                        {budgetOption}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <Button className="w-full">
-                Generate My Personalized Itinerary
-              </Button>
-            </div>
-          </div>
-        );
-
       default:
         return null;
     }
@@ -411,7 +283,6 @@ function SimplifiedTripPlanner() {
         return !!formData.destination;
       case "details":
       case "preferences":
-      case "summary":
         return true;
       default:
         return true;
@@ -441,10 +312,16 @@ function SimplifiedTripPlanner() {
           Back
         </Button>
 
-        <Button onClick={goToNextStep} disabled={!canProceed()}>
-          Next
-          <ChevronRight className="ml-2 h-4 w-4" />
-        </Button>
+        {currentStepIndex === steps.length - 1 ? (
+          <Button onClick={handleSubmit}>
+            Generate My Personalized Itinerary
+          </Button>
+        ) : (
+          <Button onClick={goToNextStep} disabled={!canProceed()}>
+            Next
+            <ChevronRight className="ml-2 h-4 w-4" />
+          </Button>
+        )}
       </footer>
     </div>
   );
