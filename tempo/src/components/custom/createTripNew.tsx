@@ -344,9 +344,9 @@ function SimplifiedTripPlanner() {
       case "destination":
         return !!formData.destination;
       case "details":
-        return !!formData.timeframe;
       case "preferences":
-        return !!formData.preferences && !!formData.budget;
+      case "summary":
+        return true;
       default:
         return true;
     }
@@ -377,7 +377,7 @@ function SimplifiedTripPlanner() {
 
         <Button
           onClick={goToNextStep}
-          disabled={!canProceed() || currentStepIndex === steps.length - 1}
+          disabled={currentStepIndex === steps.length - 1}
         >
           Next
           <ChevronRight className="ml-2 h-4 w-4" />
