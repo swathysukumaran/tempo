@@ -94,13 +94,11 @@ function TripDetails() {
       if (!response.ok) throw new Error("Failed to update itinerary");
 
       // Refresh the page or fetch updated data
+      console.log("Response", response);
       const updatedData = await response.json();
+      console.log("Updated Data", updatedData);
       setTripData(updatedData);
       setChangeRequest("");
-
-      // Show success message
-      // You can use a toast or other notification system here
-      alert("Your itinerary has been updated successfully!");
     } catch (err) {
       console.error("Error updating itinerary:", err);
       alert("Failed to update itinerary. Please try again.");
