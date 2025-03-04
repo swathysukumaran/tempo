@@ -5,6 +5,7 @@ import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { toast } from "sonner";
 import { API_URL } from "@/config/api";
 import { useNavigate } from "react-router-dom";
+import TripLoadingAnimation from "./TripLoadingAnimation";
 // Define the steps
 const steps = ["destination", "details", "preferences"];
 
@@ -20,6 +21,7 @@ type TripFormData = {
 
 function SimplifiedTripPlanner() {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<TripFormData>({
     destination: null,
     timeframe: "",
@@ -59,6 +61,7 @@ function SimplifiedTripPlanner() {
       budget: formData.budget,
     };
     try {
+      setIsLoading(true);
       const response = await fetch(`${API_URL}/ai/create-trip`, {
         method: "POST",
         headers: {
@@ -73,9 +76,14 @@ function SimplifiedTripPlanner() {
       navigate(`/trip-details/${trip.tripId}`);
     } catch (error) {
       toast("Something went wrong");
+      setIsLoading(false);
       console.log(error);
     }
   };
+  if (isLoading) {
+    return <TripLoadingAnimation />;
+  }
+
   const renderStepContent = () => {
     switch (currentStep) {
       case "destination":
