@@ -1,33 +1,52 @@
 import React, { useEffect, useState } from "react";
-import { Clock, Users, Wallet, MapPin, Globe } from "lucide-react";
+import { Clock, Wallet, MapPin, Globe } from "lucide-react";
 import { API_URL } from "@/config/api";
 interface Trip {
   _id: string;
+  userId: string;
   tripDetails: {
+    budget: "budget" | "moderate" | "luxury";
     location: {
-      description: string;
+      label?: string; // Making optional as it might be missing
+      value?: string;
     };
-    noOfDays: string;
-    budget: string;
-    traveler: number;
+    timeframe: string;
+    startDate: string | null;
+    endDate: string | null;
+    preferences: string;
+    transportation?: object; // Adding new field
   };
   generatedItinerary: {
     trip_name: string;
-    cover_image_url: string;
+    destination: string;
+    duration: string;
     travelers: string;
-    duration: string; // Add this
-    budget: string; // Add this
-    travel_style: {
-      pace: string;
-      activity_level: string;
-      daily_start_time: string;
-      dining_styles: string[];
-      food_preferences: string;
-      preferences_to_avoid: string[];
-      preferred_activities: string[];
+    cover_image_url?: string;
+    hotels: {
+      hotel_name: string;
+      hotel_address: string;
+      price: string;
+      rating: number;
+      description: string;
+      hotel_image_url?: string;
+    }[];
+    itinerary: {
+      [day: string]: {
+        theme: string;
+        best_time_to_visit: string;
+        activities: {
+          place_name: string;
+          place_details: string;
+          ticket_pricing: string;
+          rating: number;
+          travel_time: string;
+          place_image_url: string | null; // Updated to allow null
+        }[];
+      };
     };
   };
   createdAt: string;
+  __v: number;
 }
 function MyTrips() {
   const [trips, setTrips] = useState<Trip[]>([]);
@@ -137,22 +156,21 @@ function MyTrips() {
             >
               <div className="p-6">
                 <h3 className="text-xl font-bold text-gray-800 mb-3">
-                  {trip.generatedItinerary.trip_name}
+                  {trip.generatedItinerary?.trip_name}
                 </h3>
 
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div className="flex items-center text-gray-600">
                     <MapPin size={16} className="mr-2" />
-                    {trip.tripDetails.location.description}
+                    {trip.tripDetails.location.label}
                   </div>
                   <div className="flex items-center text-gray-600">
                     <Clock size={16} className="mr-2" />
-                    {trip.tripDetails.noOfDays} days
+                    {trip.tripDetails.timeframe ||
+                      `${trip.tripDetails.startDate} to ${trip.tripDetails.endDate}`}{" "}
+                    days
                   </div>
-                  <div className="flex items-center text-gray-600">
-                    <Users size={16} className="mr-2" />
-                    {trip.tripDetails.traveler} travelers
-                  </div>
+
                   <div className="flex items-center text-gray-600">
                     <Wallet size={16} className="mr-2" />
                     {trip.tripDetails.budget}
@@ -162,9 +180,6 @@ function MyTrips() {
                 <div className="mt-4 flex items-center justify-between">
                   <span className="text-sm text-gray-500">
                     Created: {new Date(trip.createdAt).toLocaleDateString()}
-                  </span>
-                  <span className="text-sm font-medium text-primary">
-                    {trip.generatedItinerary.travel_style.pace} pace
                   </span>
                 </div>
               </div>

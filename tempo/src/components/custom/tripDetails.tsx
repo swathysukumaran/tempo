@@ -24,8 +24,8 @@ function TripDetails() {
     tripDetails: {
       budget: "budget" | "moderate" | "luxury";
       location: {
-        description?: string; // Making optional as it might be missing
-        full_destination_name?: string;
+        label?: string; // Making optional as it might be missing
+        value?: string;
       };
       timeframe: string;
       startDate: string | null;
@@ -274,8 +274,7 @@ function TripDetails() {
                 Icon: MapPin,
                 label: "Location",
                 value:
-                  tripDetails.location?.description ||
-                  generatedItinerary.destination,
+                  tripDetails.location?.label || generatedItinerary.destination,
               },
             ].map(({ Icon, label, value }, index) => (
               <div key={index} className="flex items-center space-x-2">
