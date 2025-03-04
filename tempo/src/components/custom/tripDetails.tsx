@@ -97,6 +97,20 @@ function TripDetails() {
       console.log("Response", response);
       const updatedData = await response.json();
       console.log("Updated Data", updatedData);
+      const destinationImage = await googlePlacePhotos(
+        updatedData.tripDetails.location?.label
+      );
+      console.log("Destination Image", destinationImage);
+      updatedData.generatedItinerary.cover_image_url = destinationImage;
+
+      for (const hotel of updatedData.generatedItinerary.hotels) {
+        console.log("Hotel", hotel.hotel_name, hotel.hotel_address);
+        const hotelImage = await googlePlacePhotos(
+          `${hotel.hotel_name} ${hotel.hotel_address}`
+        );
+        hotel.hotel_image_url = hotelImage;
+        console.log("Hotel Image", hotelImage);
+      }
       setTripData(updatedData);
       setChangeRequest("");
     } catch (err) {
