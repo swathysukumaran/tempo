@@ -73,7 +73,7 @@ function MyTrips() {
     fetchTrips();
   }, []);
   const handleCreateTrip = () => {
-    window.location.href = "/create-trip";
+    window.location.href = "/create-trip-new";
   };
   const handleTripClick = (tripId: string) => {
     window.location.href = `/trip-details/${tripId}`;

@@ -19,7 +19,7 @@ type TripFormData = {
   budget?: "budget" | "moderate" | "luxury";
 };
 
-function SimplifiedTripPlanner() {
+function CreateTripNew() {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<TripFormData>({
@@ -374,4 +374,4 @@ function SimplifiedTripPlanner() {
   );
 }
 
-export default SimplifiedTripPlanner;
+export default CreateTripNew;

@@ -16,10 +16,10 @@ import Register from "./components/custom/Register.tsx";
 import Login from "./components/custom/Login.tsx";
 import TripDetails from "./components/custom/tripDetails.tsx";
 import Onboarding from "./components/custom/Onboarding.tsx";
-import AuthLayout from "./components/custom/AuthLayout.tsx";
+
 import MyTrips from "./components/custom/MyTrips.tsx";
 import LandingPage from "./components/custom/LandingPage.tsx";
-import CreateTripNew from "./components/custom/createTripNew.tsx";
+import CreateTripNew from "./components/custom/CreateTripNew.tsx";
 
 // Create a layout component that conditionally renders Header
 const RootLayout = () => {
@@ -41,20 +41,15 @@ const router = createBrowserRouter([
     element: <RootLayout />,
     children: [
       {
-        element: <AuthLayout />,
-        children: [
-          {
-            path: "/",
-            element: <Register />,
-          },
-          {
-            path: "/login",
-            element: <Login />,
-          },
-        ],
+        path: "/register",
+        element: <Register />,
       },
       {
-        path: "/landing",
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/",
         element: <LandingPage />,
       },
       {

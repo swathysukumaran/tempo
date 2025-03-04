@@ -45,29 +45,7 @@ function Login() {
       }
       toast.success("Login successful! Redirecting...");
 
-      try {
-        const onboardingResponse = await fetch(`${API_URL}/onboarding/status`, {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-        });
-
-        const onboardingData = await onboardingResponse.json();
-
-        setTimeout(() => {
-          if (
-            !onboardingData.onboarding ||
-            onboardingData.onboarding.status !== "completed"
-          ) {
-            navigate("/onboarding");
-          } else {
-            navigate("/home");
-          }
-        }, 1000);
-      } catch (error) {
-        console.error("Onboarding status check failed:", error);
-        navigate("/onboarding"); // Fallback to onboarding if status check fails
-      }
+      navigate("/create-trip-new");
     } catch (err) {
       console.error("Login error:", err);
       setError("Network error. Please try again");
