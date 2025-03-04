@@ -235,7 +235,15 @@ function TripDetails() {
   // Updated component with better contrast using shadows and borders instead of backgrounds
   return (
     <div className="min-h-screen bg-white pb-16">
-      {/* Hero Section - using stronger shadow instead of colored background */}
+      {isSubmitting && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex flex-col items-center justify-center backdrop-blur-sm transition-all duration-300">
+          <div className="flex justify-center items-center min-h-screen animate-pulse">
+            <div className="text-white text-2xl font-bold">
+              Updating Your Trip...
+            </div>
+          </div>
+        </div>
+      )}
       <div
         className="text-white py-12 px-6 rounded-b-3xl shadow-xl relative min-h-[50vh]"
         style={{
