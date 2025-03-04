@@ -186,14 +186,6 @@ function TripDetails() {
           }
         }
 
-        await fetch(`${API_URL}/trips/${tripId}`, {
-          method: "PUT",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        });
         setTripData(data);
       } catch (err) {
         if (err instanceof Error) {

@@ -12,6 +12,7 @@ Budget: {{formData.budget}}
 
 
 Instructions:
+**make sure to use the exact location, timeframe, start date, end date, travelers, preferences, and budget provided by the user.**
 1.  Create a detailed travel itinerary that is **highly customized** based on the user's preferences.
 2.  **Prioritize** activities and experiences that align with the user's interests.
 3.  **Tailor** the itinerary to reflect the user's specific requests in {{formData.preferences}}.
