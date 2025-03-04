@@ -12,6 +12,7 @@ export const createTrip = async (req: express.Request, res: express.Response) =>
         const {location,timeframe,startDate,endDate,  travelers,
     preferences,budget} = req.body;
         const userId = get(req, 'identity._id');
+        console.log("location",location)
         const FINAL_PROMPT = AI_PROMPT
     .replace(/{{formData.destination}}/g, location.description || "")
     .replace(/{{formData.timeframe}}/g, timeframe)

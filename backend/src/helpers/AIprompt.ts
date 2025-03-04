@@ -1,39 +1,48 @@
-export const AI_PROMPT = `Generate a travel itinerary in JSON format based on the following user input. Adhere strictly to the provided JSON schema.
+
+
+export const AI_PROMPT = (
+  destination: string,
+  timeframe: string,
+  startDate: string | null,
+  endDate: string | null,
+  travelers: string | null,
+  preferences: string,
+  budget: "budget" | "moderate" | "luxury"
+): string => {
+  return `
+Generate a travel itinerary in JSON format based STRICTLY on the following user input. Do not deviate from the provided information.
 
 User Input:
 
-Location: {{formData.destination}}
-Timeframe: {{formData.timeframe}}
-Start Date: {{formData.startDate}}
-End Date: {{formData.endDate}}
-Travelers: {{formData.travelers}}
-Preferences: {{formData.preferences}}
-Budget: {{formData.budget}}
-
+Location: ${destination}
+Timeframe: ${timeframe}
+Start Date: ${startDate}
+End Date: ${endDate}
+Travelers: ${travelers}
+Preferences: ${preferences}
+Budget: ${budget}
 
 Instructions:
-**make sure to use the exact location, timeframe, start date, end date, travelers, preferences, and budget provided by the user.**
-1.  Create a detailed travel itinerary that is **highly customized** based on the user's preferences.
-2.  **Prioritize** activities and experiences that align with the user's interests.
-3.  **Tailor** the itinerary to reflect the user's specific requests in {{formData.preferences}}.
-4.  Create a detailed travel itinerary, including daily activities, hotel recommendations, and overall trip details.
-5.  The "duration" field in the 'generatedItinerary' should be a human-readable description of the trip's length (e.g., "5 days, 4 nights").
-6.  The "travelers" field in 'generatedItinerary' should accurately reflect the user's input.
-7.  The "budget" field in 'tripDetails' should match the user's input.
-8.  If 'startDate' and 'endDate' are provided, include them in 'tripDetails.
-9.  Generate realistic and engaging content for all descriptions and details.
-10.  If a cover image or hotel image is available then include the URL, if not then set to null.
-11.  If any information is not available, then set that value to null.
-12.  Return the response in a valid JSON format that adheres strictly to the following schema:
-13. Include a "transportation" section within the 'tripDetails' object. This section should include the following data:
-    * "airport": { "name": "string", "code": "string", "description": "string"},
-    * "local_transport": ["string", "string", "string"], //List of common local transport options
-    * "transportation_tips": [
-        {"tip": "string", "details": "string"},
-        {"tip": "string", "details": "string"},
-        {"tip": "string", "details": "string"}
-    ] // Array of transportation tips, each with a brief tip and details.
- \`\`\`json
+
+1.  **ABSOLUTELY ENSURE that the itinerary is generated for the EXACT LOCATION provided in the "Location" field above: ${destination}. Do not use any other location.**
+2.  **Use the EXACT TIMEFRAME, START DATE, END DATE, NUMBER OF TRAVELERS, PREFERENCES, and BUDGET provided above. Do not infer or add any additional information.**
+3.  Create a detailed and HIGHLY CUSTOMIZED travel itinerary based on the user's preferences, ${preferences}.
+4.  Prioritize activities and experiences that DIRECTLY ALIGN with the user's interests.
+5.  Tailor the itinerary to REFLECT the user's specific requests.
+6.  Generate realistic and engaging content for all descriptions and details.
+7.  The "duration" field in 'generatedItinerary' should be a human-readable description of the trip's length (e.g., "5 days, 4 nights").
+8.  The "travelers" field in 'generatedItinerary' should accurately reflect the user's input.
+9.  The "budget" field in 'tripDetails' should match the user's input.
+10. If 'startDate' and 'endDate' are provided, include them in 'tripDetails'.
+11. If a cover image or hotel image is available, include the URL; otherwise, set to null.
+12. If any information is not available, set that value to null.
+13. Return the response in a VALID JSON FORMAT that ADHERES STRICTLY to the following schema.
+14. Include a "transportation" section within the 'tripDetails' object with:
+    * "airport": { "name": "string", "code": "string", "description": "string"}.
+    * "local_transport": ["string", "string", "string"] (common local transport options).
+    * "transportation_tips": [{"tip": "string", "details": "string"}, ...] (transportation tips).
+
+\`\`\`json
 {
   "generatedItinerary": {
     "trip_name": "string",
@@ -95,7 +104,12 @@ Instructions:
   }
 }
 \`\`\`
-}`;
+`;
+};
+
+
+
+
 
 export const UPDATE_PROMPT = (trip:any, changeRequest:string) => {
   return`
