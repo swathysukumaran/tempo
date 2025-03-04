@@ -111,6 +111,27 @@ function TripDetails() {
         hotel.hotel_image_url = hotelImage;
         console.log("Hotel Image", hotelImage);
       }
+      type DayData = {
+        theme: string;
+        best_time_to_visit: string;
+        activities: {
+          place_name: string;
+          place_details: string;
+          ticket_pricing: string;
+          rating: number;
+          travel_time: string;
+          place_image_url?: string;
+        }[];
+      };
+
+      for (const dayData of Object.values(
+        updatedData.generatedItinerary.itinerary
+      ) as DayData[]) {
+        for (const activity of dayData.activities) {
+          const activityImage = await googlePlacePhotos(activity.place_name);
+          activity.place_image_url = activityImage || defaultActivityImage;
+        }
+      }
       setTripData(updatedData);
       setChangeRequest("");
     } catch (err) {
