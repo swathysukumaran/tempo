@@ -14,7 +14,7 @@ export const createTrip = async (req: express.Request, res: express.Response) =>
         const userId = get(req, 'identity._id');
         console.log("location",location)
         const FINAL_PROMPT = AI_PROMPT(
-    location.description || "",
+    location.label,
     timeframe,
     startDate,
     endDate,
