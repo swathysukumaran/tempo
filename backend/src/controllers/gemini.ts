@@ -13,15 +13,15 @@ export const createTrip = async (req: express.Request, res: express.Response) =>
     preferences,budget} = req.body;
         const userId = get(req, 'identity._id');
         console.log("location",location)
-        const FINAL_PROMPT = AI_PROMPT
-    .replace(/{{formData.destination}}/g, location.description || "")
-    .replace(/{{formData.timeframe}}/g, timeframe)
-    .replace(/{{formData.startDate}}/g, startDate)
-    .replace(/{{formData.endDate}}/g, endDate)
-    .replace(/{{formData.travelers}}/g, travelers)
-    .replace(/{{formData.preferences}}/g, preferences)
-    .replace(/{{formData.budget}}/g, budget)
-    ;
+        const FINAL_PROMPT = AI_PROMPT(
+    location.description || "",
+    timeframe,
+    startDate,
+    endDate,
+    travelers,
+    preferences,
+    budget
+  );
 
                 console.log(FINAL_PROMPT);
 
