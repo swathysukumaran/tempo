@@ -76,7 +76,8 @@ export const updateTrip = async (req: express.Request, res: express.Response) =>
             console.log(resultText);
             const aiResponse = resultText.replace(/```json\n|\n```/g, '');
             const parsedResponse=JSON.parse(aiResponse);
-            const generatedItinerary=parsedResponse.generatedItinerary;
+            console.log("parsed ",parsedResponse);
+            const generatedItinerary=parsedResponse.itinerary;
             const trip=await updateTripItinerary(userId,tripId,generatedItinerary);
             res.status(200).json(trip);
             return;

@@ -33,26 +33,27 @@ export const createNewTrip=async(userId:string,tripDetails:Record<string,any>,ge
 export const updateTripItinerary = async (userId: string, tripId: string, generatedItinerary: Record<string, any>) => {
   console.log("Updating trip itinerary");
   try {
-    // Use findById to get the specific trip by ID
+    
     const trip = await TripModel.findById(tripId);
     
-    // Check if trip exists and belongs to the user
+   
     if (!trip || trip.userId.toString() !== userId.toString()) {
       throw new Error("Trip not found or unauthorized");
     }
     
-    // Update only the generatedItinerary
+    console.log("Trip found",generatedItinerary);
     trip.generatedItinerary = generatedItinerary;
     
-    // Since we're updating a nested object, mark it as modified
+    
     trip.markModified('generatedItinerary');
     
-    // Save the updated trip
+   
     const updatedTrip = await trip.save();
     
     console.log("Trip itinerary updated successfully");
-    return updatedTrip;  // Return the updated trip
+    return updatedTrip;
   } catch (err) {
+    console.error("Error updating trip itinerary:", err);
     throw new Error(err.message);
   }
 };
