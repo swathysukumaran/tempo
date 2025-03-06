@@ -5,6 +5,7 @@ import users from './users';
 import tripDetails from './tripDetails';
 import onboarding from './onboarding';
 import preferences from './preferences';
+import speechRoutes from './speechRoutes';
 
 
 const router=express.Router();
@@ -16,6 +17,7 @@ export default():express.Router=>{
     tripDetails(router);
     preferences(router);
     onboarding(router);
+    speechRoutes(router);
     
     return router;
 }
