@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Button } from "../ui/button";
-import { ChevronLeft, ChevronRight, MapPin } from "lucide-react";
+import { ChevronLeft, ChevronRight, MapPin, Mic } from "lucide-react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { toast } from "sonner";
 import { API_URL } from "@/config/api";
@@ -33,6 +33,11 @@ function CreateTripNew() {
   });
 
   const currentStep = steps[currentStepIndex];
+  const [isRecording, setIsRecording] = useState(false);
+  const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
+  const [transcriptionLoading, setTranscriptionLoading] = useState(false);
+  const mediaRecorder = useRef<MediaRecorder | null>(null);
+
   const navigate = useNavigate();
   const goToNextStep = () => {
     if (currentStepIndex < steps.length - 1) {
@@ -278,6 +283,17 @@ function CreateTripNew() {
                   }
                   className="w-full min-h-[200px] p-3 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
+                <button
+                  onClick={isRecording ? stopRecording : startRecording}
+                  className="absolute bottom-3 right-3 p-2 rounded-full bg-primary text-white"
+                >
+                  <Mic className="h-5 w-5" />
+                </button>
+                {transcriptionLoading && (
+                  <div className="absolute top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center">
+                    <p className="text-white">Transcribing...</p>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-3">
@@ -328,6 +344,60 @@ function CreateTripNew() {
     }
   };
 
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder.current = new MediaRecorder(stream);
+      mediaRecorder.current!.ondataavailable = (event: BlobEvent) => {
+        if (event.data.size > 0) {
+          setAudioChunks((prev) => [...prev, event.data]);
+        }
+      };
+      mediaRecorder.current.onStop = () => {
+        const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64Audio = reader.result as string;
+          transcribeAudio(base64Audio.split(",")[1]);
+        };
+        reader.readAsDataURL(audioBlob);
+        setAudioChunks([]);
+      };
+      mediaRecorder.current.start();
+      setIsRecording(true);
+    } catch (error) {
+      toast("Failed to access microphone.");
+      console.error("Failed to start recording", error);
+    }
+  };
+  const stopRecording = () => {
+    if (mediaRecorder.current && mediaRecorder.current.state === "recording") {
+      mediaRecorder.current.stop();
+      setIsRecording(false);
+    }
+  };
+  const transcribeAudio = async (base64Audio: string) => {
+    setTranscriptionLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/transcribe`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ audio: base64Audio }),
+      });
+      if (!response.ok) throw new Error("Transcription failed.");
+      const data = await response.json();
+      updateFormData({
+        preferences: `${formData.preferences} ${data.transcription}`,
+      });
+    } catch (error) {
+      toast("Transcription failed.");
+      console.error("Transcription error:", error);
+    } finally {
+      setTranscriptionLoading(false);
+    }
+  };
   return (
     <div className="min-h-screen flex flex-col font-sans">
       <header className="bg-white border-b p-4 text-center">
