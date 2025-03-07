@@ -346,6 +346,7 @@ function CreateTripNew() {
 
   const startRecording = async () => {
     try {
+      console.log("start recording");
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaRecorder.current = new MediaRecorder(stream);
       mediaRecorder.current!.ondataavailable = (event: BlobEvent) => {
@@ -353,7 +354,9 @@ function CreateTripNew() {
           setAudioChunks((prev) => [...prev, event.data]);
         }
       };
-      mediaRecorder.current.onStop = () => {
+      console.log(audioChunks);
+      mediaRecorder.current.onstop = () => {
+        console.log("recording stopped");
         const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
         const reader = new FileReader();
         reader.onloadend = () => {
