@@ -345,17 +345,24 @@ function CreateTripNew() {
 
   const startRecording = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: false,
+          autoGainControl: false,
+          noiseSuppression: false,
+          channelCount: 2,
+        },
+      });
       const chunks: Blob[] = []; // Store chunks as array of Blobs
 
       mediaRecorder.current = new MediaRecorder(stream, {
         mimeType: "audio/webm", // Specify mime type explicitly
+        audioBitsPerSecond: 128000,
       });
 
       mediaRecorder.current.ondataavailable = (event: BlobEvent) => {
         if (event.data.size > 0) {
           chunks.push(event.data);
-          console.log("Chunk added", event.data.size);
         }
       };
 
@@ -426,6 +433,10 @@ function CreateTripNew() {
       console.log("response", response);
       console.log("Transcription data:", data);
       console.log("Transcription:", data.transcription);
+      if (!data.transcription || data.transcription.trim() === "") {
+        toast("No speech detected");
+        return;
+      }
       updateFormData({
         preferences: `${formData.preferences}\n\n${data.transcription}`.trim(),
       });
