@@ -28,8 +28,7 @@ function TripDetails() {
         value?: string;
       };
       timeframe: string;
-      startDate: string | null;
-      endDate: string | null;
+
       preferences: string;
       transportation?: object; // Adding new field
     };

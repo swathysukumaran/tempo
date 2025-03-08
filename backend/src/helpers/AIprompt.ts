@@ -3,8 +3,7 @@
 export const AI_PROMPT = (
   destination: string,
   timeframe: string,
-  startDate: string | null,
-  endDate: string | null,
+
   travelers: string | null,
   preferences: string,
   budget: "budget" | "moderate" | "luxury"
@@ -16,8 +15,6 @@ User Input:
 
 Location: ${destination}
 Timeframe: ${timeframe}
-Start Date: ${startDate}
-End Date: ${endDate}
 Travelers: ${travelers}
 Preferences: ${preferences}
 Budget: ${budget}
@@ -33,11 +30,10 @@ Instructions:
 7.  The "duration" field in 'generatedItinerary' should be a human-readable description of the trip's length (e.g., "5 days, 4 nights").
 8.  The "travelers" field in 'generatedItinerary' should accurately reflect the user's input.
 9.  The "budget" field in 'tripDetails' should match the user's input.
-10. If 'startDate' and 'endDate' are provided, include them in 'tripDetails'.
-11. If a cover image or hotel image is available, include the URL; otherwise, set to null.
-12. If any information is not available, set that value to null.
-13. Return the response in a VALID JSON FORMAT that ADHERES STRICTLY to the following schema.
-14. Include a "transportation" section within the 'tripDetails' object with:
+10. If a cover image or hotel image is available, include the URL; otherwise, set to null.
+11. If any information is not available, set that value to null.
+12. Return the response in a VALID JSON FORMAT that ADHERES STRICTLY to the following schema.
+13. Include a "transportation" section within the 'tripDetails' object with:
     * "airport": { "name": "string", "code": "string", "description": "string"}.
     * "local_transport": ["string", "string", "string"] (common local transport options).
     * "transportation_tips": [{"tip": "string", "details": "string"}, ...] (transportation tips).
@@ -85,8 +81,6 @@ Instructions:
       "full_destination_name": "string"
     },
     "timeframe": "string",
-    "startDate": "string | null",
-    "endDate": "string | null",
     "preferences": "string",
     "transportation": {
       "airport": {

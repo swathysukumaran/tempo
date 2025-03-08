@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Clock, Wallet, MapPin, Globe } from "lucide-react";
+import { Wallet, MapPin, Globe } from "lucide-react";
 import { API_URL } from "@/config/api";
 interface Trip {
   _id: string;
@@ -11,8 +11,6 @@ interface Trip {
       value?: string;
     };
     timeframe: string;
-    startDate: string | null;
-    endDate: string | null;
     preferences: string;
     transportation?: object; // Adding new field
   };
@@ -163,12 +161,6 @@ function MyTrips() {
                   <div className="flex items-center text-gray-600">
                     <MapPin size={16} className="mr-2" />
                     {trip.tripDetails.location.label}
-                  </div>
-                  <div className="flex items-center text-gray-600">
-                    <Clock size={16} className="mr-2" />
-                    {trip.tripDetails.timeframe ||
-                      `${trip.tripDetails.startDate} to ${trip.tripDetails.endDate}`}{" "}
-                    days
                   </div>
 
                   <div className="flex items-center text-gray-600">

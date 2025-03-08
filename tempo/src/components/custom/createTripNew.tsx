@@ -12,8 +12,6 @@ const steps = ["destination", "details", "preferences"];
 type TripFormData = {
   destination: { label: string; value: string } | null;
   timeframe: string;
-  startDate?: string;
-  endDate?: string;
   travelers?: string;
   preferences: string;
   budget?: "budget" | "moderate" | "luxury";
@@ -25,8 +23,6 @@ function CreateTripNew() {
   const [formData, setFormData] = useState<TripFormData>({
     destination: null,
     timeframe: "",
-    startDate: "",
-    endDate: "",
     travelers: "",
     preferences: "",
     budget: undefined,
@@ -58,8 +54,6 @@ function CreateTripNew() {
     const tripData = {
       location: formData.destination,
       timeframe: formData.timeframe,
-      startDate: formData.startDate,
-      endDate: formData.endDate,
       travelers: formData.travelers,
       preferences: formData.preferences,
       budget: formData.budget,
@@ -202,35 +196,6 @@ function CreateTripNew() {
                   }
                   className="w-full min-h-[100px] p-3 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-small text-gray-700 mb-1">
-                    Start Date
-                  </label>
-                  <input
-                    type="date"
-                    value={formData.startDate || ""}
-                    onChange={(e) =>
-                      updateFormData({ startDate: e.target.value })
-                    }
-                    className="w-full p-2 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/30 text-gray-900"
-                  />
-                </div>
-                <div>
-                  <label className="block text-small text-gray-700 mb-1">
-                    End Date
-                  </label>
-                  <input
-                    type="date"
-                    value={formData.endDate || ""}
-                    onChange={(e) =>
-                      updateFormData({ endDate: e.target.value })
-                    }
-                    className="w-full p-2 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
-                  />
-                </div>
               </div>
 
               <div className="bg-gray-50 p-5 rounded-lg border border-gray-100">

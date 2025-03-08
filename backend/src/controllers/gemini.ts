@@ -9,18 +9,17 @@ import { getPreferences } from '../db/userPreferences';
 export const createTrip = async (req: express.Request, res: express.Response) => {
 
     try{
-        const {location,timeframe,startDate,endDate,  travelers,
+        const {location,timeframe,  travelers,
     preferences,budget} = req.body;
         const userId = get(req, 'identity._id');
         console.log("location",location)
         const FINAL_PROMPT = AI_PROMPT(
     location.label,
     timeframe,
-    startDate,
-    endDate,
     travelers,
     preferences,
-    budget
+    budget,
+    
   );
 
                 console.log(FINAL_PROMPT);
@@ -35,7 +34,7 @@ export const createTrip = async (req: express.Request, res: express.Response) =>
         
             const parsedResponse=JSON.parse(aiResponse);
             const generatedItinerary=parsedResponse.generatedItinerary;
-            const trip=await createNewTrip(userId,{location,timeframe,startDate,endDate,  travelers,
+            const trip=await createNewTrip(userId,{location,timeframe, travelers,
     preferences,budget},generatedItinerary);
             res.status(200).json({
                 tripId: trip._id,
