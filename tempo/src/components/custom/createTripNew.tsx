@@ -34,7 +34,6 @@ function CreateTripNew() {
 
   const currentStep = steps[currentStepIndex];
   const [isRecording, setIsRecording] = useState(false);
-  const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
   const [transcriptionLoading, setTranscriptionLoading] = useState(false);
   const mediaRecorder = useRef<MediaRecorder | null>(null);
 
@@ -346,39 +345,63 @@ function CreateTripNew() {
 
   const startRecording = async () => {
     try {
-      console.log("start recording");
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaRecorder.current = new MediaRecorder(stream);
-      mediaRecorder.current!.ondataavailable = (event: BlobEvent) => {
+      const chunks: Blob[] = []; // Store chunks as array of Blobs
+
+      mediaRecorder.current = new MediaRecorder(stream, {
+        mimeType: "audio/webm", // Specify mime type explicitly
+      });
+
+      mediaRecorder.current.ondataavailable = (event: BlobEvent) => {
         if (event.data.size > 0) {
-          setAudioChunks((prev) => [...prev, event.data]);
+          chunks.push(event.data);
+          console.log("Chunk added", event.data.size);
         }
       };
-      console.log(audioChunks);
+
       mediaRecorder.current.onstop = () => {
-        console.log("recording stopped");
-        const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const base64Audio = reader.result as string;
-          transcribeAudio(base64Audio.split(",")[1]);
-        };
-        reader.readAsDataURL(audioBlob);
-        setAudioChunks([]);
+        // Combine all chunks
+        const audioBlob = new Blob(chunks, { type: "audio/webm" });
+
+        console.log("Total blob size:", audioBlob.size);
+
+        // Ensure blob is not empty
+        if (audioBlob.size > 0) {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const base64Audio = (reader.result as string).split(",")[1];
+            console.log("Base64 audio length:", base64Audio.length);
+
+            if (base64Audio && base64Audio.length > 0) {
+              transcribeAudio(base64Audio);
+            } else {
+              toast("No audio data captured");
+            }
+          };
+          reader.readAsDataURL(audioBlob);
+        } else {
+          toast("No audio recorded");
+        }
+
+        // Clean up stream tracks
+        stream.getTracks().forEach((track) => track.stop());
       };
+
       mediaRecorder.current.start();
       setIsRecording(true);
     } catch (error) {
-      toast("Failed to access microphone.");
-      console.error("Failed to start recording", error);
+      toast("Failed to access microphone");
+      console.error("Recording error:", error);
     }
   };
   const stopRecording = () => {
     if (mediaRecorder.current && mediaRecorder.current.state === "recording") {
-      mediaRecorder.current.stop();
+      // Type assertion to tell TypeScript that current is definitely a MediaRecorder
+      (mediaRecorder.current as MediaRecorder).stop();
       setIsRecording(false);
     }
   };
+
   const transcribeAudio = async (base64Audio: string) => {
     setTranscriptionLoading(true);
     try {
@@ -387,15 +410,29 @@ function CreateTripNew() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ audio: base64Audio }),
+        body: JSON.stringify({
+          audio: base64Audio,
+          mimeType: "audio/webm", // Specify mime type
+        }),
       });
-      if (!response.ok) throw new Error("Transcription failed.");
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Server error:", errorText);
+        throw new Error(`Transcription failed: ${errorText}`);
+      }
+
       const data = await response.json();
+      console.log("response", response);
+      console.log("Transcription data:", data);
+      console.log("Transcription:", data.transcription);
       updateFormData({
-        preferences: `${formData.preferences} ${data.transcription}`,
+        preferences: `${formData.preferences}\n\n${data.transcription}`.trim(),
       });
+
+      toast("Transcription successful");
     } catch (error) {
-      toast("Transcription failed.");
+      toast("Transcription failed");
       console.error("Transcription error:", error);
     } finally {
       setTranscriptionLoading(false);

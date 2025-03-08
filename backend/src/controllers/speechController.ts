@@ -5,13 +5,14 @@ const client = new SpeechClient();
 
 export const transcribeAudio = async (req: Request, res: Response) => {
     try {
-        const audioBytes = req.body.audioContent;
+        const audioBytes = req.body.audio;
+        console.log("request body",req.body);
         const audio = {
             content: audioBytes,
         };
         const config = {
             encoding: protos.google.cloud.speech.v1.RecognitionConfig.AudioEncoding.LINEAR16, 
-            sampleRateHertz: 16000,
+            sampleRateHertz: 48000,
             languageCode: 'en-US',
         };
         const request = {
