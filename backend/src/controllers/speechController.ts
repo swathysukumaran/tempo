@@ -5,50 +5,48 @@ const client = new SpeechClient();
 
 export const transcribeAudio = async (req: Request, res: Response) => {
     try {
-        const audioBytes = req.body.audio;
-        console.log("request body", req.body);
+        const { audio, mimeType, totalChunks, currentChunk } = req.body;
+        
+        // Validate input
+        if (!audio) {
+             res.status(400).json({ error: 'No audio data provided' });
+             return;
+        }
 
-        const audio = {
-            content: Buffer.from(audioBytes, 'base64'),
-        };
+        // Optional: Implement chunk tracking if needed
+        console.log(`Processing chunk ${currentChunk + 1} of ${totalChunks}`);
 
-        const config = {
-            encoding: protos.google.cloud.speech.v1.RecognitionConfig.AudioEncoding.WEBM_OPUS, 
-            sampleRateHertz: 48000,
-            languageCode: 'en-US',
-            audioChannelCount: 2, // Match the actual channel count
-            enableAutomaticPunctuation: true
-        };
+        const audioBuffer = Buffer.from(audio, 'base64');
 
-        const request = {
-            audio: audio,
-            config: config,
-        };
+        const [response] = await client.recognize({
+            audio: {
+                content: audioBuffer
+            },
+            config: {
+                encoding: 'WEBM_OPUS',
+                sampleRateHertz: 48000,
+                languageCode: 'en-US',
+                enableAutomaticPunctuation: true,
+                audioChannelCount: 2,
+                model: 'default', // You can specify different models if needed
+                profanityFilter: false,
+            }
+        });
 
-        const [response] = await client.recognize(request);
-
-        // More robust transcription extraction
         const transcription = response.results
-            ? response.results
-                .map((result: any) => 
-                    result.alternatives && result.alternatives.length > 0 
-                        ? result.alternatives[0].transcript 
-                        : ""
-                )
-                .filter((t: string) => t.trim() !== '')
-                .join(' ')
-            : "";
-
-        console.log("Transcription:", transcription);
+            .map(result => result.alternatives[0].transcript)
+            .join(' ');
 
         res.json({ 
-            transcription: transcription || "No speech detected",
+            transcription,
+            chunk: currentChunk,
+            totalChunks 
         });
     } catch (error) {
         console.error('Transcription error:', error);
         res.status(500).json({ 
-            message: 'Failed to transcribe audio',
-            error: error instanceof Error ? error.message : 'Unknown error'
+            error: 'Transcription failed', 
+            details: error instanceof Error ? error.message : 'Unknown error'
         });
     }
 };

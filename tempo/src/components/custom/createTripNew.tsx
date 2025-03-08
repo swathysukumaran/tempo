@@ -347,10 +347,10 @@ function CreateTripNew() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
+          channelCount: { ideal: 2, min: 2 },
           echoCancellation: false,
           autoGainControl: false,
           noiseSuppression: false,
-          channelCount: 2,
         },
       });
       const chunks: Blob[] = []; // Store chunks as array of Blobs
@@ -412,14 +412,24 @@ function CreateTripNew() {
   const transcribeAudio = async (base64Audio: string) => {
     setTranscriptionLoading(true);
     try {
+      // Break large audio files into smaller chunks
+      const maxChunkSize = 10 * 1024 * 1024; // 10MB chunks
+      const chunks = [];
+
+      for (let i = 0; i < base64Audio.length; i += maxChunkSize) {
+        chunks.push(base64Audio.slice(i, i + maxChunkSize));
+      }
+
       const response = await fetch(`${API_URL}/transcribe`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          audio: base64Audio,
+          audio: chunks[0],
           mimeType: "audio/webm", // Specify mime type
+          totalChunks: chunks.length,
+          currentChunk: 0,
         }),
       });
 

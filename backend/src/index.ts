@@ -17,7 +17,7 @@ app.use(cors({
 
 app.use(compression());
 app.use(cookieParser());
-app.use(bodyparser.json());
+
 const client = new SpeechClient();
 const server=http.createServer(app);
 
@@ -31,5 +31,12 @@ mongoose.Promise=Promise;
 mongoose.connect(MONGO_URL);
 mongoose.connection.on('error',(error:Error)=>{console.log(error);});
 
+app.use(bodyparser.json({ limit: '50mb' }));
 app.use(express.json({ limit: '50mb' }));
+
+// Increase URL-encoded payload size limit
+app.use(bodyparser.urlencoded({ 
+  limit: '50mb', 
+  extended: true 
+}));
 app.use('/',router())
