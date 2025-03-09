@@ -507,36 +507,6 @@ function TripDetails() {
         )}
       </section>
 
-      <section className="max-w-4xl mx-auto px-6 mt-12">
-        <div className="border border-gray-200 rounded-xl shadow-lg p-6">
-          <h2 className="text-2xl font-bold mb-4 flex items-center text-gray-800">
-            <Edit className="mr-3 text-primary" size={32} />
-            Request Changes to Your Itinerary
-          </h2>
-          <p className="text-gray-600 mb-4">
-            Not quite what you're looking for? Describe the changes you'd like
-            to make, and we'll update your itinerary.
-          </p>
-
-          <textarea
-            className="w-full border border-gray-200 rounded-lg p-4 min-h-[150px] focus:border-primary focus:ring-1 focus:ring-primary/20"
-            placeholder="Examples: 'Include a day trip to ....'"
-            value={changeRequest}
-            onChange={(e) => setChangeRequest(e.target.value)}
-          />
-
-          <div className="flex justify-end mt-4">
-            <Button
-              onClick={handleSubmitChanges}
-              disabled={isSubmitting}
-              className="bg-primary text-white hover:bg-primary-dark"
-            >
-              {isSubmitting ? "Updating Itinerary..." : "Submit Changes"}
-            </Button>
-          </div>
-        </div>
-      </section>
-
       <FloatingActionButton />
       {/* FAB Modal */}
       {isFabModalOpen && <ChangeRequestModal />}
