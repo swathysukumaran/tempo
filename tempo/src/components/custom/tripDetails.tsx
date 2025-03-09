@@ -142,6 +142,7 @@ function TripDetails() {
       alert("Failed to update itinerary. Please try again.");
     } finally {
       setIsSubmitting(false);
+      setIsFabModalOpen(false);
     }
   };
   useEffect(() => {
@@ -304,7 +305,7 @@ function TripDetails() {
   return (
     <div className="min-h-screen bg-white pb-16">
       {isSubmitting && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex flex-col items-center justify-center backdrop-blur-sm transition-all duration-300">
+        <div className="fixed inset-0 bg-black/80 z-[180] flex flex-col items-center justify-center backdrop-blur-sm transition-all duration-300">
           <div className="flex justify-center items-center min-h-screen animate-pulse">
             <div className="text-white text-2xl font-bold">
               Updating Your Trip...
