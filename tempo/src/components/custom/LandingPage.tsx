@@ -33,9 +33,12 @@ function LandingPage() {
       <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <img src={logo} alt="Tempo" className="h-8 w-auto mr-2" />
-              <span className="text-xl font-bold text-gray-800">Tempo</span>
+            <div className="p-2 flex justify-between items-center ">
+              <img
+                src={logo}
+                alt="Tempo"
+                className="w-auto h-12  sm:h-16 md:h-20 cursor-pointer"
+              />
             </div>
 
             <nav className="hidden md:flex items-center space-x-8">
@@ -79,7 +82,9 @@ function LandingPage() {
                 }
               >
                 <DialogTrigger asChild>
-                  <Button onClick={openRegisterDialog}>Sign up</Button>
+                  <Button onClick={openRegisterDialog} className="text-white">
+                    Sign up
+                  </Button>
                 </DialogTrigger>
                 <DialogContent className="bg-white text-gray-900">
                   <DialogHeader>
@@ -206,7 +211,10 @@ function LandingPage() {
                 }
               >
                 <DialogTrigger asChild>
-                  <Button className="text-lg" onClick={openRegisterDialog}>
+                  <Button
+                    className="text-lg text-white"
+                    onClick={openRegisterDialog}
+                  >
                     Plan your trip
                   </Button>
                 </DialogTrigger>
@@ -244,8 +252,8 @@ function LandingPage() {
             <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
               <Card className="border-none shadow-md">
                 <CardContent className="pt-6">
-                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                    <Heart className="h-6 w-6 text-blue-600" />
+                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                    <Heart className="h-6 w-6 text-green-600" />
                   </div>
                   <h3 className="text-xl font-bold mb-2">Preference-Driven</h3>
                   <p className="text-gray-600">
@@ -258,8 +266,8 @@ function LandingPage() {
 
               <Card className="border-none shadow-md">
                 <CardContent className="pt-6">
-                  <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mb-4">
-                    <Sparkles className="h-6 w-6 text-indigo-600" />
+                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                    <Sparkles className="h-6 w-6 text-green-600" />
                   </div>
                   <h3 className="text-xl font-bold mb-2">
                     AI-Powered Insights
