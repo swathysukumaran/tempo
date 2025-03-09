@@ -74,6 +74,7 @@ function TripDetails() {
   const [activeTab, setActiveTab] = useState<"itinerary" | "hotels">(
     "itinerary"
   );
+  const [isFabModalOpen, setIsFabModalOpen] = useState(false);
   // Add this handler function
   const handleSubmitChanges = async () => {
     if (!changeRequest.trim()) return;
@@ -232,7 +233,19 @@ function TripDetails() {
       </div>
     );
   const { generatedItinerary, tripDetails } = tripData;
-
+  const FloatingActionButton = () => {
+    return (
+      <Button
+        onClick={() => setIsFabModalOpen(true)}
+        className="fixed bottom-6 right-6 z-50 bg-primary text-white 
+        w-16 h-16 rounded-full shadow-xl hover:bg-primary-dark 
+        transition-all duration-300 ease-in-out transform 
+        hover:scale-110 flex items-center justify-center"
+      >
+        <Edit className="w-8 h-8" />
+      </Button>
+    );
+  };
   return (
     <div className="min-h-screen bg-white pb-16">
       {isSubmitting && (
@@ -400,10 +413,6 @@ function TripDetails() {
 
         {activeTab === "hotels" && (
           <section>
-            <h2 className="text-2xl font-bold mb-6 flex items-center text-gray-800 border-b pb-3 border-gray-200">
-              <Hotel className="mr-3 text-primary" size={32} />
-              Recommended Hotels
-            </h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {generatedItinerary.hotels.map((hotel, index) => (
                 <div
@@ -471,6 +480,8 @@ function TripDetails() {
           </div>
         </div>
       </section>
+
+      <FloatingActionButton />
     </div>
   );
 }
