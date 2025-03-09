@@ -240,11 +240,14 @@ function TripDetails() {
       <Button
         onClick={() => setIsFabModalOpen(true)}
         className="fixed bottom-10 right-10 z-50 bg-primary text-white 
-        w-16 h-16 rounded-full shadow-xl hover:bg-primary-dark 
+         h-12  shadow-xl hover:bg-primary-dark 
         transition-all duration-300 ease-in-out transform 
         hover:scale-110 flex items-center justify-center"
       >
-        <Edit className="w-8 h-8" />
+        <div className="flex items-center justify-center">
+          <h6>Make Modifications</h6>
+          <Edit className="w-8 h-8" />
+        </div>
       </Button>
     );
   };
