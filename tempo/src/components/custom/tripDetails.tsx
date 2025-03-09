@@ -315,177 +315,180 @@ function TripDetails() {
             Recommended Hotels
           </button>
         </div>
-        <h2 className="text-2xl font-bold mb-6 flex items-center text-gray-800 border-b pb-3 border-gray-200">
-          <Hotel className="mr-3 text-primary" size={32} />
-          Recommended Hotels
-        </h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {generatedItinerary.hotels.map((hotel, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-xl shadow-lg hover:shadow-xl border border-gray-200 transition-all transform hover:-translate-y-2"
-            >
+        {/* Daily Itinerary */}
+        {activeTab === "itinerary" && (
+          <section>
+            <h2 className="text-2xl font-bold mb-8 flex items-center text-gray-800">
+              <Compass className="mr-3 text-primary" size={32} />
+              Daily Itinerary
+            </h2>
+            {Object.entries(generatedItinerary.itinerary).map(([day]) => (
               <div
-                className="h-48 w-full bg-cover bg-center rounded-t-xl"
-                style={{
-                  backgroundImage: `url(${hotel.hotel_image_url})`,
-                }}
-              />
-              <div className="p-4">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  {hotel.hotel_name}
-                </h3>
-                <div className="flex items-center text-sm text-gray-700 mb-4">
-                  <MapPin size={16} className="mr-2 text-primary" />
-                  {hotel.hotel_address}
-                </div>
-                <div className="flex justify-between items-center mb-4">
-                  <div className="text-lg font-bold text-primary">
-                    {hotel.price}
-                  </div>
-                  <div className="flex items-center text-yellow-600">
-                    <Star size={16} className="mr-1" />
-                    <span>{hotel.rating}/5</span>
-                  </div>
-                </div>
-                <p className="text-sm text-gray-800">{hotel.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Daily Itinerary */}
-      {activeTab === "itinerary" && (
-        <section>
-          <h2 className="text-2xl font-bold mb-8 flex items-center text-gray-800">
-            <Compass className="mr-3 text-primary" size={32} />
-            Daily Itinerary
-          </h2>
-          {Object.entries(generatedItinerary.itinerary).map(([day]) => (
-            <div
-              key={day}
-              className="mb-8 bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200"
-            >
-              <section className="max-w-4xl mx-auto px-6 mt-12">
-                <h2 className="text-2xl font-bold mb-8 flex items-center text-gray-800 border-b pb-3 border-gray-200">
-                  <Compass className="mr-3 text-primary" size={32} />
-                  Daily Itinerary
-                </h2>
-                {Object.entries(generatedItinerary.itinerary).map(
-                  ([day, dayData]) => (
-                    <div
-                      key={day}
-                      className="mb-8 bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200"
-                    >
-                      <div className="border-b border-gray-200 p-6">
-                        <div className="flex justify-between items-center">
-                          <h3 className="text-xl font-bold text-gray-800">
-                            {day.replace("day", "Day ")}
-                          </h3>
-                          <div className="flex items-center text-gray-700">
-                            <Sun size={20} className="mr-2 text-yellow-600" />
-                            {dayData.theme}
+                key={day}
+                className="mb-8 bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200"
+              >
+                <section className="max-w-4xl mx-auto px-6 mt-12">
+                  <h2 className="text-2xl font-bold mb-8 flex items-center text-gray-800 border-b pb-3 border-gray-200">
+                    <Compass className="mr-3 text-primary" size={32} />
+                    Daily Itinerary
+                  </h2>
+                  {Object.entries(generatedItinerary.itinerary).map(
+                    ([day, dayData]) => (
+                      <div
+                        key={day}
+                        className="mb-8 bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200"
+                      >
+                        <div className="border-b border-gray-200 p-6">
+                          <div className="flex justify-between items-center">
+                            <h3 className="text-xl font-bold text-gray-800">
+                              {day.replace("day", "Day ")}
+                            </h3>
+                            <div className="flex items-center text-gray-700">
+                              <Sun size={20} className="mr-2 text-yellow-600" />
+                              {dayData.theme}
+                            </div>
                           </div>
+                          <p className="text-sm text-gray-600 mt-2">
+                            Best time: {dayData.best_time_to_visit}
+                          </p>
                         </div>
-                        <p className="text-sm text-gray-600 mt-2">
-                          Best time: {dayData.best_time_to_visit}
-                        </p>
-                      </div>
-                      <div className="p-6 space-y-6">
-                        {dayData.activities.map((activity, index) => (
-                          <div
-                            key={index}
-                            className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all flex items-start space-x-4"
-                          >
+                        <div className="p-6 space-y-6">
+                          {dayData.activities.map((activity, index) => (
                             <div
-                              className="hidden md:block h-24 w-24 flex-shrink-0 rounded-lg bg-cover bg-center border border-gray-200"
-                              style={{
-                                backgroundImage: `url(${
-                                  activity.place_image_url ||
-                                  defaultActivityImage
-                                })`,
-                                backgroundSize: "cover",
-                                backgroundPosition: "center",
-                                backgroundColor: activity.place_image_url
-                                  ? "transparent"
-                                  : "#f0f0f0",
-                              }}
-                            />
-                            <div className="flex-1">
-                              <div className="flex items-center mb-2">
-                                <h4 className="text-lg font-semibold text-gray-900 mr-4">
-                                  {activity.place_name}
-                                </h4>
-                                <div className="flex items-center text-yellow-600">
-                                  <Star size={16} className="mr-1" />
-                                  {activity.rating}/5
+                              key={index}
+                              className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all flex items-start space-x-4"
+                            >
+                              <div
+                                className="hidden md:block h-24 w-24 flex-shrink-0 rounded-lg bg-cover bg-center border border-gray-200"
+                                style={{
+                                  backgroundImage: `url(${
+                                    activity.place_image_url ||
+                                    defaultActivityImage
+                                  })`,
+                                  backgroundSize: "cover",
+                                  backgroundPosition: "center",
+                                  backgroundColor: activity.place_image_url
+                                    ? "transparent"
+                                    : "#f0f0f0",
+                                }}
+                              />
+                              <div className="flex-1">
+                                <div className="flex items-center mb-2">
+                                  <h4 className="text-lg font-semibold text-gray-900 mr-4">
+                                    {activity.place_name}
+                                  </h4>
+                                  <div className="flex items-center text-yellow-600">
+                                    <Star size={16} className="mr-1" />
+                                    {activity.rating}/5
+                                  </div>
                                 </div>
-                              </div>
-                              <p className="text-sm text-gray-800 mb-4">
-                                {activity.place_details}
-                              </p>
-                              <div className="grid grid-cols-2 gap-4 text-sm">
-                                <div>
-                                  <p className="font-semibold text-primary">
-                                    Price
-                                  </p>
-                                  <p className="text-gray-800">
-                                    {activity.ticket_pricing}
-                                  </p>
-                                </div>
-                                <div>
-                                  <p className="font-semibold text-primary">
-                                    Travel Time
-                                  </p>
-                                  <p className="text-gray-800">
-                                    {activity.travel_time}
-                                  </p>
+                                <p className="text-sm text-gray-800 mb-4">
+                                  {activity.place_details}
+                                </p>
+                                <div className="grid grid-cols-2 gap-4 text-sm">
+                                  <div>
+                                    <p className="font-semibold text-primary">
+                                      Price
+                                    </p>
+                                    <p className="text-gray-800">
+                                      {activity.ticket_pricing}
+                                    </p>
+                                  </div>
+                                  <div>
+                                    <p className="font-semibold text-primary">
+                                      Travel Time
+                                    </p>
+                                    <p className="text-gray-800">
+                                      {activity.travel_time}
+                                    </p>
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
+                      </div>
+                    )
+                  )}
+                </section>
+              </div>
+            ))}
+          </section>
+        )}
+
+        {activeTab === "hotels" && (
+          <section>
+            <h2 className="text-2xl font-bold mb-6 flex items-center text-gray-800 border-b pb-3 border-gray-200">
+              <Hotel className="mr-3 text-primary" size={32} />
+              Recommended Hotels
+            </h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {generatedItinerary.hotels.map((hotel, index) => (
+                <div
+                  key={index}
+                  className="bg-white rounded-xl shadow-lg hover:shadow-xl border border-gray-200 transition-all transform hover:-translate-y-2"
+                >
+                  <div
+                    className="h-48 w-full bg-cover bg-center rounded-t-xl"
+                    style={{
+                      backgroundImage: `url(${hotel.hotel_image_url})`,
+                    }}
+                  />
+                  <div className="p-4">
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                      {hotel.hotel_name}
+                    </h3>
+                    <div className="flex items-center text-sm text-gray-700 mb-4">
+                      <MapPin size={16} className="mr-2 text-primary" />
+                      {hotel.hotel_address}
+                    </div>
+                    <div className="flex justify-between items-center mb-4">
+                      <div className="text-lg font-bold text-primary">
+                        {hotel.price}
+                      </div>
+                      <div className="flex items-center text-yellow-600">
+                        <Star size={16} className="mr-1" />
+                        <span>{hotel.rating}/5</span>
                       </div>
                     </div>
-                  )
-                )}
-              </section>
+                    <p className="text-sm text-gray-800">{hotel.description}</p>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </section>
-      )}
-      {activeTab === "hotels" && (
-        <section className="max-w-4xl mx-auto px-6 mt-12">
-          <div className="border border-gray-200 rounded-xl shadow-lg p-6">
-            <h2 className="text-2xl font-bold mb-4 flex items-center text-gray-800">
-              <Edit className="mr-3 text-primary" size={32} />
-              Request Changes to Your Itinerary
-            </h2>
-            <p className="text-gray-600 mb-4">
-              Not quite what you're looking for? Describe the changes you'd like
-              to make, and we'll update your itinerary.
-            </p>
+          </section>
+        )}
+      </section>
 
-            <textarea
-              className="w-full border border-gray-200 rounded-lg p-4 min-h-[150px] focus:border-primary focus:ring-1 focus:ring-primary/20"
-              placeholder="Examples: 'Include a day trip to ....'"
-              value={changeRequest}
-              onChange={(e) => setChangeRequest(e.target.value)}
-            />
+      <section className="max-w-4xl mx-auto px-6 mt-12">
+        <div className="border border-gray-200 rounded-xl shadow-lg p-6">
+          <h2 className="text-2xl font-bold mb-4 flex items-center text-gray-800">
+            <Edit className="mr-3 text-primary" size={32} />
+            Request Changes to Your Itinerary
+          </h2>
+          <p className="text-gray-600 mb-4">
+            Not quite what you're looking for? Describe the changes you'd like
+            to make, and we'll update your itinerary.
+          </p>
 
-            <div className="flex justify-end mt-4">
-              <Button
-                onClick={handleSubmitChanges}
-                disabled={isSubmitting}
-                className="bg-primary text-white hover:bg-primary-dark"
-              >
-                {isSubmitting ? "Updating Itinerary..." : "Submit Changes"}
-              </Button>
-            </div>
+          <textarea
+            className="w-full border border-gray-200 rounded-lg p-4 min-h-[150px] focus:border-primary focus:ring-1 focus:ring-primary/20"
+            placeholder="Examples: 'Include a day trip to ....'"
+            value={changeRequest}
+            onChange={(e) => setChangeRequest(e.target.value)}
+          />
+
+          <div className="flex justify-end mt-4">
+            <Button
+              onClick={handleSubmitChanges}
+              disabled={isSubmitting}
+              className="bg-primary text-white hover:bg-primary-dark"
+            >
+              {isSubmitting ? "Updating Itinerary..." : "Submit Changes"}
+            </Button>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
     </div>
   );
 }
