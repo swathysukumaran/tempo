@@ -32,7 +32,7 @@ Instructions:
 9.  The "budget" field in 'tripDetails' should match the user's input.
 10. If a cover image or hotel image is available, include the URL; otherwise, set to null.
 11. If any information is not available, set that value to null.
-12. Include a "narrative" section within the 'tripDetails' object with ** a personalised  engaging introduction to the trip that creates excitement and anticipation **
+12. Include a "narrative" section within the 'tripDetails' object with ** a concise personalised  engaging introduction that to the trip that convey the essence of the trip and creates excitement and anticipation **
 12. Return the response in a VALID JSON FORMAT that ADHERES STRICTLY to the following schema.
 13. Include a "transportation" section within the 'tripDetails' object with:
     * "airport": { "name": "string", "code": "string", "description": "string"}.

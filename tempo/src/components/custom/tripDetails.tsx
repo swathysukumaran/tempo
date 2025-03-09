@@ -360,7 +360,19 @@ function TripDetails() {
           </div>
         </div>
       </div>
-
+      <section className="max-w-4xl mx-auto px-6 mt-8">
+        <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+          <div className="flex items-center mb-4">
+            <Globe className="mr-3 text-primary" size={24} />
+            <h2 className="text-xl font-bold text-gray-800">
+              Your Journey Ahead
+            </h2>
+          </div>
+          <p className="text-xl text-gray-700 leading-relaxed font-medium italic">
+            "{tripDetails.narrative}"
+          </p>
+        </div>
+      </section>
       {/* Hotels Section */}
       <section className="max-w-4xl mx-auto px-6 mt-8">
         <div className="flex border-b border-gray-200 mb-6">
