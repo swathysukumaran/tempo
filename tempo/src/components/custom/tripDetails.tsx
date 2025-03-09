@@ -318,101 +318,83 @@ function TripDetails() {
         {/* Daily Itinerary */}
         {activeTab === "itinerary" && (
           <section>
-            <h2 className="text-2xl font-bold mb-8 flex items-center text-gray-800">
-              <Compass className="mr-3 text-primary" size={32} />
-              Daily Itinerary
-            </h2>
-            {Object.entries(generatedItinerary.itinerary).map(([day]) => (
-              <div
-                key={day}
-                className="mb-8 bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200"
-              >
-                <section className="max-w-4xl mx-auto px-6 mt-12">
-                  <h2 className="text-2xl font-bold mb-8 flex items-center text-gray-800 border-b pb-3 border-gray-200">
-                    <Compass className="mr-3 text-primary" size={32} />
-                    Daily Itinerary
-                  </h2>
-                  {Object.entries(generatedItinerary.itinerary).map(
-                    ([day, dayData]) => (
+            {Object.entries(generatedItinerary.itinerary).map(
+              ([day, dayData]) => (
+                <div
+                  key={day}
+                  className="mb-8 bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200"
+                >
+                  <div className="border-b border-gray-200 p-6">
+                    <div className="flex justify-between items-center">
+                      <h3 className="text-xl font-bold text-gray-800">
+                        {day.replace("day", "Day ")}
+                      </h3>
+                      <div className="flex items-center text-gray-700">
+                        <Sun size={20} className="mr-2 text-yellow-600" />
+                        {dayData.theme}
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2">
+                      Best time: {dayData.best_time_to_visit}
+                    </p>
+                  </div>
+                  <div className="p-6 space-y-6">
+                    {dayData.activities.map((activity, index) => (
                       <div
-                        key={day}
-                        className="mb-8 bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200"
+                        key={index}
+                        className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all flex items-start space-x-4"
                       >
-                        <div className="border-b border-gray-200 p-6">
-                          <div className="flex justify-between items-center">
-                            <h3 className="text-xl font-bold text-gray-800">
-                              {day.replace("day", "Day ")}
-                            </h3>
-                            <div className="flex items-center text-gray-700">
-                              <Sun size={20} className="mr-2 text-yellow-600" />
-                              {dayData.theme}
+                        <div
+                          className="hidden md:block h-24 w-24 flex-shrink-0 rounded-lg bg-cover bg-center border border-gray-200"
+                          style={{
+                            backgroundImage: `url(${
+                              activity.place_image_url || defaultActivityImage
+                            })`,
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            backgroundColor: activity.place_image_url
+                              ? "transparent"
+                              : "#f0f0f0",
+                          }}
+                        />
+                        <div className="flex-1">
+                          <div className="flex items-center mb-2">
+                            <h4 className="text-lg font-semibold text-gray-900 mr-4">
+                              {activity.place_name}
+                            </h4>
+                            <div className="flex items-center text-yellow-600">
+                              <Star size={16} className="mr-1" />
+                              {activity.rating}/5
                             </div>
                           </div>
-                          <p className="text-sm text-gray-600 mt-2">
-                            Best time: {dayData.best_time_to_visit}
+                          <p className="text-sm text-gray-800 mb-4">
+                            {activity.place_details}
                           </p>
-                        </div>
-                        <div className="p-6 space-y-6">
-                          {dayData.activities.map((activity, index) => (
-                            <div
-                              key={index}
-                              className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all flex items-start space-x-4"
-                            >
-                              <div
-                                className="hidden md:block h-24 w-24 flex-shrink-0 rounded-lg bg-cover bg-center border border-gray-200"
-                                style={{
-                                  backgroundImage: `url(${
-                                    activity.place_image_url ||
-                                    defaultActivityImage
-                                  })`,
-                                  backgroundSize: "cover",
-                                  backgroundPosition: "center",
-                                  backgroundColor: activity.place_image_url
-                                    ? "transparent"
-                                    : "#f0f0f0",
-                                }}
-                              />
-                              <div className="flex-1">
-                                <div className="flex items-center mb-2">
-                                  <h4 className="text-lg font-semibold text-gray-900 mr-4">
-                                    {activity.place_name}
-                                  </h4>
-                                  <div className="flex items-center text-yellow-600">
-                                    <Star size={16} className="mr-1" />
-                                    {activity.rating}/5
-                                  </div>
-                                </div>
-                                <p className="text-sm text-gray-800 mb-4">
-                                  {activity.place_details}
-                                </p>
-                                <div className="grid grid-cols-2 gap-4 text-sm">
-                                  <div>
-                                    <p className="font-semibold text-primary">
-                                      Price
-                                    </p>
-                                    <p className="text-gray-800">
-                                      {activity.ticket_pricing}
-                                    </p>
-                                  </div>
-                                  <div>
-                                    <p className="font-semibold text-primary">
-                                      Travel Time
-                                    </p>
-                                    <p className="text-gray-800">
-                                      {activity.travel_time}
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
+                          <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                              <p className="font-semibold text-primary">
+                                Price
+                              </p>
+                              <p className="text-gray-800">
+                                {activity.ticket_pricing}
+                              </p>
                             </div>
-                          ))}
+                            <div>
+                              <p className="font-semibold text-primary">
+                                Travel Time
+                              </p>
+                              <p className="text-gray-800">
+                                {activity.travel_time}
+                              </p>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    )
-                  )}
-                </section>
-              </div>
-            ))}
+                    ))}
+                  </div>
+                </div>
+              )
+            )}
           </section>
         )}
 
