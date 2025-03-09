@@ -248,27 +248,32 @@ function TripDetails() {
     );
   };
   const ChangeRequestModal = () => {
+    // Use a local state to prevent unnecessary re-renders
+    const [localChangeRequest, setLocalChangeRequest] = useState(changeRequest);
+
+    const handleSubmit = () => {
+      // Update the parent component's state when submitting
+      setChangeRequest(localChangeRequest);
+      handleSubmitChanges();
+    };
+
     return (
       <div
-        className="fixed inset-0 bg-black bg-opacity-50 z-[100] flex items-center justify-center p-4"
-        onClick={() => setIsFabModalOpen(false)}
+        className="fixed inset-0 bg-black bg-opacity-50 z-[100] 
+      flex items-center justify-center p-4"
       >
-        <div
-          className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6"
-          onClick={(e) => e.stopPropagation()} // Prevent modal close when clicking inside
-        >
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold flex items-center text-gray-800">
-              <Edit className="mr-3 text-primary" size={32} />
-              Customize Your Trip
-            </h2>
-            <button
-              onClick={() => setIsFabModalOpen(false)}
-              className="text-gray-500 hover:text-gray-700"
-            >
-              <X size={24} />
-            </button>
-          </div>
+        <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 relative">
+          <button
+            onClick={() => setIsFabModalOpen(false)}
+            className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+          >
+            <X size={24} />
+          </button>
+
+          <h2 className="text-2xl font-bold flex items-center text-gray-800 mb-4">
+            <Edit className="mr-3 text-primary" size={32} />
+            Customize Your Trip
+          </h2>
 
           <p className="text-gray-600 mb-4">
             Not quite what you're looking for? Describe the changes you'd like
@@ -279,12 +284,13 @@ function TripDetails() {
             className="w-full border border-gray-200 rounded-lg p-4 min-h-[150px] 
           focus:border-primary focus:ring-1 focus:ring-primary/20"
             placeholder="Examples: 'Include a day trip to...', 'Change hotel to...'"
-            value={changeRequest}
-            onChange={(e) => setChangeRequest(e.target.value)}
+            value={localChangeRequest}
+            onChange={(e) => setLocalChangeRequest(e.target.value)}
           />
+
           <div className="flex justify-end mt-4">
             <Button
-              onClick={handleSubmitChanges}
+              onClick={handleSubmit}
               disabled={isSubmitting}
               className="bg-primary text-white hover:bg-primary-dark"
             >
