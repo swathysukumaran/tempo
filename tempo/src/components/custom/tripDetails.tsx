@@ -13,6 +13,7 @@ import {
   Globe,
   Compass,
   Edit,
+  X,
 } from "lucide-react";
 import { googlePlacePhotos } from "@/config/googlePlaces";
 import { Button } from "../ui/button";
@@ -237,13 +238,61 @@ function TripDetails() {
     return (
       <Button
         onClick={() => setIsFabModalOpen(true)}
-        className="fixed bottom-6 right-6 z-50 bg-primary text-white 
+        className="fixed bottom-10 right-10 z-50 bg-primary text-white 
         w-16 h-16 rounded-full shadow-xl hover:bg-primary-dark 
         transition-all duration-300 ease-in-out transform 
         hover:scale-110 flex items-center justify-center"
       >
         <Edit className="w-8 h-8" />
       </Button>
+    );
+  };
+  const ChangeRequestModal = () => {
+    return (
+      <div
+        className="fixed inset-0 bg-black bg-opacity-50 z-[100] flex items-center justify-center p-4"
+        onClick={() => setIsFabModalOpen(false)}
+      >
+        <div
+          className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6"
+          onClick={(e) => e.stopPropagation()} // Prevent modal close when clicking inside
+        >
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold flex items-center text-gray-800">
+              <Edit className="mr-3 text-primary" size={32} />
+              Customize Your Trip
+            </h2>
+            <button
+              onClick={() => setIsFabModalOpen(false)}
+              className="text-gray-500 hover:text-gray-700"
+            >
+              <X size={24} />
+            </button>
+          </div>
+
+          <p className="text-gray-600 mb-4">
+            Not quite what you're looking for? Describe the changes you'd like
+            to make, and we'll update your itinerary.
+          </p>
+
+          <textarea
+            className="w-full border border-gray-200 rounded-lg p-4 min-h-[150px] 
+          focus:border-primary focus:ring-1 focus:ring-primary/20"
+            placeholder="Examples: 'Include a day trip to...', 'Change hotel to...'"
+            value={changeRequest}
+            onChange={(e) => setChangeRequest(e.target.value)}
+          />
+          <div className="flex justify-end mt-4">
+            <Button
+              onClick={handleSubmitChanges}
+              disabled={isSubmitting}
+              className="bg-primary text-white hover:bg-primary-dark"
+            >
+              {isSubmitting ? "Updating Itinerary..." : "Submit Changes"}
+            </Button>
+          </div>
+        </div>
+      </div>
     );
   };
   return (
@@ -482,6 +531,8 @@ function TripDetails() {
       </section>
 
       <FloatingActionButton />
+      {/* FAB Modal */}
+      {isFabModalOpen && <ChangeRequestModal />}
     </div>
   );
 }
