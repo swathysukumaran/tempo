@@ -29,7 +29,7 @@ function TripDetails() {
         value?: string;
       };
       timeframe: string;
-
+      narrative: string;
       preferences: string;
       transportation?: object; // Adding new field
     };

@@ -33,8 +33,9 @@ export const createTrip = async (req: express.Request, res: express.Response) =>
             const aiResponse = resultText.replace(/```json\n|\n```/g, '');
         
             const parsedResponse=JSON.parse(aiResponse);
+            const narrative=parsedResponse.tripDetails.narrative;
             const generatedItinerary=parsedResponse.generatedItinerary;
-            const trip=await createNewTrip(userId,{location,timeframe, travelers,
+            const trip=await createNewTrip(userId,{location,timeframe,narrative, travelers,
     preferences,budget},generatedItinerary);
             res.status(200).json({
                 tripId: trip._id,
