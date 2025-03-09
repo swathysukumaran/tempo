@@ -7,7 +7,13 @@ import { API_URL } from "@/config/api";
 import { useNavigate } from "react-router-dom";
 import TripLoadingAnimation from "./TripLoadingAnimation";
 // Define the steps
-const steps = ["destination", "details", "preferences"];
+const steps = [
+  "destination",
+  "timeframe",
+  "travelers",
+  "preferences",
+  "budget",
+];
 
 type TripFormData = {
   destination: { label: string; value: string } | null;
@@ -171,7 +177,7 @@ function CreateTripNew() {
           </div>
         );
 
-      case "details":
+      case "timeframe":
         return (
           <div className="space-y-8">
             <div className="space-y-3 text-center">
@@ -197,20 +203,29 @@ function CreateTripNew() {
                   className="w-full min-h-[100px] p-3 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
               </div>
+            </div>
+          </div>
+        );
 
-              <div className="bg-gray-50 p-5 rounded-lg border border-gray-100">
-                <label className="block text-body text-gray-700 mb-2">
-                  Who will be traveling? (optional)
-                </label>
-                <input
-                  type="text"
-                  placeholder="E.g., Solo, couple, family with kids"
-                  value={formData.travelers || ""}
-                  onChange={(e) =>
-                    updateFormData({ travelers: e.target.value })
-                  }
-                  className="w-full p-2 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
-                />
+      case "travelers":
+        return (
+          <div className="space-y-8">
+            <div className="space-y-3 text-center">
+              <div className="max-w-xl mx-auto space-y-6">
+                <div className="bg-gray-50 p-5 rounded-lg border border-gray-100">
+                  <label className="block text-body text-gray-700 mb-2">
+                    Who will be traveling? (optional)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="E.g., Solo, couple, family with kids"
+                    value={formData.travelers || ""}
+                    onChange={(e) =>
+                      updateFormData({ travelers: e.target.value })
+                    }
+                    className="w-full p-2 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -259,8 +274,15 @@ function CreateTripNew() {
                   </div>
                 )}
               </div>
+            </div>
+          </div>
+        );
 
-              <div className="space-y-3">
+      case "budget":
+        return (
+          <div className="space-y-8">
+            <div className="space-y-3 text-center">
+              <div className="max-w-xl mx-auto space-y-6">
                 <label className="block text-body text-gray-700">
                   What's your budget range?
                 </label>
@@ -290,7 +312,6 @@ function CreateTripNew() {
             </div>
           </div>
         );
-
       default:
         return null;
     }
