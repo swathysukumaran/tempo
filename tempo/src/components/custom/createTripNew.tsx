@@ -448,10 +448,16 @@ function CreateTripNew() {
   return (
     <div className="min-h-screen flex flex-col font-sans">
       <header className="bg-white border-b p-4 text-center">
-        <h1 className="text-2xl font-semibold text-gray-800">Plan Your Trip</h1>
+        <h1 className="text-2xl font-semibold text-gray-800">
+          Every trip, uniquely yours. Powered by AI.
+        </h1>
+        <p className="text-gray-600 mt-2">
+          Dream big, travel effortlessly. We handle the details, you create the
+          memories.
+        </p>
 
         {/* Progress Indicator */}
-        <div className="mt-2">
+        <div className="mt-2 w-[70%] mx-auto">
           <div className="relative pt-1">
             <div className="flex mb-2 items-center justify-between">
               <div>
