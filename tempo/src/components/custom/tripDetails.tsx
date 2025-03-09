@@ -71,7 +71,9 @@ function TripDetails() {
   // Add these state variables at the top of your component
   const [changeRequest, setChangeRequest] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [activeTab, setActiveTab] = useState<"itinerary" | "hotels">(
+    "itinerary"
+  );
   // Add this handler function
   const handleSubmitChanges = async () => {
     if (!changeRequest.trim()) return;
@@ -231,7 +233,6 @@ function TripDetails() {
     );
   const { generatedItinerary, tripDetails } = tripData;
 
-  // Updated component with better contrast using shadows and borders instead of backgrounds
   return (
     <div className="min-h-screen bg-white pb-16">
       {isSubmitting && (
@@ -290,6 +291,30 @@ function TripDetails() {
 
       {/* Hotels Section */}
       <section className="max-w-4xl mx-auto px-6 mt-8">
+        <div className="flex border-b border-gray-200 mb-6">
+          <button
+            onClick={() => setActiveTab("itinerary")}
+            className={`px-4 py-2 text-sm font-medium transition-colors ${
+              activeTab === "itinerary"
+                ? "text-primary border-b-2 border-primary"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            <Compass className="inline-block mr-2 -mt-1" size={20} />
+            Daily Itinerary
+          </button>
+          <button
+            onClick={() => setActiveTab("hotels")}
+            className={`px-4 py-2 text-sm font-medium transition-colors ${
+              activeTab === "hotels"
+                ? "text-primary border-b-2 border-primary"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            <Hotel className="inline-block mr-2 -mt-1" size={20} />
+            Recommended Hotels
+          </button>
+        </div>
         <h2 className="text-2xl font-bold mb-6 flex items-center text-gray-800 border-b pb-3 border-gray-200">
           <Hotel className="mr-3 text-primary" size={32} />
           Recommended Hotels
@@ -331,113 +356,136 @@ function TripDetails() {
       </section>
 
       {/* Daily Itinerary */}
-      <section className="max-w-4xl mx-auto px-6 mt-12">
-        <h2 className="text-2xl font-bold mb-8 flex items-center text-gray-800 border-b pb-3 border-gray-200">
-          <Compass className="mr-3 text-primary" size={32} />
-          Daily Itinerary
-        </h2>
-        {Object.entries(generatedItinerary.itinerary).map(([day, dayData]) => (
-          <div
-            key={day}
-            className="mb-8 bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200"
-          >
-            <div className="border-b border-gray-200 p-6">
-              <div className="flex justify-between items-center">
-                <h3 className="text-xl font-bold text-gray-800">
-                  {day.replace("day", "Day ")}
-                </h3>
-                <div className="flex items-center text-gray-700">
-                  <Sun size={20} className="mr-2 text-yellow-600" />
-                  {dayData.theme}
-                </div>
-              </div>
-              <p className="text-sm text-gray-600 mt-2">
-                Best time: {dayData.best_time_to_visit}
-              </p>
-            </div>
-            <div className="p-6 space-y-6">
-              {dayData.activities.map((activity, index) => (
-                <div
-                  key={index}
-                  className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all flex items-start space-x-4"
-                >
-                  <div
-                    className="hidden md:block h-24 w-24 flex-shrink-0 rounded-lg bg-cover bg-center border border-gray-200"
-                    style={{
-                      backgroundImage: `url(${
-                        activity.place_image_url || defaultActivityImage
-                      })`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      backgroundColor: activity.place_image_url
-                        ? "transparent"
-                        : "#f0f0f0",
-                    }}
-                  />
-                  <div className="flex-1">
-                    <div className="flex items-center mb-2">
-                      <h4 className="text-lg font-semibold text-gray-900 mr-4">
-                        {activity.place_name}
-                      </h4>
-                      <div className="flex items-center text-yellow-600">
-                        <Star size={16} className="mr-1" />
-                        {activity.rating}/5
-                      </div>
-                    </div>
-                    <p className="text-sm text-gray-800 mb-4">
-                      {activity.place_details}
-                    </p>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <p className="font-semibold text-primary">Price</p>
-                        <p className="text-gray-800">
-                          {activity.ticket_pricing}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="font-semibold text-primary">
-                          Travel Time
-                        </p>
-                        <p className="text-gray-800">{activity.travel_time}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </section>
-      {/* Add this section at the bottom of your TripDetails component, before the closing div */}
-      <section className="max-w-4xl mx-auto px-6 mt-12">
-        <div className="border border-gray-200 rounded-xl shadow-lg p-6">
-          <h2 className="text-2xl font-bold mb-4 flex items-center text-gray-800">
-            <Edit className="mr-3 text-primary" size={32} />
-            Request Changes to Your Itinerary
+      {activeTab === "itinerary" && (
+        <section>
+          <h2 className="text-2xl font-bold mb-8 flex items-center text-gray-800">
+            <Compass className="mr-3 text-primary" size={32} />
+            Daily Itinerary
           </h2>
-          <p className="text-gray-600 mb-4">
-            Not quite what you're looking for? Describe the changes you'd like
-            to make, and we'll update your itinerary.
-          </p>
-
-          <textarea
-            className="w-full border border-gray-200 rounded-lg p-4 min-h-[150px] focus:border-primary focus:ring-1 focus:ring-primary/20"
-            placeholder="Examples: 'Include a day trip to ....'"
-            value={changeRequest}
-            onChange={(e) => setChangeRequest(e.target.value)}
-          />
-
-          <div className="flex justify-end mt-4">
-            <Button
-              onClick={handleSubmitChanges}
-              disabled={isSubmitting}
-              className="bg-primary text-white hover:bg-primary-dark"
+          {Object.entries(generatedItinerary.itinerary).map(([day]) => (
+            <div
+              key={day}
+              className="mb-8 bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200"
             >
-              {isSubmitting ? "Updating Itinerary..." : "Submit Changes"}
-            </Button>
+              <section className="max-w-4xl mx-auto px-6 mt-12">
+                <h2 className="text-2xl font-bold mb-8 flex items-center text-gray-800 border-b pb-3 border-gray-200">
+                  <Compass className="mr-3 text-primary" size={32} />
+                  Daily Itinerary
+                </h2>
+                {Object.entries(generatedItinerary.itinerary).map(
+                  ([day, dayData]) => (
+                    <div
+                      key={day}
+                      className="mb-8 bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200"
+                    >
+                      <div className="border-b border-gray-200 p-6">
+                        <div className="flex justify-between items-center">
+                          <h3 className="text-xl font-bold text-gray-800">
+                            {day.replace("day", "Day ")}
+                          </h3>
+                          <div className="flex items-center text-gray-700">
+                            <Sun size={20} className="mr-2 text-yellow-600" />
+                            {dayData.theme}
+                          </div>
+                        </div>
+                        <p className="text-sm text-gray-600 mt-2">
+                          Best time: {dayData.best_time_to_visit}
+                        </p>
+                      </div>
+                      <div className="p-6 space-y-6">
+                        {dayData.activities.map((activity, index) => (
+                          <div
+                            key={index}
+                            className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all flex items-start space-x-4"
+                          >
+                            <div
+                              className="hidden md:block h-24 w-24 flex-shrink-0 rounded-lg bg-cover bg-center border border-gray-200"
+                              style={{
+                                backgroundImage: `url(${
+                                  activity.place_image_url ||
+                                  defaultActivityImage
+                                })`,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                                backgroundColor: activity.place_image_url
+                                  ? "transparent"
+                                  : "#f0f0f0",
+                              }}
+                            />
+                            <div className="flex-1">
+                              <div className="flex items-center mb-2">
+                                <h4 className="text-lg font-semibold text-gray-900 mr-4">
+                                  {activity.place_name}
+                                </h4>
+                                <div className="flex items-center text-yellow-600">
+                                  <Star size={16} className="mr-1" />
+                                  {activity.rating}/5
+                                </div>
+                              </div>
+                              <p className="text-sm text-gray-800 mb-4">
+                                {activity.place_details}
+                              </p>
+                              <div className="grid grid-cols-2 gap-4 text-sm">
+                                <div>
+                                  <p className="font-semibold text-primary">
+                                    Price
+                                  </p>
+                                  <p className="text-gray-800">
+                                    {activity.ticket_pricing}
+                                  </p>
+                                </div>
+                                <div>
+                                  <p className="font-semibold text-primary">
+                                    Travel Time
+                                  </p>
+                                  <p className="text-gray-800">
+                                    {activity.travel_time}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )
+                )}
+              </section>
+            </div>
+          ))}
+        </section>
+      )}
+      {activeTab === "hotels" && (
+        <section className="max-w-4xl mx-auto px-6 mt-12">
+          <div className="border border-gray-200 rounded-xl shadow-lg p-6">
+            <h2 className="text-2xl font-bold mb-4 flex items-center text-gray-800">
+              <Edit className="mr-3 text-primary" size={32} />
+              Request Changes to Your Itinerary
+            </h2>
+            <p className="text-gray-600 mb-4">
+              Not quite what you're looking for? Describe the changes you'd like
+              to make, and we'll update your itinerary.
+            </p>
+
+            <textarea
+              className="w-full border border-gray-200 rounded-lg p-4 min-h-[150px] focus:border-primary focus:ring-1 focus:ring-primary/20"
+              placeholder="Examples: 'Include a day trip to ....'"
+              value={changeRequest}
+              onChange={(e) => setChangeRequest(e.target.value)}
+            />
+
+            <div className="flex justify-end mt-4">
+              <Button
+                onClick={handleSubmitChanges}
+                disabled={isSubmitting}
+                className="bg-primary text-white hover:bg-primary-dark"
+              >
+                {isSubmitting ? "Updating Itinerary..." : "Submit Changes"}
+              </Button>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 }
