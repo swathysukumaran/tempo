@@ -448,9 +448,27 @@ function CreateTripNew() {
   return (
     <div className="min-h-screen flex flex-col font-sans">
       <header className="bg-white border-b p-4 text-center">
-        <h1 className="text-h1 font-bold">Plan Your Trip</h1>
-        <div className="text-small text-gray-500">
-          Step {currentStepIndex + 1} of {steps.length}
+        <h1 className="text-2xl font-semibold text-gray-800">Plan Your Trip</h1>
+
+        {/* Progress Indicator */}
+        <div className="mt-2">
+          <div className="relative pt-1">
+            <div className="flex mb-2 items-center justify-between">
+              <div>
+                <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-primary bg-primary/20">
+                  Step {currentStepIndex + 1} of {steps.length}
+                </span>
+              </div>
+            </div>
+            <div className="flex h-2 mb-4 overflow-hidden text-xs bg-gray-200 rounded-full">
+              <div
+                style={{
+                  width: `${((currentStepIndex + 1) / steps.length) * 100}%`,
+                }}
+                className="flex flex-col justify-center whitespace-nowrap text-center text-white transition-all duration-500 bg-primary"
+              ></div>
+            </div>
+          </div>
         </div>
       </header>
 
