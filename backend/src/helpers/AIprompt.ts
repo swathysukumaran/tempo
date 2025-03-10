@@ -39,6 +39,7 @@ Instructions:
 16. Include a "narrative" section within the 'tripDetails' object with ** a concise personalized  engaging introduction that to the trip that convey the essence of the trip and creates excitement and anticipation **
 17. Return the response in a VALID JSON FORMAT that ADHERES STRICTLY to the following schema.
 18. ** ABSOLUTELY ensure that each day of the itinerary includes breakfast lunch and dinner suggestions, and specific time slots for each activity. **
+**Make sure to include atleast 3 hotel suggestions**
 19. Include a "transportation" section within the 'tripDetails' object with:
     * "airport": { "name": "string", "code": "string", "description": "string"}.
     * "local_transport": ["string", "string", "string"] (common local transport options).
