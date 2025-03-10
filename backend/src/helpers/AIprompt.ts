@@ -9,7 +9,7 @@ export const AI_PROMPT = (
   budget: "budget" | "moderate" | "luxury"
 ): string => {
   return `
-Generate a travel itinerary in JSON format based STRICTLY on the following user input. Do not deviate from the provided information.
+Generate a very detailed travel itinerary with **specific time slots to each activity** in JSON format based STRICTLY on the following user input. Do not deviate from the provided information.
 
 User Input:
 
@@ -27,14 +27,19 @@ Instructions:
 4.  Prioritize activities and experiences that DIRECTLY ALIGN with the user's interests.
 5.  Tailor the itinerary to REFLECT the user's specific requests.
 6.  Generate realistic and engaging content for all descriptions and details.
-7.  The "duration" field in 'generatedItinerary' should be a human-readable description of the trip's length (e.g., "5 days, 4 nights").
-8.  The "travelers" field in 'generatedItinerary' should accurately reflect the user's input.
-9.  The "budget" field in 'tripDetails' should match the user's input.
-10. If a cover image or hotel image is available, include the URL; otherwise, set to null.
-11. If any information is not available, set that value to null.
-12. Include a "narrative" section within the 'tripDetails' object with ** a concise personalised  engaging introduction that to the trip that convey the essence of the trip and creates excitement and anticipation **
-12. Return the response in a VALID JSON FORMAT that ADHERES STRICTLY to the following schema.
-13. Include a "transportation" section within the 'tripDetails' object with:
+7. ** Provide a precise schedule for each day**, including specific time slots for each activity (e.g., 9:00 AM - 11:00 AM).
+8.  **Must ensure If there are any free time slots for relaxation, explicitly mention them **(e.g., "3:00 PM - 5:00 PM: Free time for relaxation at the hotel pool").
+9. ** Make sure to plan the entire day**.
+10.  Provide detailed descriptions of each activity, including what to expect, any relevant tips.
+11.  The "duration" field in 'generatedItinerary' should be a human-readable description of the trip's length (e.g., "5 days, 4 nights").
+12.  The "travelers" field in 'generatedItinerary' should accurately reflect the user's input.
+13.  The "budget" field in 'tripDetails' should match the user's input.
+14. If a cover image or hotel image is available, include the URL; otherwise, set to null.
+15. If any information is not available, set that value to null.
+16. Include a "narrative" section within the 'tripDetails' object with ** a concise personalized  engaging introduction that to the trip that convey the essence of the trip and creates excitement and anticipation **
+17. Return the response in a VALID JSON FORMAT that ADHERES STRICTLY to the following schema.
+18. ** ABSOLUTELY ensure that each day of the itinerary includes breakfast lunch and dinner suggestions, and specific time slots for each activity. **
+19. Include a "transportation" section within the 'tripDetails' object with:
     * "airport": { "name": "string", "code": "string", "description": "string"}.
     * "local_transport": ["string", "string", "string"] (common local transport options).
     * "transportation_tips": [{"tip": "string", "details": "string"}, ...] (transportation tips).
@@ -69,6 +74,7 @@ Instructions:
             "rating": "number",
             "travel_time": "string",
             "place_image_url": "string | null"
+            "time_slot": "string"
           }
         ]
       },

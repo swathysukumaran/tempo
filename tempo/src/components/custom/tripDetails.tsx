@@ -56,6 +56,7 @@ function TripDetails() {
             place_details: string;
             ticket_pricing: string;
             rating: number;
+            time_slot: string;
             travel_time: string;
             place_image_url: string | null; // Updated to allow null
           }[];
@@ -122,6 +123,7 @@ function TripDetails() {
           place_details: string;
           ticket_pricing: string;
           rating: number;
+          time_slot: string;
           travel_time: string;
           place_image_url?: string;
         }[];
@@ -178,6 +180,7 @@ function TripDetails() {
             place_details: string;
             ticket_pricing: string;
             rating: number;
+            time_slot: string;
             travel_time: string;
             place_image_url?: string;
           }[];
@@ -418,9 +421,6 @@ function TripDetails() {
                         {dayData.theme}
                       </div>
                     </div>
-                    <p className="text-sm text-gray-600 mt-2">
-                      Best time: {dayData.best_time_to_visit}
-                    </p>
                   </div>
                   <div className="p-6 space-y-6">
                     {dayData.activities.map((activity, index) => (
@@ -454,7 +454,15 @@ function TripDetails() {
                           <p className="text-sm text-gray-800 mb-4">
                             {activity.place_details}
                           </p>
-                          <div className="grid grid-cols-2 gap-4 text-sm">
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                            <div>
+                              <p className="font-semibold text-primary">
+                                Planned time to visit:
+                              </p>
+                              <p className="text-gray-800">
+                                {activity.time_slot}
+                              </p>
+                            </div>
                             <div>
                               <p className="font-semibold text-primary">
                                 Price
