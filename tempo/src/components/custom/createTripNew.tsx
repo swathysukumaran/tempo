@@ -109,6 +109,7 @@ function CreateTripNew() {
 
   const updateFormData = (updates: Partial<TripFormData>) => {
     setFormData((prev) => ({ ...prev, ...updates }));
+    console.log("Form data updated:", formData);
   };
   const handleSubmit = async () => {
     console.log("Generating trip with data:", formData);
@@ -277,9 +278,10 @@ function CreateTripNew() {
             </div>
 
             <div className="max-w-xl mx-auto space-y-6">
-              <div className="bg-gray-50 p-5 rounded-lg border border-gray-100 relative">
-                <label className="block text-body text-gray-700 mb-2">
-                  Describe how you want to experience this trip
+              <div className=" p-5 rounded-lg  relative">
+                <label className="block text-body text-gray-600 mb-2">
+                  Describe your vision of the perfect trip. Write a detailed
+                  description of what it looks and feels like.
                 </label>
                 {isRecording && (
                   <div className="mb-2 text-sm flex items-center">
@@ -309,7 +311,14 @@ function CreateTripNew() {
                   />
 
                   <button
-                    onClick={isRecording ? stopRecording : startRecording}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (isRecording) {
+                        stopRecording();
+                      } else {
+                        startRecording("preferences");
+                      }
+                    }}
                     className=" p-1 h-fit rounded-full bg-primary text-white transition-transform transform hover:scale-105"
                   >
                     {isRecording ? (
@@ -359,21 +368,58 @@ function CreateTripNew() {
         return (
           <div className="space-y-8">
             <div className="space-y-3 text-center">
-              <div className="max-w-xl mx-auto space-y-6">
-                <div className="bg-gray-50 p-5 rounded-lg border border-gray-100">
-                  <label className="block text-body text-gray-700 mb-2">
-                    Who will be traveling? (optional)
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="E.g., Solo, couple, family with kids"
-                    value={formData.travelers || ""}
-                    onChange={(e) =>
-                      updateFormData({ travelers: e.target.value })
-                    }
-                    className="w-full p-2 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
-                  />
+              <div className="max-w-[50%] mx-auto space-y-6">
+                <div className=" p-5 rounded-lg">
+                  <h2 className="text-h2 font-medium text-gray-800 mb-4">
+                    Who's traveling with you? Any special needs? (optional)
+                  </h2>
+                  <div className="flex  items-center gap-2 mt-2">
+                    <input
+                      type="text"
+                      placeholder="E.g., Solo, couple, family with kids"
+                      value={formData.travelers || ""}
+                      onChange={(e) =>
+                        updateFormData({ travelers: e.target.value })
+                      }
+                      className="w-[90%] p-2 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    />
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (isRecording) {
+                          stopRecording();
+                        } else {
+                          startRecording("travelers");
+                        }
+                      }}
+                      className=" p-1 h-fit rounded-full bg-primary text-white transition-transform transform hover:scale-105"
+                    >
+                      {isRecording ? (
+                        <Lottie
+                          animationData={micAnimation}
+                          style={{ height: 36, width: 36 }}
+                          loop={true}
+                          autoplay={true} // Use autoplay instead of play
+                        />
+                      ) : (
+                        <Lottie
+                          animationData={micAnimation}
+                          style={{ height: 36, width: 36 }}
+                          loop={false}
+                          autoplay={false}
+                        />
+                      )}
+                    </button>
+                  </div>
                 </div>
+                {transcriptionLoading && (
+                  <div className="absolute top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center">
+                    <div className="flex items-center space-x-2">
+                      <p className="text-white">Transcribing...</p>
+                      <CheckCircle className="h-6 w-6 text-white animate-spin-slow" />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -429,7 +475,7 @@ function CreateTripNew() {
     }
   };
 
-  const startRecording = async () => {
+  const startRecording = async (callingStep: string) => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
@@ -466,7 +512,7 @@ function CreateTripNew() {
             console.log("Base64 audio length:", base64Audio.length);
 
             if (base64Audio && base64Audio.length > 0) {
-              transcribeAudio(base64Audio);
+              transcribeAudio(base64Audio, callingStep);
             } else {
               toast("No audio data captured");
             }
@@ -495,7 +541,7 @@ function CreateTripNew() {
     }
   };
 
-  const transcribeAudio = async (base64Audio: string) => {
+  const transcribeAudio = async (base64Audio: string, callingStep: string) => {
     setTranscriptionLoading(true);
     try {
       // Break large audio files into smaller chunks
@@ -533,9 +579,32 @@ function CreateTripNew() {
         toast("No speech detected");
         return;
       }
-      updateFormData({
-        preferences: `${formData.preferences}\n\n${data.transcription}`.trim(),
-      });
+      switch (callingStep) {
+        case "preferences":
+          updateFormData({
+            preferences: formData.preferences
+              ? `${formData.preferences} ${data.transcription}`
+              : data.transcription,
+          });
+          break;
+
+        case "travelers":
+          console.log("here", data);
+          updateFormData({
+            travelers: formData.travelers
+              ? `${formData.travelers} ${data.transcription}`
+              : data.transcription,
+          });
+          break;
+
+        // Add additional cases for other form fields
+        // case 'otherField':
+        //   updateFormData({ otherField: data.text });
+        //   break;
+
+        default:
+          console.error(`Unknown calling step: ${callingStep}`);
+      }
 
       toast("Transcription successful");
     } catch (error) {
