@@ -238,13 +238,55 @@ function CreateTripNew() {
               <h2 className="block text-h2 text-gray-700 mb-2">
                 What dates are you thinking of, and how long will you be away?
               </h2>
-
-              <textarea
-                placeholder="E.g., June 15-22, 2024;  5 days around Christmas;    A week in late spring"
-                value={formData.timeframe}
-                onChange={(e) => updateFormData({ timeframe: e.target.value })}
-                className="w-full min-h-[100px] p-3 rounded-md border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20"
-              />
+              {isRecording && (
+                <div className="mb-2 text-sm flex items-center">
+                  <span className=" text-lg animate-pulse mr-1">⏺️</span>{" "}
+                  {/* Recording symbol */}
+                  <p className="text-gray-600">
+                    Recording <span className="ml-1 animate-pulse">...</span>
+                  </p>
+                  <p className="ml-2 text-gray-500">
+                    Press mic again to transcribe
+                  </p>
+                </div>
+              )}
+              <div className="flex  items-center gap-2 mt-2">
+                <textarea
+                  placeholder="E.g., June 15-22, 2024;  5 days around Christmas;    A week in late spring"
+                  value={formData.timeframe}
+                  onChange={(e) =>
+                    updateFormData({ timeframe: e.target.value })
+                  }
+                  className="w-full min-h-[100px] p-3 rounded-md border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                />
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (isRecording) {
+                      stopRecording();
+                    } else {
+                      startRecording("timeframe");
+                    }
+                  }}
+                  className=" p-1 h-fit rounded-full bg-primary text-white transition-transform transform hover:scale-105"
+                >
+                  {isRecording ? (
+                    <Lottie
+                      animationData={micAnimation}
+                      style={{ height: 36, width: 36 }}
+                      loop={true}
+                      autoplay={true} // Use autoplay instead of play
+                    />
+                  ) : (
+                    <Lottie
+                      animationData={micAnimation}
+                      style={{ height: 36, width: 36 }}
+                      loop={false}
+                      autoplay={false}
+                    />
+                  )}
+                </button>
+              </div>
               <div className="flex flex-wrap gap-2 mb-4">
                 {quickOptions.map((option) => (
                   <button
@@ -261,6 +303,14 @@ function CreateTripNew() {
                   </button>
                 ))}
               </div>
+              {transcriptionLoading && (
+                <div className="absolute top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center">
+                  <div className="flex items-center space-x-2">
+                    <p className="text-white">Transcribing...</p>
+                    <CheckCircle className="h-6 w-6 text-white animate-spin-slow" />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         );
@@ -589,10 +639,16 @@ function CreateTripNew() {
           break;
 
         case "travelers":
-          console.log("here", data);
           updateFormData({
             travelers: formData.travelers
               ? `${formData.travelers} ${data.transcription}`
+              : data.transcription,
+          });
+          break;
+        case "timeframe":
+          updateFormData({
+            timeframe: formData.timeframe
+              ? `${formData.timeframe} ${data.transcription}`
               : data.transcription,
           });
           break;
