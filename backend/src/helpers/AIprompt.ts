@@ -115,7 +115,7 @@ Instructions:
 
 export const UPDATE_PROMPT = (trip:any, changeRequest:string) => {
   return`
-You are a travel itinerary editor. Your task is to modify an existing travel itinerary based on a user's request, ensuring that the changes are accurately incorporated while preserving the rest of the itinerary.
+You are a travel itinerary editor. Your task is to modify an existing travel itinerary based on a user's request, ensuring that the changes are accurately incorporated while preserving the rest of the itinerary and **return just the JSON formatted data**.
 
 EXISTING ITINERARY:
 \`\`\`json
@@ -131,9 +131,9 @@ Instructions:
 2.  Make only the changes requested by the user. Do not add or remove any other activities or information unless explicitly requested.
 3.  **Ensure that the updated itinerary accurately reflects the user's requested changes ${changeRequest}**.
 4.  Preserve the original structure and all other details of the itinerary that were not affected by the user's request.
-5.  **Return the complete, updated itinerary in valid JSON format, adhering strictly to the following schema structure:**
+5.  **Return the complete, updated itinerary in valid JSON format, ADHERES STRICTLY  to the following schema structure:
 \`\`\`json
 ${JSON.stringify(trip.generatedItinerary, null, 2)}
 \`\`\`
-6.  If the user's request is unclear or ambiguous, make a reasonable interpretation or ask for clarification.
+
 `};
