@@ -4,17 +4,19 @@ import {
   ChevronLeft,
   ChevronRight,
   MapPin,
-  Mic,
   CalendarDays,
   Infinity as InfinityIcon,
   CalendarRange,
+  CheckCircle,
 } from "lucide-react";
+
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { toast } from "sonner";
 import { API_URL } from "@/config/api";
 import { useNavigate } from "react-router-dom";
 import TripLoadingAnimation from "./TripLoadingAnimation";
-
+import micAnimation from "../../assets/mic.json";
+import Lottie from "lottie-react";
 // Define the steps
 const steps = [
   "destination",
@@ -47,6 +49,19 @@ function CreateTripNew() {
   const [isRecording, setIsRecording] = useState(false);
   const [transcriptionLoading, setTranscriptionLoading] = useState(false);
   const mediaRecorder = useRef<MediaRecorder | null>(null);
+  const commonPreferences = [
+    "Relaxing",
+    "Adventurous",
+    "Cultural",
+    "Foodie",
+    "Luxury",
+    "Budget Friendly",
+  ];
+  const handleCommonPreferenceClick = (preference: string) => {
+    updateFormData({
+      preferences: `${formData.preferences}\n\n${preference}`.trim(),
+    });
+  };
   interface QuickOption {
     label: string;
     value: string;
@@ -124,10 +139,10 @@ function CreateTripNew() {
       console.log(error);
     }
   };
+
   if (isLoading) {
     return <TripLoadingAnimation />;
   }
-
   const renderStepContent = () => {
     switch (currentStep) {
       case "destination":
@@ -257,38 +272,82 @@ function CreateTripNew() {
                 Tell us about your travel preferences
               </h2>
               <p className="text-body text-gray-500">
-                This helps us create a personalized itinerary
+                Share your vision for the perfect trip.
               </p>
             </div>
 
             <div className="max-w-xl mx-auto space-y-6">
-              <div className="bg-gray-50 p-5 rounded-lg border border-gray-100">
+              <div className="bg-gray-50 p-5 rounded-lg border border-gray-100 relative">
                 <label className="block text-body text-gray-700 mb-2">
                   Describe how you want to experience this trip
                 </label>
-                <textarea
-                  placeholder="Consider including:
-• Activities you enjoy
-• Places you must visit
-• Things you want to avoid
-• Accommodation preferences
-• Budget expectations
-• Travel pace and style"
-                  value={formData.preferences}
-                  onChange={(e) =>
-                    updateFormData({ preferences: e.target.value })
-                  }
-                  className="w-full min-h-[200px] p-3 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
-                />
-                <button
-                  onClick={isRecording ? stopRecording : startRecording}
-                  className="absolute bottom-3 right-3 p-2 rounded-full bg-primary text-white"
-                >
-                  <Mic className="h-5 w-5" />
-                </button>
+                {isRecording && (
+                  <div className="mb-2 text-sm flex items-center">
+                    <span className=" text-lg animate-pulse mr-1">⏺️</span>{" "}
+                    {/* Recording symbol */}
+                    <p className="text-gray-600">
+                      Recording <span className="ml-1 animate-pulse">...</span>
+                    </p>
+                    <p className="ml-2 text-gray-500">
+                      Press mic again to transcribe
+                    </p>
+                  </div>
+                )}
+                <div className="flex  items-center gap-2 mt-2">
+                  <textarea
+                    placeholder="Imagine your ideal trip:
+• What activities excite you?
+• Which landmarks are a must-see?
+• What kind of food experiences do you crave?
+• How do you envision your accommodations?
+• What's your preferred travel pace?"
+                    value={formData.preferences}
+                    onChange={(e) =>
+                      updateFormData({ preferences: e.target.value })
+                    }
+                    className="w-full min-h-[200px] p-3 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  />
+
+                  <button
+                    onClick={isRecording ? stopRecording : startRecording}
+                    className=" p-1 h-fit rounded-full bg-primary text-white transition-transform transform hover:scale-105"
+                  >
+                    {isRecording ? (
+                      <Lottie
+                        animationData={micAnimation}
+                        style={{ height: 36, width: 36 }}
+                        loop={true}
+                        autoplay={true} // Use autoplay instead of play
+                      />
+                    ) : (
+                      <Lottie
+                        animationData={micAnimation}
+                        style={{ height: 36, width: 36 }}
+                        loop={false}
+                        autoplay={false}
+                      />
+                    )}
+                  </button>
+                </div>
+
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {commonPreferences.map((preference) => (
+                    <button
+                      key={preference}
+                      onClick={() => handleCommonPreferenceClick(preference)}
+                      className="bg-gray-200 rounded-full px-3 py-1 text-sm"
+                    >
+                      {preference}
+                    </button>
+                  ))}
+                </div>
+
                 {transcriptionLoading && (
                   <div className="absolute top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center">
-                    <p className="text-white">Transcribing...</p>
+                    <div className="flex items-center space-x-2">
+                      <p className="text-white">Transcribing...</p>
+                      <CheckCircle className="h-6 w-6 text-white animate-spin-slow" />
+                    </div>
                   </div>
                 )}
               </div>
