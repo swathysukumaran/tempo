@@ -57,9 +57,20 @@ function CreateTripNew() {
     "Luxury",
     "Budget Friendly",
   ];
+  const commonTravelers = [
+    "Solo",
+    "Family with kids",
+    "Couple",
+    "Group of friends",
+  ];
   const handleCommonPreferenceClick = (preference: string) => {
     updateFormData({
       preferences: `${formData.preferences}\n\n${preference}`.trim(),
+    });
+  };
+  const handleCommonTravelerClick = (traveler: string) => {
+    updateFormData({
+      travelers: `${formData.travelers}\n\n${traveler}`.trim(),
     });
   };
   interface QuickOption {
@@ -330,8 +341,7 @@ function CreateTripNew() {
             <div className="max-w-xl mx-auto space-y-6">
               <div className=" p-5 rounded-lg  relative">
                 <label className="block text-body text-gray-600 mb-2">
-                  Describe your vision of the perfect trip. Write a detailed
-                  description of what it looks and feels like.
+                  Write a detailed description of what it looks and feels like.
                 </label>
                 {isRecording && (
                   <div className="mb-2 text-sm flex items-center">
@@ -348,10 +358,9 @@ function CreateTripNew() {
                 <div className="flex  items-center gap-2 mt-2">
                   <textarea
                     placeholder="Imagine your ideal trip:
+• What is the main purpose of the trip?
 • What activities excite you?
 • Which landmarks are a must-see?
-• What kind of food experiences do you crave?
-• How do you envision your accommodations?
 • What's your preferred travel pace?"
                     value={formData.preferences}
                     onChange={(e) =>
@@ -461,6 +470,17 @@ function CreateTripNew() {
                       )}
                     </button>
                   </div>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {commonTravelers.map((traveler) => (
+                      <button
+                        key={traveler}
+                        onClick={() => handleCommonTravelerClick(traveler)}
+                        className="bg-gray-200 rounded-full px-3 py-1 text-sm"
+                      >
+                        {traveler}
+                      </button>
+                    ))}
+                  </div>
                 </div>
                 {transcriptionLoading && (
                   <div className="absolute top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center">
@@ -549,24 +569,25 @@ function CreateTripNew() {
                   <p className="text-sm text-gray-500 mb-2">
                     Or select a general range:
                   </p>
-                  <div className="flex gap-3 flex-wrap">
+                  <div className="flex flex-wrap gap-2 mt-1">
                     {[
-                      { label: "Budget-friendly", desc: "Economical options" },
-                      { label: "Mid-range", desc: "Balanced comfort & value" },
-                      { label: "Luxury", desc: "Premium experiences" },
-                      { label: "Mixed", desc: "Varies by activity" },
+                      "Budget-friendly",
+                      "Mid-range",
+                      "Luxury",
+                      "Open to splurge on experiences",
                     ].map((option) => (
                       <button
-                        key={option.label}
-                        className="flex-1 min-w-[120px] p-3 rounded-md border border-gray-200 hover:border-primary hover:bg-gray-50 transition-all text-gray-700"
+                        key={option}
                         onClick={() => {
-                          updateFormData({ budget: option.label });
+                          const currentText = formData.budget || "";
+                          const newText = currentText
+                            ? `${currentText}, ${option.toLowerCase()}`
+                            : option;
+                          updateFormData({ budget: newText });
                         }}
+                        className="bg-gray-200 hover:bg-gray-300 rounded-full px-3 py-1 text-sm transition-colors"
                       >
-                        <div className="font-medium">{option.label}</div>
-                        <div className="text-xs text-gray-500">
-                          {option.desc}
-                        </div>
+                        {option}
                       </button>
                     ))}
                   </div>
@@ -728,6 +749,13 @@ function CreateTripNew() {
               : data.transcription,
           });
           break;
+        case "budget":
+          updateFormData({
+            budget: formData.budget
+              ? `${formData.budget} ${data.transcription}`
+              : data.transcription,
+          });
+          break;
 
         // Add additional cases for other form fields
         // case 'otherField':
@@ -799,7 +827,7 @@ function CreateTripNew() {
             onClick={handleSubmit}
             className="bg-primary hover:bg-primary-dark text-white"
           >
-            Create Trip
+            Create Trip ✨
           </Button>
         ) : (
           <Button
