@@ -1,17 +1,26 @@
 import React, { useRef, useState } from "react";
 import { Button } from "../ui/button";
-import { ChevronLeft, ChevronRight, MapPin, Mic } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  MapPin,
+  Mic,
+  CalendarDays,
+  Infinity as InfinityIcon,
+  CalendarRange,
+} from "lucide-react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { toast } from "sonner";
 import { API_URL } from "@/config/api";
 import { useNavigate } from "react-router-dom";
 import TripLoadingAnimation from "./TripLoadingAnimation";
+
 // Define the steps
 const steps = [
   "destination",
   "timeframe",
-  "travelers",
   "preferences",
+  "travelers",
   "budget",
 ];
 
@@ -38,7 +47,38 @@ function CreateTripNew() {
   const [isRecording, setIsRecording] = useState(false);
   const [transcriptionLoading, setTranscriptionLoading] = useState(false);
   const mediaRecorder = useRef<MediaRecorder | null>(null);
+  interface QuickOption {
+    label: string;
+    value: string;
+    icon: JSX.Element;
+  }
 
+  const handleQuickSelect = (value: string) => {
+    updateFormData({ timeframe: value });
+  };
+
+  const quickOptions: QuickOption[] = [
+    {
+      label: "Weekend Getaway",
+      value: "3 days",
+      icon: <CalendarDays className="h-4 w-4" />,
+    },
+    {
+      label: "One Week",
+      value: "7 days",
+      icon: <CalendarRange className="h-4 w-4" />,
+    },
+    {
+      label: "Two Weeks",
+      value: "14 days",
+      icon: <CalendarRange className="h-4 w-4" />,
+    },
+    {
+      label: "Flexible",
+      value: "Not sure yet",
+      icon: <InfinityIcon className="h-4 w-4" />,
+    },
+  ];
   const navigate = useNavigate();
   const goToNextStep = () => {
     if (currentStepIndex < steps.length - 1) {
@@ -97,9 +137,6 @@ function CreateTripNew() {
               <h2 className="text-h2 font-medium text-gray-800">
                 Where would you like to go?
               </h2>
-              <p className="text-body text-gray-500">
-                Let's start planning your perfect trip
-              </p>
             </div>
 
             <div className="w-full max-w-xl mx-auto">
@@ -116,6 +153,7 @@ function CreateTripNew() {
                       border: "1px solid #6B7280",
                       boxShadow: "none",
                       transition: "all 150ms ease",
+
                       "&:hover": {
                         borderColor: "#0F766E",
                       },
@@ -180,52 +218,32 @@ function CreateTripNew() {
       case "timeframe":
         return (
           <div className="space-y-8">
-            <div className="space-y-3 text-center">
-              <h2 className="text-h2 font-medium text-gray-800">
-                Tell us about your trip to {formData.destination?.label}
+            <div className="max-w-[50%] mx-auto space-y-6">
+              <h2 className="block text-h2 text-gray-700 mb-2">
+                What dates are you thinking of, and how long will you be away?
               </h2>
-              <p className="text-body text-gray-500">
-                We'll use this to create your perfect itinerary
-              </p>
-            </div>
 
-            <div className="max-w-xl mx-auto space-y-6">
-              <div className="bg-gray-50 p-5 rounded-lg border border-gray-100">
-                <label className="block text-body text-gray-700 mb-2">
-                  When and how long are you planning to travel?
-                </label>
-                <textarea
-                  placeholder="E.g., About a week in July, 10 days in winter, Long weekend in spring, Not sure yet"
-                  value={formData.timeframe}
-                  onChange={(e) =>
-                    updateFormData({ timeframe: e.target.value })
-                  }
-                  className="w-full min-h-[100px] p-3 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
-                />
-              </div>
-            </div>
-          </div>
-        );
-
-      case "travelers":
-        return (
-          <div className="space-y-8">
-            <div className="space-y-3 text-center">
-              <div className="max-w-xl mx-auto space-y-6">
-                <div className="bg-gray-50 p-5 rounded-lg border border-gray-100">
-                  <label className="block text-body text-gray-700 mb-2">
-                    Who will be traveling? (optional)
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="E.g., Solo, couple, family with kids"
-                    value={formData.travelers || ""}
-                    onChange={(e) =>
-                      updateFormData({ travelers: e.target.value })
-                    }
-                    className="w-full p-2 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
-                  />
-                </div>
+              <textarea
+                placeholder="E.g., June 15-22, 2024;  5 days around Christmas;    A week in late spring"
+                value={formData.timeframe}
+                onChange={(e) => updateFormData({ timeframe: e.target.value })}
+                className="w-full min-h-[100px] p-3 rounded-md border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20"
+              />
+              <div className="flex flex-wrap gap-2 mb-4">
+                {quickOptions.map((option) => (
+                  <button
+                    key={option.label}
+                    className={`flex items-center px-3 py-1.5 text-small rounded-md transition-colors ${
+                      formData.timeframe === option.value
+                        ? "bg-primary/10 text-primary border border-primary/20"
+                        : "bg-white text-gray-700 border border-gray-100 hover:border-primary/20 hover:text-primary"
+                    }`}
+                    onClick={() => handleQuickSelect(option.value)}
+                  >
+                    {option.icon && <span className="mr-2">{option.icon}</span>}
+                    {option.label}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
@@ -278,6 +296,29 @@ function CreateTripNew() {
           </div>
         );
 
+      case "travelers":
+        return (
+          <div className="space-y-8">
+            <div className="space-y-3 text-center">
+              <div className="max-w-xl mx-auto space-y-6">
+                <div className="bg-gray-50 p-5 rounded-lg border border-gray-100">
+                  <label className="block text-body text-gray-700 mb-2">
+                    Who will be traveling? (optional)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="E.g., Solo, couple, family with kids"
+                    value={formData.travelers || ""}
+                    onChange={(e) =>
+                      updateFormData({ travelers: e.target.value })
+                    }
+                    className="w-full p-2 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        );
       case "budget":
         return (
           <div className="space-y-8">
@@ -448,7 +489,7 @@ function CreateTripNew() {
   return (
     <div className="min-h-screen flex flex-col font-sans">
       <header className="bg-white border-b p-4 text-center">
-        <h1 className="text-2xl font-semibold text-gray-800">
+        <h1 className="text-h1 font-semibold text-gray-800">
           Every trip, uniquely yours. Powered by AI.
         </h1>
         <p className="text-gray-600 mt-2">
@@ -498,7 +539,7 @@ function CreateTripNew() {
             onClick={handleSubmit}
             className="bg-primary hover:bg-primary-dark text-white"
           >
-            Generate My Itinerary
+            Create Trip
           </Button>
         ) : (
           <Button
