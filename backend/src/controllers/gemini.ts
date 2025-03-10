@@ -12,7 +12,7 @@ export const createTrip = async (req: express.Request, res: express.Response) =>
         const {location,timeframe,  travelers,
     preferences,budget} = req.body;
         const userId = get(req, 'identity._id');
-        console.log("location",location)
+    
         const FINAL_PROMPT = AI_PROMPT(
     location.label,
     timeframe,
@@ -22,14 +22,14 @@ export const createTrip = async (req: express.Request, res: express.Response) =>
     
   );
 
-                console.log(FINAL_PROMPT);
+                
 
         if (chatSession) {
             
             
             const result = await chatSession.sendMessage(FINAL_PROMPT);
             const resultText = result.response.candidates[0].content.parts[0].text;
-            console.log(resultText);
+       
             const aiResponse = resultText.replace(/```json\n|\n```/g, '');
         
             const parsedResponse=JSON.parse(aiResponse);
@@ -69,15 +69,15 @@ export const updateTrip = async (req: express.Request, res: express.Response) =>
          return;
         }
         const FINAL_PROMPT = UPDATE_PROMPT(trip, changeRequest);
-        console.log(FINAL_PROMPT);
+       
 
         if (chatSession) {   
             const result = await chatSession.sendMessage(FINAL_PROMPT);
             const resultText = result.response.candidates[0].content.parts[0].text;
-            console.log(resultText);
+           
             const aiResponse = resultText.replace(/```json\n|\n```/g, '');
             const parsedResponse=JSON.parse(aiResponse);
-            console.log("parsed ",parsedResponse);
+           
             const generatedItinerary=parsedResponse;
             const trip=await updateTripItinerary(userId,tripId,generatedItinerary);
             res.status(200).json(trip);

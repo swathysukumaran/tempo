@@ -1,5 +1,5 @@
 import { API_URL } from "@/config/api";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import defaultActivityImage from "../../assets/default-activity.jpg";
 import {
@@ -14,9 +14,13 @@ import {
   Compass,
   Edit,
   X,
+  CheckCircle,
 } from "lucide-react";
 import { googlePlacePhotos } from "@/config/googlePlaces";
 import { Button } from "../ui/button";
+import { toast } from "sonner";
+import micAnimation from "../../assets/mic.json";
+import Lottie from "lottie-react";
 function TripDetails() {
   const { tripId } = useParams();
   interface TripData {
@@ -79,9 +83,11 @@ function TripDetails() {
   const [isFabModalOpen, setIsFabModalOpen] = useState(false);
   // Add this handler function
   const handleSubmitChanges = async () => {
+    console.log("change request", changeRequest);
     if (!changeRequest.trim()) return;
 
     try {
+      console.log("Submitting changes...");
       setIsSubmitting(true);
 
       const response = await fetch(`${API_URL}/ai/update-trip/${tripId}`, {
@@ -257,13 +263,132 @@ function TripDetails() {
   const ChangeRequestModal = () => {
     // Use a local state to prevent unnecessary re-renders
     const [localChangeRequest, setLocalChangeRequest] = useState(changeRequest);
-
+    const [isRecording, setIsRecording] = useState(false);
+    const [transcriptionLoading, setTranscriptionLoading] = useState(false);
+    const mediaRecorder = useRef<MediaRecorder | null>(null);
     const handleSubmit = () => {
       // Update the parent component's state when submitting
       setChangeRequest(localChangeRequest);
       handleSubmitChanges();
     };
 
+    const startRecording = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            channelCount: { ideal: 2, min: 2 },
+            echoCancellation: false,
+            autoGainControl: false,
+            noiseSuppression: false,
+          },
+        });
+        const chunks: Blob[] = []; // Store chunks as array of Blobs
+
+        mediaRecorder.current = new MediaRecorder(stream, {
+          mimeType: "audio/webm", // Specify mime type explicitly
+          audioBitsPerSecond: 128000,
+        });
+
+        mediaRecorder.current.ondataavailable = (event: BlobEvent) => {
+          if (event.data.size > 0) {
+            chunks.push(event.data);
+          }
+        };
+
+        mediaRecorder.current.onstop = () => {
+          // Combine all chunks
+          const audioBlob = new Blob(chunks, { type: "audio/webm" });
+
+          console.log("Total blob size:", audioBlob.size);
+
+          // Ensure blob is not empty
+          if (audioBlob.size > 0) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              const base64Audio = (reader.result as string).split(",")[1];
+              console.log("Base64 audio length:", base64Audio.length);
+
+              if (base64Audio && base64Audio.length > 0) {
+                transcribeAudio(base64Audio);
+              } else {
+                toast("No audio data captured");
+              }
+            };
+            reader.readAsDataURL(audioBlob);
+          } else {
+            toast("No audio recorded");
+          }
+
+          // Clean up stream tracks
+          stream.getTracks().forEach((track) => track.stop());
+        };
+
+        mediaRecorder.current.start();
+        setIsRecording(true);
+      } catch (error) {
+        toast("Failed to access microphone");
+        console.error("Recording error:", error);
+      }
+    };
+    const stopRecording = () => {
+      if (
+        mediaRecorder.current &&
+        mediaRecorder.current.state === "recording"
+      ) {
+        // Type assertion to tell TypeScript that current is definitely a MediaRecorder
+        (mediaRecorder.current as MediaRecorder).stop();
+        setIsRecording(false);
+      }
+    };
+
+    const transcribeAudio = async (base64Audio: string) => {
+      setTranscriptionLoading(true);
+      try {
+        // Break large audio files into smaller chunks
+        const maxChunkSize = 10 * 1024 * 1024; // 10MB chunks
+        const chunks = [];
+
+        for (let i = 0; i < base64Audio.length; i += maxChunkSize) {
+          chunks.push(base64Audio.slice(i, i + maxChunkSize));
+        }
+
+        const response = await fetch(`${API_URL}/transcribe`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            audio: chunks[0],
+            mimeType: "audio/webm", // Specify mime type
+            totalChunks: chunks.length,
+            currentChunk: 0,
+          }),
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("Server error:", errorText);
+          throw new Error(`Transcription failed: ${errorText}`);
+        }
+
+        const data = await response.json();
+        console.log("response", response);
+        console.log("Transcription data:", data);
+        console.log("Transcription:", data.transcription);
+        if (!data.transcription || data.transcription.trim() === "") {
+          toast("No speech detected");
+          return;
+        }
+        setChangeRequest(data.transcription);
+
+        toast("Transcription successful");
+      } catch (error) {
+        toast("Transcription failed");
+        console.error("Transcription error:", error);
+      } finally {
+        setTranscriptionLoading(false);
+      }
+    };
     return (
       <div
         className="fixed inset-0 bg-black bg-opacity-50 z-[100] 
@@ -286,15 +411,55 @@ function TripDetails() {
             Not quite what you're looking for? Describe the changes you'd like
             to make, and we'll update your itinerary.
           </p>
-
-          <textarea
-            className="w-full border border-gray-200 rounded-lg p-4 min-h-[150px] 
+          {isRecording && (
+            <div className="mb-2 text-sm flex items-center">
+              <span className=" text-lg animate-pulse mr-1">⏺️</span>{" "}
+              {/* Recording symbol */}
+              <p className="text-gray-600">
+                Recording <span className="ml-1 animate-pulse">...</span>
+              </p>
+              <p className="ml-2 text-gray-500">
+                Press mic again to transcribe
+              </p>
+            </div>
+          )}
+          <div className="flex  items-center gap-2 mt-2">
+            <textarea
+              className="w-full border border-gray-200 rounded-lg p-4 min-h-[150px] 
           focus:border-primary focus:ring-1 focus:ring-primary/20"
-            placeholder="Examples: 'Include a day trip to...', 'Change hotel to...'"
-            value={localChangeRequest}
-            onChange={(e) => setLocalChangeRequest(e.target.value)}
-          />
+              placeholder="Examples: 'Include a day trip to...', 'Change hotel to...'"
+              value={localChangeRequest}
+              onChange={(e) => setLocalChangeRequest(e.target.value)}
+            />
 
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                if (isRecording) {
+                  stopRecording();
+                } else {
+                  startRecording();
+                }
+              }}
+              className=" p-1 h-fit rounded-full bg-primary text-white transition-transform transform hover:scale-105"
+            >
+              {isRecording ? (
+                <Lottie
+                  animationData={micAnimation}
+                  style={{ height: 36, width: 36 }}
+                  loop={true}
+                  autoplay={true} // Use autoplay instead of play
+                />
+              ) : (
+                <Lottie
+                  animationData={micAnimation}
+                  style={{ height: 36, width: 36 }}
+                  loop={false}
+                  autoplay={false}
+                />
+              )}
+            </button>
+          </div>
           <div className="flex justify-end mt-4">
             <Button
               onClick={handleSubmit}
@@ -304,6 +469,14 @@ function TripDetails() {
               {isSubmitting ? "Updating Itinerary..." : "Submit Changes"}
             </Button>
           </div>
+          {transcriptionLoading && (
+            <div className="absolute top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center">
+              <div className="flex items-center space-x-2">
+                <p className="text-white">Transcribing...</p>
+                <CheckCircle className="h-6 w-6 text-white animate-spin-slow" />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );

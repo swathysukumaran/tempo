@@ -22,8 +22,8 @@ const steps = [
   "destination",
   "timeframe",
   "preferences",
-  "travelers",
   "budget",
+  "travelers",
 ];
 
 type TripFormData = {
@@ -49,14 +49,7 @@ function CreateTripNew() {
   const [isRecording, setIsRecording] = useState(false);
   const [transcriptionLoading, setTranscriptionLoading] = useState(false);
   const mediaRecorder = useRef<MediaRecorder | null>(null);
-  const commonPreferences = [
-    "Relaxing",
-    "Adventurous",
-    "Cultural",
-    "Foodie",
-    "Luxury",
-    "Budget Friendly",
-  ];
+  const commonPreferences = ["Relaxing", "Adventurous", "Cultural", "Foodie"];
   const commonTravelers = [
     "Solo",
     "Family with kids",
@@ -422,78 +415,6 @@ function CreateTripNew() {
             </div>
           </div>
         );
-
-      case "travelers":
-        return (
-          <div className="space-y-8">
-            <div className="space-y-3 text-center">
-              <div className="max-w-[50%] mx-auto space-y-6">
-                <div className=" p-5 rounded-lg">
-                  <h2 className="text-h2 font-medium text-gray-800 mb-4">
-                    Who's traveling with you? Any special needs? (optional)
-                  </h2>
-                  <div className="flex  items-center gap-2 mt-2">
-                    <input
-                      type="text"
-                      placeholder="E.g., Solo, couple, family with kids"
-                      value={formData.travelers || ""}
-                      onChange={(e) =>
-                        updateFormData({ travelers: e.target.value })
-                      }
-                      className="w-[90%] p-2 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
-                    />
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        if (isRecording) {
-                          stopRecording();
-                        } else {
-                          startRecording("travelers");
-                        }
-                      }}
-                      className=" p-1 h-fit rounded-full bg-primary text-white transition-transform transform hover:scale-105"
-                    >
-                      {isRecording ? (
-                        <Lottie
-                          animationData={micAnimation}
-                          style={{ height: 36, width: 36 }}
-                          loop={true}
-                          autoplay={true} // Use autoplay instead of play
-                        />
-                      ) : (
-                        <Lottie
-                          animationData={micAnimation}
-                          style={{ height: 36, width: 36 }}
-                          loop={false}
-                          autoplay={false}
-                        />
-                      )}
-                    </button>
-                  </div>
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {commonTravelers.map((traveler) => (
-                      <button
-                        key={traveler}
-                        onClick={() => handleCommonTravelerClick(traveler)}
-                        className="bg-gray-200 rounded-full px-3 py-1 text-sm"
-                      >
-                        {traveler}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                {transcriptionLoading && (
-                  <div className="absolute top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center">
-                    <div className="flex items-center space-x-2">
-                      <p className="text-white">Transcribing...</p>
-                      <CheckCircle className="h-6 w-6 text-white animate-spin-slow" />
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        );
       case "budget":
         return (
           <div className="space-y-8">
@@ -605,6 +526,78 @@ function CreateTripNew() {
             </div>
           </div>
         );
+      case "travelers":
+        return (
+          <div className="space-y-8">
+            <div className="space-y-3 text-center">
+              <div className="max-w-[50%] mx-auto space-y-6">
+                <div className=" p-5 rounded-lg">
+                  <h2 className="text-h2 font-medium text-gray-800 mb-4">
+                    Who's traveling with you? Any special needs? (optional)
+                  </h2>
+                  <div className="flex  items-center gap-2 mt-2">
+                    <input
+                      type="text"
+                      placeholder="E.g., Solo, couple, family with kids"
+                      value={formData.travelers || ""}
+                      onChange={(e) =>
+                        updateFormData({ travelers: e.target.value })
+                      }
+                      className="w-[90%] p-2 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    />
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (isRecording) {
+                          stopRecording();
+                        } else {
+                          startRecording("travelers");
+                        }
+                      }}
+                      className=" p-1 h-fit rounded-full bg-primary text-white transition-transform transform hover:scale-105"
+                    >
+                      {isRecording ? (
+                        <Lottie
+                          animationData={micAnimation}
+                          style={{ height: 36, width: 36 }}
+                          loop={true}
+                          autoplay={true} // Use autoplay instead of play
+                        />
+                      ) : (
+                        <Lottie
+                          animationData={micAnimation}
+                          style={{ height: 36, width: 36 }}
+                          loop={false}
+                          autoplay={false}
+                        />
+                      )}
+                    </button>
+                  </div>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {commonTravelers.map((traveler) => (
+                      <button
+                        key={traveler}
+                        onClick={() => handleCommonTravelerClick(traveler)}
+                        className="bg-gray-200 rounded-full px-3 py-1 text-sm"
+                      >
+                        {traveler}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                {transcriptionLoading && (
+                  <div className="absolute top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center">
+                    <div className="flex items-center space-x-2">
+                      <p className="text-white">Transcribing...</p>
+                      <CheckCircle className="h-6 w-6 text-white animate-spin-slow" />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+
       default:
         return null;
     }
