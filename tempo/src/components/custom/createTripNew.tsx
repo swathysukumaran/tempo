@@ -31,7 +31,7 @@ type TripFormData = {
   timeframe: string;
   travelers?: string;
   preferences: string;
-  budget?: "budget" | "moderate" | "luxury";
+  budget?: string;
 };
 
 function CreateTripNew() {
@@ -478,32 +478,108 @@ function CreateTripNew() {
         return (
           <div className="space-y-8">
             <div className="space-y-3 text-center">
-              <div className="max-w-xl mx-auto space-y-6">
-                <label className="block text-body text-gray-700">
-                  What's your budget range?
+              <h2 className="text-h2 font-medium text-gray-800">
+                What's your budget for this trip?
+              </h2>
+              <p className="text-body text-gray-500">
+                Help us plan within your comfort zone.
+              </p>
+            </div>
+
+            <div className="max-w-[50%] mx-auto space-y-6">
+              <div className="p-5 rounded-lg relative">
+                <label className="block text-body text-gray-600 mb-2">
+                  Describe your budget expectations or constraints for this
+                  journey.
                 </label>
-                <div className="flex gap-3">
-                  {["budget", "moderate", "luxury"].map((budgetOption) => (
-                    <button
-                      key={budgetOption}
-                      className={`flex-1 p-3 rounded-md capitalize text-small ${
-                        formData.budget === budgetOption
-                          ? "bg-primary text-white"
-                          : "bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100"
-                      }`}
-                      onClick={() =>
-                        updateFormData({
-                          budget: budgetOption as
-                            | "budget"
-                            | "moderate"
-                            | "luxury",
-                        })
+
+                {isRecording && (
+                  <div className="mb-2 text-sm flex items-center">
+                    <span className="text-lg animate-pulse mr-1">⏺️</span>
+                    <p className="text-gray-600">
+                      Recording <span className="ml-1 animate-pulse">...</span>
+                    </p>
+                    <p className="ml-2 text-gray-500">
+                      Press mic again to transcribe
+                    </p>
+                  </div>
+                )}
+
+                <div className="flex items-center gap-2 mt-2">
+                  <textarea
+                    placeholder="Examples:
+• Around $2,000 for the entire week
+• Mid-range accommodations but willing to splurge on experiences
+• Luxury accommodations with a budget of $5,000-$7,000"
+                    value={formData.budget || ""}
+                    onChange={(e) => updateFormData({ budget: e.target.value })}
+                    className="w-full min-h-[150px] p-3 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  />
+
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (isRecording) {
+                        stopRecording();
+                      } else {
+                        startRecording("budget");
                       }
-                    >
-                      {budgetOption}
-                    </button>
-                  ))}
+                    }}
+                    className="p-1 h-fit rounded-full bg-primary text-white transition-transform transform hover:scale-105"
+                  >
+                    {isRecording ? (
+                      <Lottie
+                        animationData={micAnimation}
+                        style={{ height: 36, width: 36 }}
+                        loop={true}
+                        autoplay={true}
+                      />
+                    ) : (
+                      <Lottie
+                        animationData={micAnimation}
+                        style={{ height: 36, width: 36 }}
+                        loop={false}
+                        autoplay={false}
+                      />
+                    )}
+                  </button>
                 </div>
+
+                <div className="mt-4">
+                  <p className="text-sm text-gray-500 mb-2">
+                    Or select a general range:
+                  </p>
+                  <div className="flex gap-3 flex-wrap">
+                    {[
+                      { label: "Budget-friendly", desc: "Economical options" },
+                      { label: "Mid-range", desc: "Balanced comfort & value" },
+                      { label: "Luxury", desc: "Premium experiences" },
+                      { label: "Mixed", desc: "Varies by activity" },
+                    ].map((option) => (
+                      <button
+                        key={option.label}
+                        className="flex-1 min-w-[120px] p-3 rounded-md border border-gray-200 hover:border-primary hover:bg-gray-50 transition-all text-gray-700"
+                        onClick={() => {
+                          updateFormData({ budget: option.label });
+                        }}
+                      >
+                        <div className="font-medium">{option.label}</div>
+                        <div className="text-xs text-gray-500">
+                          {option.desc}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {transcriptionLoading && (
+                  <div className="absolute top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center rounded-lg">
+                    <div className="flex items-center space-x-2">
+                      <p className="text-white">Transcribing...</p>
+                      <CheckCircle className="h-6 w-6 text-white animate-spin-slow" />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
