@@ -9,7 +9,53 @@ import {
 } from "@vis.gl/react-google-maps";
 const apiKey = import.meta.env.VITE_GOOGLE_PLACE_API_KEY || "";
 const mapId = import.meta.env.VITE_GOOGLE_MAP_ID || "";
-const GeocodeLocations = ({ hotels, activities, onLocationsReady }) => {
+interface Hotel {
+  hotel_name: string;
+  hotel_address: string;
+  description: string;
+  hotel_image_url?: string;
+}
+interface Activity {
+  place_name: string;
+  place_details: string;
+  place_image_url?: string;
+}
+interface DayData {
+  theme: string;
+  best_time_to_visit: string;
+  activities: Activity[];
+}
+
+interface ItineraryData {
+  [day: string]: DayData;
+}
+
+interface MapViewProps {
+  isOpen: boolean;
+  onClose: () => void;
+  hotels: Hotel[];
+  activities: ItineraryData;
+  apiKey: string;
+}
+
+interface MapPoint {
+  id: string;
+  name: string;
+  address: string;
+  type: 'hotel' | 'activity';
+  position?: { lat: number; lng: number };
+  details: string;
+  image?: string;
+  day?: string;
+}
+
+interface GeocodeLocationsProps {
+  hotels: Hotel[];
+  activities: any[]; 
+  onLocationsReady: (locations: any[]) => void; // Replace 'any' with the appropriate type if known
+}
+
+const GeocodeLocations = ({ hotels, activities, onLocationsReady }: GeocodeLocationsProps) => {
   const geocodingLibrary = useMapsLibrary("geocoding");
   useEffect(() => {
     if(!geocodingLibrary || !hotels || !activities) return;
