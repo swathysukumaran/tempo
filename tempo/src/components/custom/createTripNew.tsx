@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import TripLoadingAnimation from "./TripLoadingAnimation";
 import micAnimation from "../../assets/mic.json";
 import Lottie from "lottie-react";
+const apiKey = import.meta.env.VITE_GOOGLE_PLACE_API_KEY || "";
 // Define the steps
 const steps = [
   "destination",
@@ -161,6 +162,7 @@ function CreateTripNew() {
 
             <div className="w-full max-w-xl mx-auto">
               <GooglePlacesAutocomplete
+                apiKey={apiKey}
                 selectProps={{
                   value: formData.destination,
                   onChange: (value) => updateFormData({ destination: value }),
