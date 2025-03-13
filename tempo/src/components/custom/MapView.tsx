@@ -42,30 +42,63 @@ interface MapPoint {
   id: string;
   name: string;
   address: string;
-  type: 'hotel' | 'activity';
+  type: "hotel" | "activity";
   position?: { lat: number; lng: number };
   details: string;
   image?: string;
   day?: string;
 }
 
-interface GeocodeLocationsProps {
-  hotels: Hotel[];
-  activities: any[]; 
-  onLocationsReady: (locations: any[]) => void; // Replace 'any' with the appropriate type if known
-}
-
-const GeocodeLocations = ({ hotels, activities, onLocationsReady }: GeocodeLocationsProps) => {
+const GeocodeAddress = ({
+  mapPoints,
+  onGeocodeComplete,
+}: {
+  mapPoints: MapPoint[];
+  onGeocodeComplete: (mapPoints: MapPoint[]) => void;
+}) => {
   const geocodingLibrary = useMapsLibrary("geocoding");
+  const [geocodedPoints, setGeocodedPoints] = useState<MapPoint[]>([]);
   useEffect(() => {
-    if(!geocodingLibrary || !hotels || !activities) return;
-
-    const geocoder=new geocodingLibrary.Geocoder();
-    const allLocations = [];
-    const newBounds = new google.maps.LatLngBounds();
-    let pendingGeocodes=0;
-  }
+    if (!geocodingLibrary) {
+      return;
+    }
+    const geocodedAddressed = async () => {
+      const geocoder = new geocodingLibrary.Geocoder();
+      const geocodedPointsResult = [...mapPoints];
+      //   Default to Vancouver if geocoding fails
+      const defaultLocation = { lat: 49.2827, lng: -123.1207 };
+      for (let i = 0; i < mapPoints.length; i++) {
+        const point = mapPoints[i];
+        const searchAddress = `${point.name},$point.address`;
+        try {
+          const response = await geocoder.geocode({ address: searchAddress });
+          if (response.results && response.results.length > 0) {
+            const location = response.results[0].geometry.location;
+            geocodedPointsResult[i] = {
+              ...point,
+              position: { lat: location.lat(), lng: location.lng() },
+            };
+          } else {
+            geocodedPointsResult[i] = {
+              ...point,
+              position: defaultLocation,
+            };
+          }
+        } catch (error) {
+          geocodedPointsResult[i] = {
+            ...point,
+            position: defaultLocation,
+          };
+        }
+      }
+      setGeocodedPoints(geocodedPointsResult);
+      onGeocodeComplete(geocodedPointsResult);
+    };
+    geocodeAddresses();
+  })[geocodingLibrary, mapPoints, onGeocodeComplete]);
+    return null;
 };
+
 function MapView() {
   const position = { lat: 53.54, lng: 10 };
   const [open, setOpen] = useState(false);
