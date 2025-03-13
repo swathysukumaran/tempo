@@ -774,8 +774,7 @@ function CreateTripNew() {
           Every trip, uniquely yours. Powered by AI.
         </h1>
         <p className="text-gray-600 mt-2">
-          Dream big, travel effortlessly. We handle the details, you create the
-          memories.
+          We handle the details, you create the memories.
         </p>
 
         {/* Progress Indicator */}
