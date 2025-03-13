@@ -19,7 +19,8 @@ import Onboarding from "./components/custom/Onboarding.tsx";
 
 import MyTrips from "./components/custom/MyTrips.tsx";
 import LandingPage from "./components/custom/LandingPage.tsx";
-import CreateTripNew from "./components/custom/CreateTripNew.tsx";
+import CreateTripNew from "./components/custom/createTripNew.tsx";
+import MapView from "./components/custom/MapView.tsx";
 
 // Create a layout component that conditionally renders Header
 const RootLayout = () => {
@@ -75,6 +76,10 @@ const router = createBrowserRouter([
       {
         path: "/saved-trips",
         element: <MyTrips />,
+      },
+      {
+        path: "/map",
+        element: <MapView />,
       },
     ],
   },

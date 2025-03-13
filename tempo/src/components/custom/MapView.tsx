@@ -1,5 +1,3 @@
-("use client");
-
 import { useState } from "react";
 import {
   APIProvider,
@@ -8,15 +6,16 @@ import {
   Pin,
   InfoWindow,
 } from "@vis.gl/react-google-maps";
-import { API_URL } from "@/config/api";
+const apiKey = import.meta.env.VITE_GOOGLE_PLACE_API_KEY || "";
+const mapId = import.meta.env.VITE_GOOGLE_MAP_ID || "";
 function MapView() {
   const position = { lat: 53.54, lng: 10 };
   const [open, setOpen] = useState(false);
 
   return (
-    <APIProvider apiKey={API_URL}>
+    <APIProvider apiKey={apiKey}>
       <div style={{ height: "100vh", width: "100%" }}>
-        <Map zoom={9} center={position} mapId={process.env.NEXT_PUBLIC_MAP_ID}>
+        <Map zoom={9} center={position} mapId={mapId}>
           <AdvancedMarker position={position} onClick={() => setOpen(true)}>
             <Pin
               background={"grey"}
