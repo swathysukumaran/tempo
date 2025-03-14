@@ -7,6 +7,7 @@ import {
   InfoWindow,
   useMapsLibrary,
 } from "@vis.gl/react-google-maps";
+import { MapIcon } from "lucide-react";
 const apiKey = import.meta.env.VITE_GOOGLE_PLACE_API_KEY || "";
 const mapId = import.meta.env.VITE_GOOGLE_MAP_ID || "";
 interface Hotel {
@@ -128,28 +129,94 @@ function MapView({ isOpen, onClose, hotels, activities, apiKey }: MapViewProps) 
         )
         
     ];
-    
+
+    const handleGeocodeComplete=(points:MapPoint[])=>{
+        setGeocodedPoints(points);
+        setMapLoaded(true);
+    };
+    if(!isOpen)return null;
   return (
-    <APIProvider apiKey={apiKey}>
-      <div style={{ height: "100vh", width: "100%" }}>
-        <Map zoom={9} center={position} mapId={mapId}>
-          <AdvancedMarker position={position} onClick={() => setOpen(true)}>
-            <Pin
-              background={"grey"}
-              borderColor={"green"}
-              glyphColor={"purple"}
-            />
-          </AdvancedMarker>
-
-          {open && (
-            <InfoWindow position={position} onCloseClick={() => setOpen(false)}>
-              <p>I'm in Hamburg</p>
-            </InfoWindow>
-          )}
-        </Map>
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-[90] flex items-center justify-center p-4">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-5xl h-[80vh] p-6 relative flex flex-col">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold flex items-center text-gray-800">
+            <MapIcon className="mr-3 text-primary" size={32} />
+            Trip Map
+          </h2>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            <X size={24} />
+          </button>
+        </div>
+        
+        <div className="flex items-center mb-4 space-x-4">
+          <div className="flex items-center">
+            <div className="w-4 h-4 bg-red-500 rounded-full mr-2"></div>
+            <span className="text-sm">Activities</span>
+          </div>
+          <div className="flex items-center">
+            <div className="w-4 h-4 bg-blue-500 rounded-full mr-2"></div>
+            <span className="text-sm">Hotels</span>
+          </div>
+        </div>
+        
+        <div className="flex-1 w-full rounded-lg border border-gray-300 overflow-hidden">
+          <APIProvider apiKey={apiKey}>
+            <Map 
+              defaultCenter={{ lat: 40.7128, lng: -74.0060 }}
+              defaultZoom={12}
+              gestureHandling="cooperative"
+              mapId="trip-details-map"
+              className="w-full h-full"
+              onLoad={() => console.log("Map loaded")}
+            >
+              <GeocodeAddresses 
+                mapPoints={mapPoints} 
+                onGeocodeComplete={handleGeocodeComplete} 
+              />
+              
+              {mapLoaded && geocodedPoints.map((point) => (
+                point.position && (
+                  <Marker
+                    key={point.id}
+                    position={point.position}
+                    onClick={() => setSelectedMarker(point)}
+                    icon={{
+                      url: point.type === 'hotel' 
+                        ? 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png' 
+                        : 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                      scaledSize: { width: 30, height: 30 }
+                    }}
+                  />
+                )
+              ))}
+              
+              {selectedMarker && selectedMarker.position && (
+                <InfoWindow
+                  position={selectedMarker.position}
+                  onCloseClick={() => setSelectedMarker(null)}
+                >
+                  <div className="p-2 max-w-xs">
+                    <h3 className="font-bold text-lg">{selectedMarker.name}</h3>
+                    <p className="text-sm text-gray-700">{selectedMarker.address}</p>
+                    {selectedMarker.day && (
+                      <p className="text-sm text-indigo-600 font-medium mt-1">
+                        {selectedMarker.day.replace('day', 'Day ')}
+                      </p>
+                    )}
+                    {selectedMarker.type === 'hotel' && (
+                      <p className="text-sm text-blue-600 font-medium mt-1">Hotel</p>
+                    )}
+                  </div>
+                </InfoWindow>
+              )}
+            </Map>
+          </APIProvider>
+        </div>
       </div>
-    </APIProvider>
+    </div>
   );
-}
-
+};
 export default MapView;
