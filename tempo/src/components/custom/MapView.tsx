@@ -62,7 +62,7 @@ const GeocodeAddress = ({
     if (!geocodingLibrary) {
       return;
     }
-    const geocodedAddressed = async () => {
+    const geocodedAddresses = async () => {
       const geocoder = new geocodingLibrary.Geocoder();
       const geocodedPointsResult = [...mapPoints];
       //   Default to Vancouver if geocoding fails
@@ -94,15 +94,41 @@ const GeocodeAddress = ({
       setGeocodedPoints(geocodedPointsResult);
       onGeocodeComplete(geocodedPointsResult);
     };
-    geocodeAddresses();
+    geocodedAddresses();
   })[geocodingLibrary, mapPoints, onGeocodeComplete]);
     return null;
 };
 
-function MapView() {
-  const position = { lat: 53.54, lng: 10 };
-  const [open, setOpen] = useState(false);
+function MapView({ isOpen, onClose, hotels, activities, apiKey }: MapViewProps) {
+  const [selectedMarker,setSelectedMarker]=useState<MapPoint|null>(null);
+  const [geocodedPoints,setGeocodedPoints]=useState<MapPoint[]>([]);
+  const [mapLoaded,setMapLoaded]=useState<boolean>(false);
 
+//   combine hotels and activities into a single array of map points
+
+    const mapPoints:MapPoint[]=[
+        ...hotels.map(hotel=>({
+            id:`hotel-${hotel.hotel_name}`,
+            name:hotel.hotel_name,
+            address:hotel.hotel_address,
+            type:"hotel",
+            details:hotel.description,
+            image:hotel.hotel_image_url
+        })),
+        ...Object.entries(activities).flatMap(([day,dayData])=>
+            dayData.activities.map(activity=>({
+                id:`activity-${activity.place_name}`,
+                name:activity.place_name,
+                address:activity.place_details.split('.')[0],
+                type:"activity" as const,
+                details:activity.place_details,
+                image:activity.place_image_url, 
+                day:day 
+            }))
+        )
+        
+    ];
+    
   return (
     <APIProvider apiKey={apiKey}>
       <div style={{ height: "100vh", width: "100%" }}>
