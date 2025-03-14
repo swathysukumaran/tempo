@@ -7,7 +7,6 @@ import {
   InfoWindow,
   useMapsLibrary,
 } from "@vis.gl/react-google-maps";
-import { MapIcon, X } from "lucide-react";
 
 const apiKey = import.meta.env.VITE_GOOGLE_PLACE_API_KEY || "";
 const mapId = import.meta.env.VITE_GOOGLE_MAP_ID || "";
@@ -120,7 +119,7 @@ const GeocodeAddresses = ({
   return null;
 };
 
-function MapView({ isOpen, onClose, hotels, activities }: MapViewProps) {
+function MapView({ isVisible, hotels, activities }: MapViewProps) {
   const [selectedMarker, setSelectedMarker] = useState<MapPoint | null>(null);
   const [geocodedPoints, setGeocodedPoints] = useState<MapPoint[]>([]);
   const [mapLoaded, setMapLoaded] = useState<boolean>(false);
@@ -153,8 +152,6 @@ function MapView({ isOpen, onClose, hotels, activities }: MapViewProps) {
     setMapLoaded(true);
   };
 
-  if (!isOpen) return null;
-
   return (
     <div
       className={`w-full overflow-hidden transition-all duration-500 ease-in-out ${
@@ -167,9 +164,9 @@ function MapView({ isOpen, onClose, hotels, activities }: MapViewProps) {
             defaultCenter={{ lat: 40.7128, lng: -74.006 }}
             defaultZoom={12}
             gestureHandling="cooperative"
-            mapId="trip-details-map"
+            mapId={mapId}
             className="w-full h-full"
-            onLoad={() => console.log("Map loaded")}
+            // onLoad={() => console.log("Map loaded")}
           >
             <GeocodeAddresses
               mapPoints={mapPoints}
