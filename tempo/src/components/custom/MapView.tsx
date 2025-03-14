@@ -6,6 +6,7 @@ import {
   Pin,
   InfoWindow,
   useMapsLibrary,
+  useMap,
 } from "@vis.gl/react-google-maps";
 
 const apiKey = import.meta.env.VITE_GOOGLE_PLACE_API_KEY || "";
@@ -21,7 +22,11 @@ interface Hotel {
 interface Activity {
   place_name: string;
   place_details: string;
-  place_image_url?: string;
+  ticket_pricing: string;
+  rating: number;
+  time_slot: string;
+  travel_time: string;
+  place_image_url: string | null;
 }
 
 interface DayData {
@@ -47,21 +52,40 @@ interface MapPoint {
   type: "hotel" | "activity";
   position?: { lat: number; lng: number };
   details: string;
-  image?: string;
+  image?: string | null;
   day?: string;
 }
 
-// // Type definition for the Google Maps Geocoding response
-// interface GeocodeResult {
-//   results: {
-//     geometry: {
-//       location: {
-//         lat: () => number;
-//         lng: () => number;
-//       };
-//     };
-//   }[];
-// }
+// Component that uses useMap hook to access the map instance
+// and fit the bounds to show all markers
+const FitBounds = ({ points }: { points: MapPoint[] }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!map || points.length === 0) return;
+
+    // Create bounds from all points
+    const bounds = new google.maps.LatLngBounds();
+    let hasValidPoints = false;
+
+    points.forEach((point) => {
+      if (point.position) {
+        bounds.extend(point.position);
+        hasValidPoints = true;
+      }
+    });
+
+    // Only fit bounds if we have valid points
+    if (hasValidPoints) {
+      // Add a small timeout to ensure the map is fully loaded
+      setTimeout(() => {
+        map.fitBounds(bounds);
+      }, 200);
+    }
+  }, [map, points]);
+
+  return null;
+};
 
 const GeocodeAddresses = ({
   mapPoints,
@@ -80,8 +104,6 @@ const GeocodeAddresses = ({
     const geocodeAddresses = async () => {
       const geocoder = new geocodingLibrary.Geocoder();
       const geocodedPointsResult = [...mapPoints];
-      // Default to Vancouver if geocoding fails
-      const defaultLocation = { lat: 49.2827, lng: -123.1207 };
 
       for (let i = 0; i < mapPoints.length; i++) {
         const point = mapPoints[i];
@@ -91,21 +113,24 @@ const GeocodeAddresses = ({
           const response = await geocoder.geocode({ address: searchAddress });
           if (response.results && response.results.length > 0) {
             const location = response.results[0].geometry.location;
+            const position = {
+              lat: location.lat(),
+              lng: location.lng(),
+            };
+
             geocodedPointsResult[i] = {
               ...point,
-              position: { lat: location.lat(), lng: location.lng() },
+              position: position,
             };
           } else {
             geocodedPointsResult[i] = {
               ...point,
-              position: defaultLocation,
             };
           }
         } catch (error) {
           console.error(`Error geocoding ${searchAddress}:`, error);
           geocodedPointsResult[i] = {
             ...point,
-            position: defaultLocation,
           };
         }
       }
@@ -124,6 +149,31 @@ function MapView({ isVisible, hotels, activities }: MapViewProps) {
   const [geocodedPoints, setGeocodedPoints] = useState<MapPoint[]>([]);
   const [mapLoaded, setMapLoaded] = useState<boolean>(false);
 
+  // Calculate center for initial display
+  //   const calculateCenter = (points: MapPoint[]) => {
+  //     const validPoints = points.filter((p) => p.position);
+
+  //     if (validPoints.length === 0) {
+  //       return { lat: 49.2827, lng: -123.1207 }; // Default to Vancouver
+  //     }
+
+  //     // Calculate average of all positions
+  //     let totalLat = 0;
+  //     let totalLng = 0;
+
+  //     validPoints.forEach((point) => {
+  //       if (point.position) {
+  //         totalLat += point.position.lat;
+  //         totalLng += point.position.lng;
+  //       }
+  //     });
+
+  //     return {
+  //       lat: totalLat / validPoints.length,
+  //       lng: totalLng / validPoints.length,
+  //     };
+  //   };
+
   // Combine hotels and activities into a single array of map points
   const mapPoints: MapPoint[] = [
     ...hotels.map((hotel) => ({
@@ -135,7 +185,7 @@ function MapView({ isVisible, hotels, activities }: MapViewProps) {
       image: hotel.hotel_image_url,
     })),
     ...Object.entries(activities).flatMap(([day, dayData]) =>
-      dayData.activities.map((activity) => ({
+      dayData.activities.map((activity: Activity) => ({
         id: `activity-${activity.place_name}`,
         name: activity.place_name,
         address: activity.place_details.split(".")[0],
@@ -152,6 +202,9 @@ function MapView({ isVisible, hotels, activities }: MapViewProps) {
     setMapLoaded(true);
   };
 
+  // Initial center point - will be adjusted by FitBounds
+  const defaultCenter = { lat: 49.2827, lng: -123.1207 };
+
   return (
     <div
       className={`w-full overflow-hidden transition-all duration-500 ease-in-out ${
@@ -161,17 +214,19 @@ function MapView({ isVisible, hotels, activities }: MapViewProps) {
       <div className="w-full h-full rounded-xl border border-gray-300 overflow-hidden shadow-lg">
         <APIProvider apiKey={apiKey}>
           <Map
-            defaultCenter={{ lat: 40.7128, lng: -74.006 }}
-            defaultZoom={12}
+            defaultCenter={defaultCenter}
+            defaultZoom={4} // Start with a zoomed-out view
             gestureHandling="cooperative"
             mapId={mapId}
             className="w-full h-full"
-            // onLoad={() => console.log("Map loaded")}
           >
             <GeocodeAddresses
               mapPoints={mapPoints}
               onGeocodeComplete={handleGeocodeComplete}
             />
+
+            {/* This component will fit the bounds when points are loaded */}
+            {mapLoaded && <FitBounds points={geocodedPoints} />}
 
             {mapLoaded &&
               geocodedPoints.map(
