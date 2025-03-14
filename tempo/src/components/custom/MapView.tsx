@@ -7,20 +7,24 @@ import {
   InfoWindow,
   useMapsLibrary,
 } from "@vis.gl/react-google-maps";
-import { MapIcon } from "lucide-react";
+import { MapIcon, X } from "lucide-react";
+
 const apiKey = import.meta.env.VITE_GOOGLE_PLACE_API_KEY || "";
 const mapId = import.meta.env.VITE_GOOGLE_MAP_ID || "";
+
 interface Hotel {
   hotel_name: string;
   hotel_address: string;
   description: string;
   hotel_image_url?: string;
 }
+
 interface Activity {
   place_name: string;
   place_details: string;
   place_image_url?: string;
 }
+
 interface DayData {
   theme: string;
   best_time_to_visit: string;
@@ -50,7 +54,19 @@ interface MapPoint {
   day?: string;
 }
 
-const GeocodeAddress = ({
+// // Type definition for the Google Maps Geocoding response
+// interface GeocodeResult {
+//   results: {
+//     geometry: {
+//       location: {
+//         lat: () => number;
+//         lng: () => number;
+//       };
+//     };
+//   }[];
+// }
+
+const GeocodeAddresses = ({
   mapPoints,
   onGeocodeComplete,
 }: {
@@ -58,19 +74,22 @@ const GeocodeAddress = ({
   onGeocodeComplete: (mapPoints: MapPoint[]) => void;
 }) => {
   const geocodingLibrary = useMapsLibrary("geocoding");
-  const [geocodedPoints, setGeocodedPoints] = useState<MapPoint[]>([]);
+
   useEffect(() => {
     if (!geocodingLibrary) {
       return;
     }
-    const geocodedAddresses = async () => {
+
+    const geocodeAddresses = async () => {
       const geocoder = new geocodingLibrary.Geocoder();
       const geocodedPointsResult = [...mapPoints];
-      //   Default to Vancouver if geocoding fails
+      // Default to Vancouver if geocoding fails
       const defaultLocation = { lat: 49.2827, lng: -123.1207 };
+
       for (let i = 0; i < mapPoints.length; i++) {
         const point = mapPoints[i];
-        const searchAddress = `${point.name},$point.address`;
+        const searchAddress = `${point.name}, ${point.address}`;
+
         try {
           const response = await geocoder.geocode({ address: searchAddress });
           if (response.results && response.results.length > 0) {
@@ -86,55 +105,58 @@ const GeocodeAddress = ({
             };
           }
         } catch (error) {
+          console.error(`Error geocoding ${searchAddress}:`, error);
           geocodedPointsResult[i] = {
             ...point,
             position: defaultLocation,
           };
         }
       }
-      setGeocodedPoints(geocodedPointsResult);
+
       onGeocodeComplete(geocodedPointsResult);
     };
-    geocodedAddresses();
-  })[geocodingLibrary, mapPoints, onGeocodeComplete]);
-    return null;
+
+    geocodeAddresses();
+  }, [geocodingLibrary, mapPoints, onGeocodeComplete]);
+
+  return null;
 };
 
-function MapView({ isOpen, onClose, hotels, activities, apiKey }: MapViewProps) {
-  const [selectedMarker,setSelectedMarker]=useState<MapPoint|null>(null);
-  const [geocodedPoints,setGeocodedPoints]=useState<MapPoint[]>([]);
-  const [mapLoaded,setMapLoaded]=useState<boolean>(false);
+function MapView({ isOpen, onClose, hotels, activities }: MapViewProps) {
+  const [selectedMarker, setSelectedMarker] = useState<MapPoint | null>(null);
+  const [geocodedPoints, setGeocodedPoints] = useState<MapPoint[]>([]);
+  const [mapLoaded, setMapLoaded] = useState<boolean>(false);
 
-//   combine hotels and activities into a single array of map points
+  // Combine hotels and activities into a single array of map points
+  const mapPoints: MapPoint[] = [
+    ...hotels.map((hotel) => ({
+      id: `hotel-${hotel.hotel_name}`,
+      name: hotel.hotel_name,
+      address: hotel.hotel_address,
+      type: "hotel" as const,
+      details: hotel.description,
+      image: hotel.hotel_image_url,
+    })),
+    ...Object.entries(activities).flatMap(([day, dayData]) =>
+      dayData.activities.map((activity) => ({
+        id: `activity-${activity.place_name}`,
+        name: activity.place_name,
+        address: activity.place_details.split(".")[0],
+        type: "activity" as const,
+        details: activity.place_details,
+        image: activity.place_image_url,
+        day: day,
+      }))
+    ),
+  ];
 
-    const mapPoints:MapPoint[]=[
-        ...hotels.map(hotel=>({
-            id:`hotel-${hotel.hotel_name}`,
-            name:hotel.hotel_name,
-            address:hotel.hotel_address,
-            type:"hotel",
-            details:hotel.description,
-            image:hotel.hotel_image_url
-        })),
-        ...Object.entries(activities).flatMap(([day,dayData])=>
-            dayData.activities.map(activity=>({
-                id:`activity-${activity.place_name}`,
-                name:activity.place_name,
-                address:activity.place_details.split('.')[0],
-                type:"activity" as const,
-                details:activity.place_details,
-                image:activity.place_image_url, 
-                day:day 
-            }))
-        )
-        
-    ];
+  const handleGeocodeComplete = (points: MapPoint[]) => {
+    setGeocodedPoints(points);
+    setMapLoaded(true);
+  };
 
-    const handleGeocodeComplete=(points:MapPoint[])=>{
-        setGeocodedPoints(points);
-        setMapLoaded(true);
-    };
-    if(!isOpen)return null;
+  if (!isOpen) return null;
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-[90] flex items-center justify-center p-4">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-5xl h-[80vh] p-6 relative flex flex-col">
@@ -150,7 +172,7 @@ function MapView({ isOpen, onClose, hotels, activities, apiKey }: MapViewProps) 
             <X size={24} />
           </button>
         </div>
-        
+
         <div className="flex items-center mb-4 space-x-4">
           <div className="flex items-center">
             <div className="w-4 h-4 bg-red-500 rounded-full mr-2"></div>
@@ -161,38 +183,44 @@ function MapView({ isOpen, onClose, hotels, activities, apiKey }: MapViewProps) 
             <span className="text-sm">Hotels</span>
           </div>
         </div>
-        
+
         <div className="flex-1 w-full rounded-lg border border-gray-300 overflow-hidden">
           <APIProvider apiKey={apiKey}>
-            <Map 
-              defaultCenter={{ lat: 40.7128, lng: -74.0060 }}
+            <Map
+              defaultCenter={{ lat: 40.7128, lng: -74.006 }}
               defaultZoom={12}
               gestureHandling="cooperative"
-              mapId="trip-details-map"
+              mapId={mapId}
               className="w-full h-full"
-              onLoad={() => console.log("Map loaded")}
+              //   onLoad={() => console.log("Map loaded")}
             >
-              <GeocodeAddresses 
-                mapPoints={mapPoints} 
-                onGeocodeComplete={handleGeocodeComplete} 
+              <GeocodeAddresses
+                mapPoints={mapPoints}
+                onGeocodeComplete={handleGeocodeComplete}
               />
-              
-              {mapLoaded && geocodedPoints.map((point) => (
-                point.position && (
-                  <Marker
-                    key={point.id}
-                    position={point.position}
-                    onClick={() => setSelectedMarker(point)}
-                    icon={{
-                      url: point.type === 'hotel' 
-                        ? 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png' 
-                        : 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
-                      scaledSize: { width: 30, height: 30 }
-                    }}
-                  />
-                )
-              ))}
-              
+
+              {mapLoaded &&
+                geocodedPoints.map(
+                  (point) =>
+                    point.position && (
+                      <AdvancedMarker
+                        key={point.id}
+                        position={point.position}
+                        onClick={() => setSelectedMarker(point)}
+                      >
+                        <Pin
+                          background={
+                            point.type === "hotel" ? "#3b82f6" : "#ef4444"
+                          }
+                          borderColor={
+                            point.type === "hotel" ? "#1d4ed8" : "#b91c1c"
+                          }
+                          glyphColor="#ffffff"
+                        />
+                      </AdvancedMarker>
+                    )
+                )}
+
               {selectedMarker && selectedMarker.position && (
                 <InfoWindow
                   position={selectedMarker.position}
@@ -200,14 +228,18 @@ function MapView({ isOpen, onClose, hotels, activities, apiKey }: MapViewProps) 
                 >
                   <div className="p-2 max-w-xs">
                     <h3 className="font-bold text-lg">{selectedMarker.name}</h3>
-                    <p className="text-sm text-gray-700">{selectedMarker.address}</p>
+                    <p className="text-sm text-gray-700">
+                      {selectedMarker.address}
+                    </p>
                     {selectedMarker.day && (
                       <p className="text-sm text-indigo-600 font-medium mt-1">
-                        {selectedMarker.day.replace('day', 'Day ')}
+                        {selectedMarker.day.replace("day", "Day ")}
                       </p>
                     )}
-                    {selectedMarker.type === 'hotel' && (
-                      <p className="text-sm text-blue-600 font-medium mt-1">Hotel</p>
+                    {selectedMarker.type === "hotel" && (
+                      <p className="text-sm text-blue-600 font-medium mt-1">
+                        Hotel
+                      </p>
                     )}
                   </div>
                 </InfoWindow>
@@ -218,5 +250,6 @@ function MapView({ isOpen, onClose, hotels, activities, apiKey }: MapViewProps) 
       </div>
     </div>
   );
-};
+}
+
 export default MapView;
