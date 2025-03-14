@@ -36,11 +36,9 @@ interface ItineraryData {
 }
 
 interface MapViewProps {
-  isOpen: boolean;
-  onClose: () => void;
   hotels: Hotel[];
   activities: ItineraryData;
-  apiKey: string;
+  isVisible: boolean;
 }
 
 interface MapPoint {
@@ -158,95 +156,73 @@ function MapView({ isOpen, onClose, hotels, activities }: MapViewProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-[90] flex items-center justify-center p-4">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-5xl h-[80vh] p-6 relative flex flex-col">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold flex items-center text-gray-800">
-            <MapIcon className="mr-3 text-primary" size={32} />
-            Trip Map
-          </h2>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
+    <div
+      className={`w-full overflow-hidden transition-all duration-500 ease-in-out ${
+        isVisible ? "h-[400px] opacity-100 mb-8" : "h-0 opacity-0"
+      }`}
+    >
+      <div className="w-full h-full rounded-xl border border-gray-300 overflow-hidden shadow-lg">
+        <APIProvider apiKey={apiKey}>
+          <Map
+            defaultCenter={{ lat: 40.7128, lng: -74.006 }}
+            defaultZoom={12}
+            gestureHandling="cooperative"
+            mapId="trip-details-map"
+            className="w-full h-full"
+            onLoad={() => console.log("Map loaded")}
           >
-            <X size={24} />
-          </button>
-        </div>
+            <GeocodeAddresses
+              mapPoints={mapPoints}
+              onGeocodeComplete={handleGeocodeComplete}
+            />
 
-        <div className="flex items-center mb-4 space-x-4">
-          <div className="flex items-center">
-            <div className="w-4 h-4 bg-red-500 rounded-full mr-2"></div>
-            <span className="text-sm">Activities</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-4 h-4 bg-blue-500 rounded-full mr-2"></div>
-            <span className="text-sm">Hotels</span>
-          </div>
-        </div>
-
-        <div className="flex-1 w-full rounded-lg border border-gray-300 overflow-hidden">
-          <APIProvider apiKey={apiKey}>
-            <Map
-              defaultCenter={{ lat: 40.7128, lng: -74.006 }}
-              defaultZoom={12}
-              gestureHandling="cooperative"
-              mapId={mapId}
-              className="w-full h-full"
-              //   onLoad={() => console.log("Map loaded")}
-            >
-              <GeocodeAddresses
-                mapPoints={mapPoints}
-                onGeocodeComplete={handleGeocodeComplete}
-              />
-
-              {mapLoaded &&
-                geocodedPoints.map(
-                  (point) =>
-                    point.position && (
-                      <AdvancedMarker
-                        key={point.id}
-                        position={point.position}
-                        onClick={() => setSelectedMarker(point)}
-                      >
-                        <Pin
-                          background={
-                            point.type === "hotel" ? "#3b82f6" : "#ef4444"
-                          }
-                          borderColor={
-                            point.type === "hotel" ? "#1d4ed8" : "#b91c1c"
-                          }
-                          glyphColor="#ffffff"
-                        />
-                      </AdvancedMarker>
-                    )
-                )}
-
-              {selectedMarker && selectedMarker.position && (
-                <InfoWindow
-                  position={selectedMarker.position}
-                  onCloseClick={() => setSelectedMarker(null)}
-                >
-                  <div className="p-2 max-w-xs">
-                    <h3 className="font-bold text-lg">{selectedMarker.name}</h3>
-                    <p className="text-sm text-gray-700">
-                      {selectedMarker.address}
-                    </p>
-                    {selectedMarker.day && (
-                      <p className="text-sm text-indigo-600 font-medium mt-1">
-                        {selectedMarker.day.replace("day", "Day ")}
-                      </p>
-                    )}
-                    {selectedMarker.type === "hotel" && (
-                      <p className="text-sm text-blue-600 font-medium mt-1">
-                        Hotel
-                      </p>
-                    )}
-                  </div>
-                </InfoWindow>
+            {mapLoaded &&
+              geocodedPoints.map(
+                (point) =>
+                  point.position && (
+                    <AdvancedMarker
+                      key={point.id}
+                      position={point.position}
+                      onClick={() => setSelectedMarker(point)}
+                    >
+                      <Pin
+                        background={
+                          point.type === "hotel" ? "#3b82f6" : "#ef4444"
+                        }
+                        borderColor={
+                          point.type === "hotel" ? "#1d4ed8" : "#b91c1c"
+                        }
+                        glyphColor="#ffffff"
+                      />
+                    </AdvancedMarker>
+                  )
               )}
-            </Map>
-          </APIProvider>
-        </div>
+
+            {selectedMarker && selectedMarker.position && (
+              <InfoWindow
+                position={selectedMarker.position}
+                onCloseClick={() => setSelectedMarker(null)}
+              >
+                <div className="p-2 max-w-xs">
+                  <h3 className="font-bold text-lg">{selectedMarker.name}</h3>
+                  <p className="text-sm text-gray-700">
+                    {selectedMarker.address}
+                  </p>
+                  {selectedMarker.day && (
+                    <p className="text-sm text-indigo-600 font-medium mt-1">
+                      {selectedMarker.day.replace("day", "Day ")}
+                    </p>
+                  )}
+                  {selectedMarker.type === "hotel" && (
+                    <p className="text-sm text-blue-600 font-medium mt-1">
+                      Hotel
+                    </p>
+                  )}
+                </div>
+              </InfoWindow>
+            )}
+          </Map>
+        </APIProvider>
       </div>
     </div>
   );
