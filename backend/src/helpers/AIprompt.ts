@@ -37,7 +37,7 @@ Instructions:
 14. If a cover image or hotel image is available, include the URL; otherwise, set to null.
 15. If any information is not available, set that value to null.
 16. Include a "narrative" section within the 'tripDetails' object with ** a concise personalized  engaging introduction that to the trip that convey the essence of the trip and creates excitement and anticipation **
-17. Return the response in a VALID JSON FORMAT that ADHERES STRICTLY to the following schema.
+17. Return the response in a VALID JSON FORMAT that ADHERES STRICTLY to the following schema.**Absolutely make sure to return valid JSON only. Ensure all property names are in double quotes. Do not include any text before or after the JSON object.**
 18. ** ABSOLUTELY ensure that each day of the itinerary includes breakfast lunch and dinner suggestions, and specific time slots for each activity. **
 **Make sure to include atleast 3 hotel suggestions**
 19. Include a "transportation" section within the 'tripDetails' object with:
@@ -132,6 +132,7 @@ Instructions:
 2.  Make only the changes requested by the user. Do not add or remove any other activities or information unless explicitly requested.
 3.  **Ensure that the updated itinerary accurately reflects the user's requested changes ${changeRequest}**.
 4.  Preserve the original structure and all other details of the itinerary that were not affected by the user's request.
+**Absolutely make sure to return valid JSON only. Ensure all property names are in double quotes. Do not include any text before or after the JSON object.**
 5.  **Return the complete, updated itinerary in valid JSON format, ADHERES STRICTLY  to the following schema structure:
 \`\`\`json
 ${JSON.stringify(trip.generatedItinerary, null, 2)}

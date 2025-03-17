@@ -54,8 +54,24 @@ export const createTrip = async (req: express.Request, res: express.Response) =>
     }
 
 }
-
+            function safeJSONParse(text: string) {
+  try {
+    // Clean the text first - remove any markdown code blocks
+    let cleanedText = text.replace(/```json\n|\n```|```/g, '');
+    
+    // Ensure property names have double quotes
+    cleanedText = cleanedText.replace(/(\w+)(?=\s*:)/g, '"$1"');
+    
+    // Try to parse the cleaned text
+    return JSON.parse(cleanedText);
+  } catch (error) {
+    console.error("JSON parsing error:", error);
+    console.log("Problematic JSON:", text);
+    throw new Error("Failed to parse AI response as JSON");
+  }
+}
 export const updateTrip = async (req: express.Request, res: express.Response) => {
+
 
     try{
         const { tripId } = req.params;
@@ -75,8 +91,8 @@ export const updateTrip = async (req: express.Request, res: express.Response) =>
             const result = await chatSession.sendMessage(FINAL_PROMPT);
             const resultText = result.response.candidates[0].content.parts[0].text;
            
-            const aiResponse = resultText.replace(/```json\n|\n```/g, '');
-            const parsedResponse=JSON.parse(aiResponse);
+            
+            const parsedResponse=safeJSONParse(resultText);
            
             const generatedItinerary=parsedResponse;
             const trip=await updateTripItinerary(userId,tripId,generatedItinerary);
