@@ -241,6 +241,7 @@ function MapView({ isVisible, hotels, activities }: MapViewProps) {
       <div className="w-full h-full rounded-xl border border-gray-300 overflow-hidden shadow-lg">
         <APIProvider apiKey={apiKey}>
           <Map
+            defaultZoom={12}
             gestureHandling="cooperative"
             mapId={mapId}
             className="w-full h-full"
