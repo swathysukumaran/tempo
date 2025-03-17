@@ -799,11 +799,11 @@ function CreateTripNew() {
         </div>
       </header>
 
-      <main className="flex-1 p-4">
+      <main className="flex-1 p-4 overflow-y-auto pb-2">
         <div className=" mx-auto">{renderStepContent()}</div>
       </main>
 
-      <footer className="bg-white border-t p-4 flex justify-between">
+      <footer className="bg-white border-t p-4 flex justify-between fixed bottom-0 left-0 right-0 z-10">
         <Button
           variant="outline"
           onClick={goToPreviousStep}
