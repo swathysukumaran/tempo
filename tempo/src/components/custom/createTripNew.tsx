@@ -760,8 +760,6 @@ function CreateTripNew() {
         default:
           console.error(`Unknown calling step: ${callingStep}`);
       }
-
-      toast("Transcription successful");
     } catch (error) {
       toast("Transcription failed");
       console.error("Transcription error:", error);
