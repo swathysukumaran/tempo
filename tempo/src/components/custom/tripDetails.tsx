@@ -108,45 +108,8 @@ function TripDetails() {
       // Refresh the page or fetch updated data
       console.log("Response", response);
       const updatedData = await response.json();
-      console.log("Updated Data", updatedData);
-      const destinationImage = await googlePlacePhotos(
-        updatedData.tripDetails.location?.label
-      );
-      console.log("Destination Image", destinationImage);
-      updatedData.generatedItinerary.cover_image_url = destinationImage;
-
-      for (const hotel of updatedData.generatedItinerary.hotels) {
-        console.log("Hotel", hotel.hotel_name, hotel.hotel_address);
-        const hotelImage = await googlePlacePhotos(
-          `${hotel.hotel_name} ${hotel.hotel_address}`
-        );
-        hotel.hotel_image_url = hotelImage;
-        console.log("Hotel Image", hotelImage);
-      }
-      type DayData = {
-        theme: string;
-        best_time_to_visit: string;
-        activities: {
-          place_name: string;
-          place_details: string;
-          ticket_pricing: string;
-          rating: number;
-          time_slot: string;
-          travel_time: string;
-          place_image_url?: string;
-        }[];
-      };
-
-      for (const dayData of Object.values(
-        updatedData.generatedItinerary.itinerary
-      ) as DayData[]) {
-        for (const activity of dayData.activities) {
-          const activityImage = await googlePlacePhotos(activity.place_name);
-          activity.place_image_url = activityImage || defaultActivityImage;
-        }
-      }
-      setTripData(updatedData);
-      setChangeRequest("");
+      const updatedDataWithImages = await fetchImages(updatedData);
+      setTripData(updatedDataWithImages);
     } catch (err) {
       console.error("Error updating itinerary:", err);
       alert("Failed to update itinerary. Please try again.");
@@ -155,6 +118,47 @@ function TripDetails() {
       setIsFabModalOpen(false);
     }
   };
+  const fetchImages = async (data: TripData) => {
+    const coverImagePromise = googlePlacePhotos(
+      data.tripDetails.location?.label || ""
+    );
+
+    const hotelImagePromises = data.generatedItinerary.hotels.map((hotel) =>
+      googlePlacePhotos(`${hotel.hotel_name} ${hotel.hotel_address}`)
+    );
+
+    const activityImagePromises = Object.values(
+      data.generatedItinerary.itinerary
+    ).flatMap((dayData) =>
+      dayData.activities.map((activity) =>
+        googlePlacePhotos(activity.place_name)
+      )
+    );
+
+    const [coverImage, hotelImages, activityImages] = await Promise.all([
+      coverImagePromise,
+      Promise.all(hotelImagePromises),
+      Promise.all(activityImagePromises),
+    ]);
+
+    data.generatedItinerary.cover_image_url = coverImage ?? undefined;
+
+    data.generatedItinerary.hotels.forEach((hotel, index) => {
+      hotel.hotel_image_url = hotelImages[index] ?? undefined;
+    });
+
+    let activityIndex = 0;
+    Object.values(data.generatedItinerary.itinerary).forEach((dayData) => {
+      dayData.activities.forEach((activity) => {
+        activity.place_image_url =
+          activityImages[activityIndex] || defaultActivityImage;
+        activityIndex++;
+      });
+    });
+
+    return data;
+  };
+
   useEffect(() => {
     const fetchTripDetails = async () => {
       try {
@@ -164,20 +168,9 @@ function TripDetails() {
         if (!response.ok) throw new Error("Failed to fetch trip details");
         const data = await response.json();
         console.log("Trip Data", data);
-        const destinationImage = await googlePlacePhotos(
-          data.tripDetails.location?.label
-        );
-        console.log("Destination Image", destinationImage);
-        data.generatedItinerary.cover_image_url = destinationImage;
+        const dataWithImages = await fetchImages(data);
+        setTripData(dataWithImages);
 
-        for (const hotel of data.generatedItinerary.hotels) {
-          console.log("Hotel", hotel.hotel_name, hotel.hotel_address);
-          const hotelImage = await googlePlacePhotos(
-            `${hotel.hotel_name} ${hotel.hotel_address}`
-          );
-          hotel.hotel_image_url = hotelImage;
-          console.log("Hotel Image", hotelImage);
-        }
         const itinerary = data.generatedItinerary.itinerary;
         console.log("Itinerary", itinerary);
         type DayData = {

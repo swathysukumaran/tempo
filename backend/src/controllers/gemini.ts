@@ -29,7 +29,7 @@ export const createTrip = async (req: express.Request, res: express.Response) =>
             
             const result = await chatSession.sendMessage(FINAL_PROMPT);
             const resultText = result.response.candidates[0].content.parts[0].text;
-       
+            console.log(resultText);
             const aiResponse = resultText.replace(/```json\n|\n```/g, '');
         
             const parsedResponse=JSON.parse(aiResponse);
