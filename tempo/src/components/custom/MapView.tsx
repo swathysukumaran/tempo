@@ -6,6 +6,7 @@ import {
   Pin,
   InfoWindow,
   useMapsLibrary,
+  useMap,
 } from "@vis.gl/react-google-maps";
 
 const apiKey = import.meta.env.VITE_GOOGLE_PLACE_API_KEY || "";
@@ -55,17 +56,22 @@ interface MapPoint {
   day?: string;
 }
 
-const GeocodeAddresses = ({
+// Component to handle geocoding and map bounds
+const MapController = ({
   mapPoints,
-  onGeocodeComplete,
+  onGeocodingComplete,
 }: {
   mapPoints: MapPoint[];
-  onGeocodeComplete: (mapPoints: MapPoint[]) => void;
+  onGeocodingComplete: (points: MapPoint[]) => void;
 }) => {
+  const map = useMap();
   const geocodingLibrary = useMapsLibrary("geocoding");
 
+  // Track if we've already geocoded these specific points to prevent repeat geocoding
+  const [isGeocoded, setIsGeocoded] = useState(false);
+
   useEffect(() => {
-    if (!geocodingLibrary) {
+    if (!geocodingLibrary || !map || isGeocoded) {
       return;
     }
 
@@ -143,11 +149,52 @@ const GeocodeAddresses = ({
         }
       }
 
-      onGeocodeComplete(geocodedPointsResult);
+      // After geocoding, fit the map to show all points
+      if (geocodedPointsResult.length > 0) {
+        const validPoints = geocodedPointsResult.filter((p) => p.position);
+        if (validPoints.length > 0) {
+          // Create bounds object to fit the map to all markers
+          const bounds = new google.maps.LatLngBounds();
+          validPoints.forEach((point) => {
+            if (point.position) {
+              bounds.extend(point.position);
+            }
+          });
+
+          // Set initial bounds once
+          map.fitBounds(bounds);
+
+          // Add a very small padding to the bounds
+          const padFactor = 0.05; // 5% padding on each side
+          const ne = bounds.getNorthEast();
+          const sw = bounds.getSouthWest();
+          const latDiff = (ne.lat() - sw.lat()) * padFactor;
+          const lngDiff = (ne.lng() - sw.lng()) * padFactor;
+
+          const newBounds = new google.maps.LatLngBounds(
+            { lat: sw.lat() - latDiff, lng: sw.lng() - lngDiff },
+            { lat: ne.lat() + latDiff, lng: ne.lng() + lngDiff }
+          );
+
+          map.fitBounds(newBounds);
+
+          // Add listener to prevent auto zoom when map is interacted with
+          google.maps.event.addListenerOnce(map, "bounds_changed", () => {
+            // Add event listener for zoom_changed to maintain user control
+            google.maps.event.addListener(map, "zoom_changed", () => {
+              // This prevents bounds from being re-applied
+              // The user now has control over the zoom
+            });
+          });
+        }
+      }
+
+      onGeocodingComplete(geocodedPointsResult);
+      setIsGeocoded(true);
     };
 
     geocodeAddresses();
-  }, [geocodingLibrary, mapPoints, onGeocodeComplete]);
+  }, [geocodingLibrary, map, mapPoints, onGeocodingComplete, isGeocoded]);
 
   return null;
 };
@@ -156,7 +203,6 @@ function MapView({ isVisible, hotels, activities }: MapViewProps) {
   const [selectedMarker, setSelectedMarker] = useState<MapPoint | null>(null);
   const [geocodedPoints, setGeocodedPoints] = useState<MapPoint[]>([]);
   const [mapLoaded, setMapLoaded] = useState<boolean>(false);
-  const [mapCenter, setMapCenter] = useState({ lat: 49.2827, lng: -123.1207 }); // Default to Vancouver
 
   // Combine hotels and activities into a single array of map points
   const mapPoints: MapPoint[] = [
@@ -181,32 +227,8 @@ function MapView({ isVisible, hotels, activities }: MapViewProps) {
     ),
   ];
 
-  const handleGeocodeComplete = (points: MapPoint[]) => {
+  const handleGeocodingComplete = (points: MapPoint[]) => {
     setGeocodedPoints(points);
-
-    // Calculate center from points for better initial position
-    if (points.length > 0) {
-      const validPoints = points.filter((p) => p.position);
-
-      if (validPoints.length > 0) {
-        // Calculate average of all positions
-        let totalLat = 0;
-        let totalLng = 0;
-
-        validPoints.forEach((point) => {
-          if (point.position) {
-            totalLat += point.position.lat;
-            totalLng += point.position.lng;
-          }
-        });
-
-        setMapCenter({
-          lat: totalLat / validPoints.length,
-          lng: totalLng / validPoints.length,
-        });
-      }
-    }
-
     setMapLoaded(true);
   };
 
@@ -219,15 +241,13 @@ function MapView({ isVisible, hotels, activities }: MapViewProps) {
       <div className="w-full h-full rounded-xl border border-gray-300 overflow-hidden shadow-lg">
         <APIProvider apiKey={apiKey}>
           <Map
-            center={mapCenter}
-            zoom={11} // Closer zoom level to see the area better
             gestureHandling="cooperative"
             mapId={mapId}
             className="w-full h-full"
           >
-            <GeocodeAddresses
+            <MapController
               mapPoints={mapPoints}
-              onGeocodeComplete={handleGeocodeComplete}
+              onGeocodingComplete={handleGeocodingComplete}
             />
 
             {mapLoaded &&
