@@ -20,6 +20,7 @@ import Onboarding from "./components/custom/Onboarding.tsx";
 import MyTrips from "./components/custom/MyTrips.tsx";
 import LandingPage from "./components/custom/LandingPage.tsx";
 import CreateTripNew from "./components/custom/createTripNew.tsx";
+import TempoFooter from "./components/custom/TempoFooter.tsx";
 
 // Create a layout component that conditionally renders Header
 const RootLayout = () => {
@@ -32,6 +33,7 @@ const RootLayout = () => {
     <>
       {!noHeaderPaths.includes(location.pathname) && <Header />}
       <Outlet />
+      <TempoFooter />
     </>
   );
 };
