@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Lottie from "lottie-react";
-import travelAnimationData from "../../assets/travel-loading-animation.json"; // You'll need to add this JSON file
+import travelAnimationData from "../../assets/travel-loading-animation.json"; // Your JSON file
 
 interface TripLoadingAnimationProps {
   className?: string;
@@ -9,6 +9,27 @@ interface TripLoadingAnimationProps {
 const TripLoadingAnimation: React.FC<TripLoadingAnimationProps> = ({
   className,
 }) => {
+  const messages = [
+    "Finding your destination...",
+    "Crafting your personalized itinerary...",
+    "Discovering hidden gems...",
+    "Selecting the best accommodations...",
+    "Planning your daily adventures...",
+    "Adding local experiences...",
+    "Optimizing travel routes...",
+    "Finalizing your travel plan...",
+  ];
+
+  const [messageIndex, setMessageIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setMessageIndex((prevIndex) => (prevIndex + 1) % messages.length);
+    }, 6000); // Change message every 3 seconds
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [messages.length]);
+
   return (
     <div
       className={`flex flex-col items-center justify-center min-h-screen bg-gray-50 ${className}`}
@@ -18,15 +39,12 @@ const TripLoadingAnimation: React.FC<TripLoadingAnimationProps> = ({
           animationData={travelAnimationData}
           loop
           autoplay
-          style={{ width: "70%", height: "auto" }}
+          style={{ width: "50%", height: "auto" }} // Reduced size
           className="w-full h-auto mx-auto"
         />
         <h2 className="text-center text-h2 text-primary font-semibold mt-4">
-          Crafting Your Perfect Trip...
+          {messages[messageIndex]} {/* Dynamic message */}
         </h2>
-        <p className="text-center text-sm text-gray-500 mt-2">
-          Generating a personalized itinerary just for you
-        </p>
       </div>
     </div>
   );
