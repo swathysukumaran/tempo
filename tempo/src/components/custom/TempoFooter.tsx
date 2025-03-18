@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"; // If using React Router
 
 function TempoFooter() {
   return (
-    <footer className="bg-primary py-6 border-t border-gray-200 text-center">
+    <footer className="bg-primary py-6 border-t border-gray-200 text-center md:py-10">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-center items-center gap-4">
           <Link

@@ -240,7 +240,7 @@ function CreateTripNew() {
       case "timeframe":
         return (
           <div className="space-y-8">
-            <div className="max-w-[50%] mx-auto space-y-6">
+            <div className="md:max-w-[50%] mx-auto space-y-6">
               <h2 className="block text-h2 text-gray-700 mb-2">
                 What dates are you thinking of, and how long will you be away?
               </h2>
@@ -429,7 +429,7 @@ function CreateTripNew() {
               </p>
             </div>
 
-            <div className="max-w-[50%] mx-auto space-y-6">
+            <div className="md:max-w-[50%] mx-auto space-y-6">
               <div className="p-5 rounded-lg relative">
                 <label className="block text-body text-gray-600 mb-2">
                   Describe your budget expectations or constraints for this
@@ -532,7 +532,7 @@ function CreateTripNew() {
         return (
           <div className="space-y-8">
             <div className="space-y-3 text-center">
-              <div className="max-w-[50%] mx-auto space-y-6">
+              <div className=" md:max-w-[50%] mx-auto space-y-6">
                 <div className=" p-5 rounded-lg">
                   <h2 className="text-h2 font-medium text-gray-800 mb-4">
                     Who's traveling with you? Any special needs? (optional)
@@ -799,7 +799,7 @@ function CreateTripNew() {
         </div>
       </header>
 
-      <main className="flex-1 p-4 overflow-y-auto pb-2">
+      <main className="flex-1 p-4 overflow-y-auto pb-2 min-h-screen">
         <div className=" mx-auto">{renderStepContent()}</div>
       </main>
 
