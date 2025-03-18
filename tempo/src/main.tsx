@@ -15,12 +15,11 @@ import { Toaster } from "./components/ui/sonner.tsx";
 import Register from "./components/custom/Register.tsx";
 import Login from "./components/custom/Login.tsx";
 import TripDetails from "./components/custom/tripDetails.tsx";
-import Onboarding from "./components/custom/Onboarding.tsx";
-
 import MyTrips from "./components/custom/MyTrips.tsx";
 import LandingPage from "./components/custom/LandingPage.tsx";
 import CreateTripNew from "./components/custom/createTripNew.tsx";
 import TempoFooter from "./components/custom/TempoFooter.tsx";
+import Contact from "./components/custom/Contact.tsx";
 
 // Create a layout component that conditionally renders Header
 const RootLayout = () => {
@@ -71,8 +70,8 @@ const router = createBrowserRouter([
         element: <TripDetails />,
       },
       {
-        path: "/onboarding",
-        element: <Onboarding />,
+        path: "/contact",
+        element: <Contact />,
       },
       {
         path: "/saved-trips",
