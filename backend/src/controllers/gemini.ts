@@ -4,6 +4,7 @@ import { chatSession } from '../helpers/AIModel';
 import { get } from 'lodash';
 import { createNewTrip, getTripById, updateTripItinerary } from '../db/trip';
 import { getPreferences } from '../db/userPreferences';
+import {z} from 'zod';
 
 
 export const createTrip = async (req: express.Request, res: express.Response) => {
