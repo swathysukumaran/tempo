@@ -20,6 +20,8 @@ import LandingPage from "./components/custom/LandingPage.tsx";
 import CreateTripNew from "./components/custom/createTripNew.tsx";
 import TempoFooter from "./components/custom/TempoFooter.tsx";
 import Contact from "./components/custom/Contact.tsx";
+import PrivacyPolicy from "./components/custom/PrivacyPolicy.tsx";
+import TermsOfService from "./components/custom/TermsOfService.tsx";
 
 // Create a layout component that conditionally renders Header
 const RootLayout = () => {
@@ -76,6 +78,14 @@ const router = createBrowserRouter([
       {
         path: "/saved-trips",
         element: <MyTrips />,
+      },
+      {
+        path: "/privacy",
+        element: <PrivacyPolicy />,
+      },
+      {
+        path: "/terms",
+        element: <TermsOfService />,
       },
     ],
   },
