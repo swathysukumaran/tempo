@@ -295,6 +295,7 @@ function LandingPage() {
           </div>
         </section>
       </section>
+      <TempoFooter />
     </div>
   );
 }

@@ -18,7 +18,6 @@ import TripDetails from "./components/custom/tripDetails.tsx";
 import MyTrips from "./components/custom/MyTrips.tsx";
 import LandingPage from "./components/custom/LandingPage.tsx";
 import CreateTripNew from "./components/custom/createTripNew.tsx";
-import TempoFooter from "./components/custom/TempoFooter.tsx";
 import Contact from "./components/custom/Contact.tsx";
 import PrivacyPolicy from "./components/custom/PrivacyPolicy.tsx";
 import TermsOfService from "./components/custom/TermsOfService.tsx";
@@ -34,7 +33,6 @@ const RootLayout = () => {
     <>
       {!noHeaderPaths.includes(location.pathname) && <Header />}
       <Outlet />
-      <TempoFooter />
     </>
   );
 };
