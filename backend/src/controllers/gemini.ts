@@ -59,7 +59,7 @@ export const createTrip = async (req: express.Request, res: express.Response) =>
         const {location,timeframe,  travelers,
     preferences,budget} = req.body;
         const userId = get(req, 'identity._id');
-    
+        
         const FINAL_PROMPT = AI_PROMPT(
     location.label,
     timeframe,
@@ -83,7 +83,16 @@ export const createTrip = async (req: express.Request, res: express.Response) =>
     // Extract the JSON content from the response if there's any text before or after
 
     const itinerary=extractJSON(text);
-    res.json(itinerary);
+    console.log('Itinerary:',itinerary);
+    const narrative=itinerary.tripDetails.narrative;
+            const generatedItinerary=itinerary.generatedItinerary;
+            const trip=await createNewTrip(userId,{location,timeframe,narrative, travelers,
+    preferences,budget},generatedItinerary);
+            res.status(200).json({
+                tripId: trip._id,
+            });
+            return;
+           
 
     }catch(error){
         console.error('Error generating itinerary:',error);
@@ -97,12 +106,13 @@ export const createTrip = async (req: express.Request, res: express.Response) =>
 }
 
 function extractJSON(text:string){
+    console.log('Extracting JSON from response',text);
     try{
     // Attempt 1: Try to parse the entire text as JSON
     try {
       return JSON.parse(text);
     } catch (parseError) {
-      console.log("Direct JSON parse failed, trying to extract JSON..");
+      console.log("Direct JSON parse failed, trying to extract JSON..",parseError);
     }
     // Second attempt: Try to extract JSON between backticks or braces
     const jsonRegex = /```json\s*(\{[\s\S]*\})\s*```|(\{[\s\S]*\})/;
@@ -152,12 +162,20 @@ function attemptToFixJSON(text:string){
 // Update an existing Itinerary
 export const updateItinerary=async (req:express.Request,res:express.Response)=>{
     try{
-        const {trip,changeRequest}=req.body;
-        if(!trip || !changeRequest){
+        const { tripId } = req.params;
+        const { changeRequest } = req.body;
+        const userId = get(req, 'identity._id');
+        if(!changeRequest){
             res.status(400).json({
                 error:'Missing trip or change request data'
             });
             return;
+        }
+         const trip = await getTripById( tripId);
+    
+        if (!trip) {
+         res.status(404).json({ error: "Trip not found" });
+         return;
         }
         const prompt=UPDATE_PROMPT(trip,changeRequest);
         if(prompt.length>30000){
@@ -170,7 +188,9 @@ export const updateItinerary=async (req:express.Request,res:express.Response)=>{
     // Extract and validate JSON from the response
     const updatedItinerary = extractJSON(text);
     
-    res.json(updatedItinerary);
+    const newTrip=await updateTripItinerary(userId,tripId,updatedItinerary);
+            res.status(200).json(newTrip);
+            return;
     }catch(error){
         console.error('Error updating itinerary:',error);
         res.status(500).json({
