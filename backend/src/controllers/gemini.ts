@@ -3,7 +3,7 @@ import { AI_PROMPT, UPDATE_PROMPT } from '../helpers/AIprompt';
 import { get } from 'lodash';
 import { createNewTrip, getTripById, updateTripItinerary } from '../db/trip';
 import { getPreferences } from '../db/userPreferences';
-import {z} from 'zod';
+
 const {
   GoogleGenerativeAI,
 } = require("@google/generative-ai");
@@ -15,74 +15,6 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
 const MAX_RETRIES = 3;
 
-// Define a schema for validation using Zod
-const HotelSchema = z.object({
-  hotel_name: z.string(),
-  hotel_address: z.string(),
-  price: z.string(),
-  rating: z.number(),
-  description: z.string(),
-  hotel_image_url: z.string().nullable()
-});
-
-const ActivitySchema = z.object({
-  place_name: z.string(),
-  place_details: z.string(),
-  ticket_pricing: z.string(),
-  rating: z.number(),
-  travel_time: z.string(),
-  place_image_url: z.string().nullable(),
-  time_slot: z.string()
-});
-
-const DaySchema = z.object({
-  theme: z.string(),
-  best_time_to_visit: z.string(),
-  activities: z.array(ActivitySchema)
-});
-
-const ItinerarySchema = z.record(z.string(), DaySchema);
-
-const GeneratedItinerarySchema = z.object({
-  trip_name: z.string(),
-  destination: z.string(),
-  duration: z.string(),
-  travelers: z.string(),
-  cover_image_url: z.string().nullable(),
-  hotels: z.array(HotelSchema),
-  itinerary: ItinerarySchema
-});
-
-const TransportationSchema = z.object({
-  airport: z.object({
-    name: z.string(),
-    code: z.string(),
-    description: z.string()
-  }),
-  local_transport: z.array(z.string()),
-  transportation_tips: z.array(z.object({
-    tip: z.string(),
-    details: z.string()
-  }))
-});
-
-const TripDetailsSchema = z.object({
-  budget: z.enum(['budget', 'moderate', 'luxury']),
-  location: z.object({
-    description: z.string(),
-    full_destination_name: z.string()
-  }),
-  timeframe: z.string(),
-  preferences: z.string(),
-  narrative: z.string(),
-  transportation: TransportationSchema
-});
-
-const TravelItinerarySchema = z.object({
-  generatedItinerary: GeneratedItinerarySchema,
-  tripDetails: TripDetailsSchema
-});
-// Add this function to your gemini.ts file
 
 // Function to generate content with retries
 
@@ -150,7 +82,7 @@ export const createTrip = async (req: express.Request, res: express.Response) =>
     const text = response.text();
     // Extract the JSON content from the response if there's any text before or after
 
-    const itinerary=extractAndValidateJSON(text);
+    const itinerary=extractJSON(text);
     res.json(itinerary);
 
     }catch(error){
@@ -164,37 +96,29 @@ export const createTrip = async (req: express.Request, res: express.Response) =>
 
 }
 
-function extractAndValidateJSON(text:string){
+function extractJSON(text:string){
     try{
     // Attempt 1: Try to parse the entire text as JSON
-    try{
-        const parsedData=JSON.parse(text);
-        // Validate against schema
-        const validatedData=TravelItinerarySchema.parse(parsedData);
-        return validatedData;
-
-    }catch(parseError){
-        console.log("Direct JSON parse failed, trying to extract JSON..");
+    try {
+      return JSON.parse(text);
+    } catch (parseError) {
+      console.log("Direct JSON parse failed, trying to extract JSON..");
     }
-    // Attempt 2: Try to extract JSON between backticks or braces
-    const jsonRegex=/```json\s*(\{[\s\S]*\})\s*```|(\{[\s\S]*\})/;
-    const match=text.match(jsonRegex);
-    if(match){
-        const jsonStr=(match[1] || match[2]).trim();
-        const parsedData=JSON.parse(jsonStr);
-        // validate against schema
-        const validatedData=TravelItinerarySchema.parse(parsedData);
-        return validatedData;
+    // Second attempt: Try to extract JSON between backticks or braces
+    const jsonRegex = /```json\s*(\{[\s\S]*\})\s*```|(\{[\s\S]*\})/;
+    const match = text.match(jsonRegex);
+    
+    if (match) {
+      const jsonStr = (match[1] || match[2]).trim();
+      return JSON.parse(jsonStr);
     }
-    // Attempt 3:Fix common JSON errors and try again
-    const fixedText=attemptToFixJSON(text);
-    const parsedData=JSON.parse(fixedText);
-    const validatedData=TravelItinerarySchema.parse(parsedData);
-    return validatedData;
-    }catch(error){
-        console.error('Error extracting or validating JSON:',error);
-        throw new Error(`Invalid or incomplete JSON response:${error.message}`);
-    }
+    // Third attempt: Fix common JSON errors and try again
+    const fixedText = attemptToFixJSON(text);
+    return JSON.parse(fixedText);
+  } catch (error) {
+    console.error('Error extracting JSON:', error);
+    throw new Error(`Invalid or incomplete JSON response: ${error.message}`);
+  }
 }
 
 // Function to attempt to fix common JSON errors
@@ -244,7 +168,7 @@ export const updateItinerary=async (req:express.Request,res:express.Response)=>{
     const text = response.text();
     
     // Extract and validate JSON from the response
-    const updatedItinerary = extractAndValidateJSON(text);
+    const updatedItinerary = extractJSON(text);
     
     res.json(updatedItinerary);
     }catch(error){
