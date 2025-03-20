@@ -82,6 +82,44 @@ const TravelItinerarySchema = z.object({
   generatedItinerary: GeneratedItinerarySchema,
   tripDetails: TripDetailsSchema
 });
+// Add this function to your gemini.ts file
+
+// Function to generate content with retries
+
+async function generateWithRetry(prompt: string) {
+  let attempts = 0;
+  let lastError = null;
+
+  while (attempts < MAX_RETRIES) {
+    try {
+      // Add a retry-specific instruction if this is a retry attempt
+      const modifiedPrompt = attempts > 0 
+        ? `${prompt}\n\nIMPORTANT: Previous attempts failed with error: "${lastError}". Please ensure your response is COMPLETE, VALID JSON with no truncation, no text before or after, and all strings properly escaped.` 
+        : prompt;
+      
+      const result = await model.generateContent({
+        contents: [{ role: "user", parts: [{ text: modifiedPrompt }] }],
+        generationConfig: {
+          temperature: 0.4, // Lower temperature for more deterministic responses
+          maxOutputTokens: 8192,
+          topP: 0.95,
+          topK: 40,
+        },
+      });
+      
+      return result.response;
+    } catch (apiError) {
+      lastError = apiError.message;
+      console.warn(`API call attempt ${attempts + 1} failed: ${apiError.message}`);
+      attempts++;
+      
+      // Wait a bit longer between retries (exponential backoff)
+      await new Promise(resolve => setTimeout(resolve, 1000 * attempts));
+    }
+  }
+  
+  throw new Error(`Failed after ${MAX_RETRIES} attempts. Last error: ${lastError}`);
+}
 
 export const createTrip = async (req: express.Request, res: express.Response) => {
 
@@ -100,7 +138,7 @@ export const createTrip = async (req: express.Request, res: express.Response) =>
   );
 
                  // Safety check for prompt size
-    if (prompt.length > 30000) {
+    if (FINAL_PROMPT.length > 30000) {
        res.status(400).json({ error: 'Prompt exceeds maximum allowed length' });
        return;
     }
@@ -108,38 +146,12 @@ export const createTrip = async (req: express.Request, res: express.Response) =>
        
             
             
-            const result = await model.generateContent({
-      contents: [{ role: 'user', parts: [{ text: FINAL_PROMPT }] }],
-      generationConfig: {
-        temperature: 0.7,
-        maxOutputTokens: 8192, // Request a higher token limit
-        topP: 0.8,
-        topK: 40,
-      },
-    });
-    const response=result.response;
-    const text=response.text();
+            const response = await generateWithRetry(FINAL_PROMPT);
+    const text = response.text();
     // Extract the JSON content from the response if there's any text before or after
 
     const itinerary=extractAndValidateJSON(text);
     res.json(itinerary);
-
-
-    //         const resultText = result.response.candidates[0].content.parts[0].text;
-    //         console.log(resultText);
-    //         const aiResponse = resultText.replace(/```json\n|\n```/g, '');
-        
-    //         const parsedResponse=JSON.parse(aiResponse);
-    //         const narrative=parsedResponse.tripDetails.narrative;
-    //         const generatedItinerary=parsedResponse.generatedItinerary;
-    //         const trip=await createNewTrip(userId,{location,timeframe,narrative, travelers,
-    // preferences,budget},generatedItinerary);
-    //         res.status(200).json({
-    //             tripId: trip._id,
-    //         });
-    //         return;
-            
-    
 
     }catch(error){
         console.error('Error generating itinerary:',error);
@@ -228,20 +240,13 @@ export const updateItinerary=async (req:express.Request,res:express.Response)=>{
             res.status(400).json({error:'Prompt exceeds maximum allowed length'});
             return;
         }
-        const result=await model.generateContent({
-            contents:[{role:'user',parts:[{text:prompt}]}],
-            generationConfig:{
-                temperature:0.7,
-                maxOutputTokens:8192,
-                topP:0.8,
-                topK:40,
-            },
-        });
-        const response=result.response;
-        const text=response.text();
-        // Extract and validate JSON from the response
-        const updatedItinerary=extractAndValidateJSON(text);
-        res.json(updatedItinerary);
+        const response = await generateWithRetry(prompt);
+    const text = response.text();
+    
+    // Extract and validate JSON from the response
+    const updatedItinerary = extractAndValidateJSON(text);
+    
+    res.json(updatedItinerary);
     }catch(error){
         console.error('Error updating itinerary:',error);
         res.status(500).json({
