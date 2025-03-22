@@ -407,11 +407,9 @@ function CreateTripNew() {
 
               <div className="mt-6">
                 <h3 className="text-lg font-medium text-gray-700 mb-2">
-                  Personalized Inspiration
+                  Example:
                 </h3>
-                <p className="text-sm text-gray-500 mb-2">
-                  See how Tempo can tailor your trip to your exact needs.
-                </p>
+
                 <div
                   className="border border-primary rounded-lg p-4 transition-opacity w-[93%] duration-1000"
                   style={{ backgroundColor: "rgba(13, 148, 136, 0.1)" }} // Faint primary color
@@ -769,11 +767,11 @@ function CreateTripNew() {
   };
   return (
     <div className="min-h-screen flex flex-col font-sans">
-      <header className="bg-white border-b p-4 text-center">
-        <h1 className="text-h1 font-semibold text-gray-800">
+      <header className="bg-primary border-b p-4 text-center">
+        <h1 className="text-h1 font-semibold text-white">
           Every trip, uniquely yours. Powered by AI.
         </h1>
-        <p className="text-gray-600 mt-2">
+        <p className="text-white mt-2">
           We handle the details, you create the memories.
         </p>
 
@@ -782,17 +780,17 @@ function CreateTripNew() {
           <div className="relative pt-1">
             <div className="flex mb-2 items-center justify-between">
               <div>
-                <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-primary bg-primary/20">
+                <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-white bg-white/20">
                   Step {currentStepIndex + 1} of {steps.length}
                 </span>
               </div>
             </div>
-            <div className="flex h-2 mb-4 overflow-hidden text-xs bg-gray-200 rounded-full">
+            <div className="flex h-2 mb-4 overflow-hidden text-xs bg-primary-light rounded-full">
               <div
                 style={{
                   width: `${((currentStepIndex + 1) / steps.length) * 100}%`,
                 }}
-                className="flex flex-col justify-center whitespace-nowrap text-center text-white transition-all duration-500 bg-primary"
+                className="flex flex-col justify-center whitespace-nowrap text-center text-white transition-all duration-500 bg-white"
               ></div>
             </div>
           </div>
@@ -803,7 +801,7 @@ function CreateTripNew() {
         <div className=" mx-auto">{renderStepContent()}</div>
       </main>
 
-      <footer className="bg-white border-t p-4 flex justify-between fixed bottom-0 left-0 right-0 z-10">
+      <footer className="  p-4 flex justify-between fixed bottom-0 left-0 right-0 z-10">
         <Button
           variant="outline"
           onClick={goToPreviousStep}
