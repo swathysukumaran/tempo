@@ -14,6 +14,7 @@ import Register from "./Register";
 import register from "../../assets/register.jpeg";
 import { Clock, Heart, Menu, Sparkles, X } from "lucide-react";
 import { Card, CardContent } from "../ui/card";
+import TempoFooter from "./TempoFooter";
 
 function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

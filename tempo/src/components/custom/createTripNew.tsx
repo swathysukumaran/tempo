@@ -154,7 +154,7 @@ function CreateTripNew() {
       case "destination":
         return (
           <div className="space-y-8">
-            <div className="space-y-3 text-center">
+            <div className="text-center md:max-w-[50%] mx-auto space-y-6">
               <h2 className="text-h2 font-medium text-gray-800">
                 Where would you like to go?
               </h2>
@@ -241,7 +241,7 @@ function CreateTripNew() {
         return (
           <div className="space-y-8">
             <div className="md:max-w-[50%] mx-auto space-y-6">
-              <h2 className="block text-h2 text-gray-700 mb-2">
+              <h2 className="text-h2 font-medium text-gray-800">
                 What dates are you thinking of, and how long will you be away?
               </h2>
               {isRecording && (
@@ -324,206 +324,179 @@ function CreateTripNew() {
       case "preferences":
         return (
           <div className="space-y-8">
-            <div className="space-y-3 text-center">
-              <h2 className="text-h2 font-medium text-gray-800">
+            <div className="md:max-w-[50%] mx-auto space-y-6">
+              <h2 className="text-h2 font-medium text-gray-800 text-center">
                 Tell us about your travel preferences
               </h2>
-              <p className="text-body text-gray-500">
-                Share your vision for the perfect trip.
-              </p>
-            </div>
 
-            <div className="max-w-xl mx-auto space-y-6">
-              <div className=" p-5 rounded-lg  relative">
-                <label className="block text-body text-gray-600 mb-2">
-                  Write a detailed description of what it looks and feels like.
-                </label>
-                {isRecording && (
-                  <div className="mb-2 text-sm flex items-center">
-                    <span className=" text-lg animate-pulse mr-1">⏺️</span>{" "}
-                    {/* Recording symbol */}
-                    <p className="text-gray-600">
-                      Recording <span className="ml-1 animate-pulse">...</span>
-                    </p>
-                    <p className="ml-2 text-gray-500">
-                      Press mic again to transcribe
-                    </p>
-                  </div>
-                )}
-                <div className="flex  items-center gap-2 mt-2">
-                  <textarea
-                    placeholder="Imagine your ideal trip:
+              {isRecording && (
+                <div className="mb-2 text-sm flex items-center">
+                  <span className=" text-lg animate-pulse mr-1">⏺️</span>{" "}
+                  {/* Recording symbol */}
+                  <p className="text-gray-600">
+                    Recording <span className="ml-1 animate-pulse">...</span>
+                  </p>
+                  <p className="ml-2 text-gray-500">
+                    Press mic again to transcribe
+                  </p>
+                </div>
+              )}
+              <div className="flex  items-center gap-2 mt-2">
+                <textarea
+                  placeholder="Imagine your ideal trip:
 • What is the main purpose of the trip?
 • What activities excite you?
 • Which landmarks are a must-see?
 • What's your preferred travel pace?"
-                    value={formData.preferences}
-                    onChange={(e) =>
-                      updateFormData({ preferences: e.target.value })
+                  value={formData.preferences}
+                  onChange={(e) =>
+                    updateFormData({ preferences: e.target.value })
+                  }
+                  className="w-full min-h-[200px] p-3 rounded-md border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                />
+
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (isRecording) {
+                      stopRecording();
+                    } else {
+                      startRecording("preferences");
                     }
-                    className="w-full min-h-[200px] p-3 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
-                  />
-
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      if (isRecording) {
-                        stopRecording();
-                      } else {
-                        startRecording("preferences");
-                      }
-                    }}
-                    className=" p-1 h-fit rounded-full bg-primary text-white transition-transform transform hover:scale-105"
-                  >
-                    {isRecording ? (
-                      <Lottie
-                        animationData={micAnimation}
-                        style={{ height: 36, width: 36 }}
-                        loop={true}
-                        autoplay={true} // Use autoplay instead of play
-                      />
-                    ) : (
-                      <Lottie
-                        animationData={micAnimation}
-                        style={{ height: 36, width: 36 }}
-                        loop={false}
-                        autoplay={false}
-                      />
-                    )}
-                  </button>
-                </div>
-
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {commonPreferences.map((preference) => (
-                    <button
-                      key={preference}
-                      onClick={() => handleCommonPreferenceClick(preference)}
-                      className="bg-gray-200 rounded-full px-3 py-1 text-sm"
-                    >
-                      {preference}
-                    </button>
-                  ))}
-                </div>
-
-                {transcriptionLoading && (
-                  <div className="absolute top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center">
-                    <div className="flex items-center space-x-2">
-                      <p className="text-white">Transcribing...</p>
-                      <CheckCircle className="h-6 w-6 text-white animate-spin-slow" />
-                    </div>
-                  </div>
-                )}
+                  }}
+                  className=" p-1 h-fit rounded-full bg-primary text-white transition-transform transform hover:scale-105"
+                >
+                  {isRecording ? (
+                    <Lottie
+                      animationData={micAnimation}
+                      style={{ height: 36, width: 36 }}
+                      loop={true}
+                      autoplay={true} // Use autoplay instead of play
+                    />
+                  ) : (
+                    <Lottie
+                      animationData={micAnimation}
+                      style={{ height: 36, width: 36 }}
+                      loop={false}
+                      autoplay={false}
+                    />
+                  )}
+                </button>
               </div>
+
+              <div className="flex flex-wrap gap-2 mt-2">
+                {commonPreferences.map((preference) => (
+                  <button
+                    key={preference}
+                    onClick={() => handleCommonPreferenceClick(preference)}
+                    className="bg-gray-200 rounded-full px-3 py-1 text-sm"
+                  >
+                    {preference}
+                  </button>
+                ))}
+              </div>
+
+              {transcriptionLoading && (
+                <div className="absolute top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center">
+                  <div className="flex items-center space-x-2">
+                    <p className="text-white">Transcribing...</p>
+                    <CheckCircle className="h-6 w-6 text-white animate-spin-slow" />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         );
       case "budget":
         return (
           <div className="space-y-8">
-            <div className="space-y-3 text-center">
-              <h2 className="text-h2 font-medium text-gray-800">
+            <div className="md:max-w-[50%] mx-auto space-y-6 text-center">
+              <h2 className="text-h2 font-medium text-gray-800 text-center">
                 What's your budget for this trip?
               </h2>
-              <p className="text-body text-gray-500">
-                Help us plan within your comfort zone.
-              </p>
-            </div>
+              {isRecording && (
+                <div className="mb-2 text-sm flex items-center">
+                  <span className="text-lg animate-pulse mr-1">⏺️</span>
+                  <p className="text-gray-600">
+                    Recording <span className="ml-1 animate-pulse">...</span>
+                  </p>
+                  <p className="ml-2 text-gray-500">
+                    Press mic again to transcribe
+                  </p>
+                </div>
+              )}
 
-            <div className="md:max-w-[50%] mx-auto space-y-6">
-              <div className="p-5 rounded-lg relative">
-                <label className="block text-body text-gray-600 mb-2">
-                  Describe your budget expectations or constraints for this
-                  journey.
-                </label>
-
-                {isRecording && (
-                  <div className="mb-2 text-sm flex items-center">
-                    <span className="text-lg animate-pulse mr-1">⏺️</span>
-                    <p className="text-gray-600">
-                      Recording <span className="ml-1 animate-pulse">...</span>
-                    </p>
-                    <p className="ml-2 text-gray-500">
-                      Press mic again to transcribe
-                    </p>
-                  </div>
-                )}
-
-                <div className="flex items-center gap-2 mt-2">
-                  <textarea
-                    placeholder="Examples:
+              <div className="flex items-center gap-2 mt-2">
+                <textarea
+                  placeholder="Examples:
 • Around $2,000 for the entire week
 • Mid-range accommodations but willing to splurge on experiences
 • Luxury accommodations with a budget of $5,000-$7,000"
-                    value={formData.budget || ""}
-                    onChange={(e) => updateFormData({ budget: e.target.value })}
-                    className="w-full min-h-[150px] p-3 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
-                  />
+                  value={formData.budget || ""}
+                  onChange={(e) => updateFormData({ budget: e.target.value })}
+                  className="w-full min-h-[150px] p-3 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                />
 
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      if (isRecording) {
-                        stopRecording();
-                      } else {
-                        startRecording("budget");
-                      }
-                    }}
-                    className="p-1 h-fit rounded-full bg-primary text-white transition-transform transform hover:scale-105"
-                  >
-                    {isRecording ? (
-                      <Lottie
-                        animationData={micAnimation}
-                        style={{ height: 36, width: 36 }}
-                        loop={true}
-                        autoplay={true}
-                      />
-                    ) : (
-                      <Lottie
-                        animationData={micAnimation}
-                        style={{ height: 36, width: 36 }}
-                        loop={false}
-                        autoplay={false}
-                      />
-                    )}
-                  </button>
-                </div>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (isRecording) {
+                      stopRecording();
+                    } else {
+                      startRecording("budget");
+                    }
+                  }}
+                  className="p-1 h-fit rounded-full bg-primary text-white transition-transform transform hover:scale-105"
+                >
+                  {isRecording ? (
+                    <Lottie
+                      animationData={micAnimation}
+                      style={{ height: 36, width: 36 }}
+                      loop={true}
+                      autoplay={true}
+                    />
+                  ) : (
+                    <Lottie
+                      animationData={micAnimation}
+                      style={{ height: 36, width: 36 }}
+                      loop={false}
+                      autoplay={false}
+                    />
+                  )}
+                </button>
+              </div>
+              <div className="mt-4">
+                <div className="flex flex-wrap gap-2 mt-1">
+                  {[
+                    "Budget-friendly",
+                    "Mid-range",
+                    "Luxury",
+                    "Open to splurge on experiences",
+                  ].map((option) => (
+                    <button
+                      key={option}
+                      onClick={() => {
+                        const currentText = formData.budget || "";
+                        const newText = currentText
+                          ? `${currentText}, ${option.toLowerCase()}`
+                          : option;
+                        updateFormData({ budget: newText });
+                      }}
+                      className="bg-gray-200 hover:bg-gray-300 rounded-full px-3 py-1 text-sm transition-colors"
+                    >
+                      {option}
+                    </button>
+                  ))}
 
-                <div className="mt-4">
-                  <p className="text-sm text-gray-500 mb-2">
-                    Or select a general range:
-                  </p>
-                  <div className="flex flex-wrap gap-2 mt-1">
-                    {[
-                      "Budget-friendly",
-                      "Mid-range",
-                      "Luxury",
-                      "Open to splurge on experiences",
-                    ].map((option) => (
-                      <button
-                        key={option}
-                        onClick={() => {
-                          const currentText = formData.budget || "";
-                          const newText = currentText
-                            ? `${currentText}, ${option.toLowerCase()}`
-                            : option;
-                          updateFormData({ budget: newText });
-                        }}
-                        className="bg-gray-200 hover:bg-gray-300 rounded-full px-3 py-1 text-sm transition-colors"
-                      >
-                        {option}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {transcriptionLoading && (
-                  <div className="absolute top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center rounded-lg">
-                    <div className="flex items-center space-x-2">
-                      <p className="text-white">Transcribing...</p>
-                      <CheckCircle className="h-6 w-6 text-white animate-spin-slow" />
+                  {transcriptionLoading && (
+                    <div className="absolute top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center rounded-lg">
+                      <div className="flex items-center space-x-2">
+                        <p className="text-white">Transcribing...</p>
+                        <CheckCircle className="h-6 w-6 text-white animate-spin-slow" />
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -545,7 +518,7 @@ function CreateTripNew() {
                       onChange={(e) =>
                         updateFormData({ travelers: e.target.value })
                       }
-                      className="w-[90%] p-2 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                      className="w-full min-h-[150px] p-3 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
                     />
                     <button
                       onClick={(e) => {
