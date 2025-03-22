@@ -180,7 +180,7 @@ function CreateTripNew() {
         return (
           <div className="space-y-8">
             <div className="text-center md:max-w-[50%] mx-auto space-y-6">
-              <h2 className="text-h2 font-medium text-gray-800">
+              <h2 className="text-xl md:text-2xl font-medium text-gray-800">
                 Where would you like to go?
               </h2>
             </div>
@@ -266,7 +266,7 @@ function CreateTripNew() {
         return (
           <div className="space-y-8">
             <div className="md:max-w-[50%] mx-auto space-y-6">
-              <h2 className="text-h2 font-medium text-gray-800">
+              <h2 className="text-xl md:text-2xl font-medium text-gray-800">
                 What dates are you thinking of, and how long will you be away?
               </h2>
               {isRecording && (
@@ -350,7 +350,7 @@ function CreateTripNew() {
         return (
           <div className="space-y-8">
             <div className="md:max-w-[50%] mx-auto space-y-6">
-              <h2 className="text-h2 font-medium text-gray-800 text-center">
+              <h2 className="text-xl md:text-2xl font-medium text-gray-800">
                 Tell us about your travel preferences
               </h2>
 
@@ -436,7 +436,7 @@ function CreateTripNew() {
         return (
           <div className="space-y-8">
             <div className="md:max-w-[50%] mx-auto space-y-6 text-center">
-              <h2 className="text-h2 font-medium text-gray-800 text-center">
+              <h2 className="text-xl md:text-2xl font-medium text-gray-800">
                 What's your budget for this trip?
               </h2>
               {isRecording && (
@@ -532,7 +532,7 @@ function CreateTripNew() {
             <div className="space-y-3 text-center">
               <div className=" md:max-w-[50%] mx-auto space-y-6">
                 <div className=" p-5 rounded-lg">
-                  <h2 className="text-h2 font-medium text-gray-800 mb-4">
+                  <h2 className="text-xl md:text-2xl font-medium text-gray-800">
                     Who's traveling with you? Any special needs? (optional)
                   </h2>
                   <div className="flex  items-center gap-2 mt-2">
@@ -776,7 +776,7 @@ function CreateTripNew() {
         </p>
 
         {/* Progress Indicator */}
-        <div className="mt-2 w-[70%] mx-auto">
+        <div className="mt-2 w-[90%] md:w-[70%] mx-auto">
           <div className="relative pt-1">
             <div className="flex mb-2 items-center justify-between">
               <div>
@@ -797,16 +797,16 @@ function CreateTripNew() {
         </div>
       </header>
 
-      <main className="flex-1 p-4 overflow-y-auto pb-2 min-h-screen">
+      <main className="flex-1 p-4 overflow-y-auto pb-24 md:pb-16">
         <div className=" mx-auto">{renderStepContent()}</div>
       </main>
 
-      <footer className="  p-4 flex justify-between fixed bottom-0 left-0 right-0 z-10">
+      <footer className=" p-3 flex sm:flex-row justify-between fixed bottom-0 left-0 right-0 bg-white md:bg-none shadow-md w-full z-50 gap-4">
         <Button
           variant="outline"
           onClick={goToPreviousStep}
           disabled={currentStepIndex === 0}
-          className="text-gray-800 hover:bg-gray-100 disabled:opacity-50"
+          className="text-gray-800 w-max hover:bg-gray-100 disabled:opacity-50"
         >
           <ChevronLeft className="mr-2 h-4 w-4" />
           Back
@@ -815,7 +815,7 @@ function CreateTripNew() {
         {currentStepIndex === steps.length - 1 ? (
           <Button
             onClick={handleSubmit}
-            className="bg-primary hover:bg-primary-dark text-white"
+            className="bg-primary w-max hover:bg-primary-dark text-white"
           >
             Create Trip ✨
           </Button>
@@ -823,7 +823,7 @@ function CreateTripNew() {
           <Button
             onClick={goToNextStep}
             disabled={!canProceed()}
-            className="text-white bg-primary hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed"
+            className="text-white w-max bg-primary hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Next
             <ChevronRight className="ml-2 h-4 w-4" />
