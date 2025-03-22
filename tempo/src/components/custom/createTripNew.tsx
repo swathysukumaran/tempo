@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import {
   ChevronLeft,
@@ -50,18 +50,43 @@ function CreateTripNew() {
   const [isRecording, setIsRecording] = useState(false);
   const [transcriptionLoading, setTranscriptionLoading] = useState(false);
   const mediaRecorder = useRef<MediaRecorder | null>(null);
-  const commonPreferences = ["Relaxing", "Adventurous", "Cultural", "Foodie"];
+  const magicPrompts = [
+    {
+      text: "I have a fixed itinerary for Tuesday, which includes a museum visit and a cooking class. Please plan the rest of my 5-day trip in Rome, focusing on historical sites and local markets.",
+    },
+    {
+      text: "This is a business trip to Tokyo. I need a plan for evening activities, including cultural experiences and fine dining, suitable for entertaining clients.",
+    },
+    {
+      text: "We are traveling to Bali with our two young children. On Thursday, it's our 10th wedding anniversary. Please plan a romantic evening for us, while ensuring the kids are entertained during the day.",
+    },
+    {
+      text: "Plan a week-long trip to Scotland, inspired by the 'Outlander' series, including visits to filming locations and traditional Scottish experiences.",
+    },
+  ];
+  const [currentPromptIndex, setCurrentPromptIndex] = useState(0);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    intervalRef.current = setInterval(() => {
+      setCurrentPromptIndex(
+        (prevIndex) => (prevIndex + 1) % magicPrompts.length
+      );
+    }, 5000);
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [magicPrompts.length]);
   const commonTravelers = [
     "Solo",
     "Family with kids",
     "Couple",
     "Group of friends",
   ];
-  const handleCommonPreferenceClick = (preference: string) => {
-    updateFormData({
-      preferences: `${formData.preferences}\n\n${preference}`.trim(),
-    });
-  };
+
   const handleCommonTravelerClick = (traveler: string) => {
     updateFormData({
       travelers: `${formData.travelers}\n\n${traveler}`.trim(),
@@ -343,16 +368,12 @@ function CreateTripNew() {
               )}
               <div className="flex  items-center gap-2 mt-2">
                 <textarea
-                  placeholder="Imagine your ideal trip:
-• What is the main purpose of the trip?
-• What activities excite you?
-• Which landmarks are a must-see?
-• What's your preferred travel pace?"
+                  placeholder="Tell us your travel dreams, and we'll bring them to life. The more detail, the more magic we can create."
                   value={formData.preferences}
                   onChange={(e) =>
                     updateFormData({ preferences: e.target.value })
                   }
-                  className="w-full min-h-[200px] p-3 rounded-md border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  className="w-full min-h-[100px] p-3 rounded-md border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
 
                 <button
@@ -384,16 +405,22 @@ function CreateTripNew() {
                 </button>
               </div>
 
-              <div className="flex flex-wrap gap-2 mt-2">
-                {commonPreferences.map((preference) => (
-                  <button
-                    key={preference}
-                    onClick={() => handleCommonPreferenceClick(preference)}
-                    className="bg-gray-200 rounded-full px-3 py-1 text-sm"
-                  >
-                    {preference}
-                  </button>
-                ))}
+              <div className="mt-6">
+                <h3 className="text-lg font-medium text-gray-700 mb-2">
+                  Personalized Inspiration
+                </h3>
+                <p className="text-sm text-gray-500 mb-2">
+                  See how Tempo can tailor your trip to your exact needs.
+                </p>
+                <div
+                  className="border border-primary rounded-lg p-4 transition-opacity w-[93%] duration-1000"
+                  style={{ backgroundColor: "rgba(13, 148, 136, 0.1)" }} // Faint primary color
+                >
+                  <span className="text-primary">✨</span>
+                  <p className="text-sm text-gray-600">
+                    {magicPrompts[currentPromptIndex].text}
+                  </p>
+                </div>
               </div>
 
               {transcriptionLoading && (
