@@ -72,7 +72,7 @@ function CreateTripNew() {
       setCurrentPromptIndex(
         (prevIndex) => (prevIndex + 1) % magicPrompts.length
       );
-    }, 5000);
+    }, 3500);
 
     return () => {
       if (intervalRef.current) {
