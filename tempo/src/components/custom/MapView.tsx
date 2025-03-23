@@ -56,18 +56,21 @@ interface MapPoint {
   day?: string;
 }
 
-// Component to handle geocoding and map bounds
+// Component to handle geocoding and map center
 const MapController = ({
   mapPoints,
   onGeocodingComplete,
 }: {
   mapPoints: MapPoint[];
-  onGeocodingComplete: (points: MapPoint[]) => void;
+  onGeocodingComplete: (
+    points: MapPoint[],
+    center: google.maps.LatLngLiteral
+  ) => void;
 }) => {
   const map = useMap();
   const geocodingLibrary = useMapsLibrary("geocoding");
 
-  // Track if we've already geocoded these specific points to prevent repeat geocoding
+  // Track if we've already geocoded these specific points
   const [isGeocoded, setIsGeocoded] = useState(false);
 
   useEffect(() => {
@@ -79,44 +82,36 @@ const MapController = ({
       const geocoder = new geocodingLibrary.Geocoder();
       const geocodedPointsResult = [...mapPoints];
 
-      // Try to find a destination-related search term from the first hotel or activity
-      let destinationSearch = "";
-      if (mapPoints.length > 0) {
-        const firstPoint = mapPoints[0];
-        // Try to extract city name or region from the address
-        const addressParts = firstPoint.address.split(",");
-        if (addressParts.length > 1) {
-          // Use the second part which often contains city/region
-          destinationSearch = addressParts[1].trim();
-        } else {
-          destinationSearch = firstPoint.address;
-        }
-      }
+      // Try to find main destination - prefer a hotel first
+      const hotelPoints = mapPoints.filter((point) => point.type === "hotel");
+      const pointToUseForCenter =
+        hotelPoints.length > 0 ? hotelPoints[0] : mapPoints[0];
 
       // Default location if geocoding fails
-      let defaultLocation = { lat: 49.2827, lng: -123.1207 }; // Vancouver
+      const defaultLocation = { lat: 49.2827, lng: -123.1207 }; // Vancouver
+      let centerPosition = defaultLocation;
 
-      // Try to geocode the destination first to get a better default center
-      if (destinationSearch) {
+      // First geocode the main point we want to center on
+      if (pointToUseForCenter) {
+        const searchAddress = `${pointToUseForCenter.name}, ${pointToUseForCenter.address}`;
         try {
-          const destResponse = await geocoder.geocode({
-            address: destinationSearch,
-          });
-          if (destResponse.results && destResponse.results.length > 0) {
-            const location = destResponse.results[0].geometry.location;
-            defaultLocation = {
+          const response = await geocoder.geocode({ address: searchAddress });
+          if (response.results && response.results.length > 0) {
+            const location = response.results[0].geometry.location;
+            centerPosition = {
               lat: location.lat(),
               lng: location.lng(),
             };
           }
         } catch (error) {
           console.error(
-            `Error geocoding destination ${destinationSearch}:`,
+            `Error geocoding main location ${searchAddress}:`,
             error
           );
         }
       }
 
+      // Now geocode all the points
       for (let i = 0; i < mapPoints.length; i++) {
         const point = mapPoints[i];
         const searchAddress = `${point.name}, ${point.address}`;
@@ -137,59 +132,22 @@ const MapController = ({
           } else {
             geocodedPointsResult[i] = {
               ...point,
-              position: defaultLocation,
+              position: centerPosition, // Use the center position as fallback
             };
           }
         } catch (error) {
           console.error(`Error geocoding ${searchAddress}:`, error);
           geocodedPointsResult[i] = {
             ...point,
-            position: defaultLocation,
+            position: centerPosition, // Use the center position as fallback
           };
         }
       }
 
-      // After geocoding, fit the map to show all points
-      if (geocodedPointsResult.length > 0) {
-        const validPoints = geocodedPointsResult.filter((p) => p.position);
-        if (validPoints.length > 0) {
-          // Create bounds object to fit the map to all markers
-          const bounds = new google.maps.LatLngBounds();
-          validPoints.forEach((point) => {
-            if (point.position) {
-              bounds.extend(point.position);
-            }
-          });
+      // Move the map to the center position but keep zoom level as is
+      map.panTo(centerPosition);
 
-          // Set initial bounds once
-          map.fitBounds(bounds);
-
-          // Add a very small padding to the bounds
-          const padFactor = 0.05; // 5% padding on each side
-          const ne = bounds.getNorthEast();
-          const sw = bounds.getSouthWest();
-          const latDiff = (ne.lat() - sw.lat()) * padFactor;
-          const lngDiff = (ne.lng() - sw.lng()) * padFactor;
-
-          const newBounds = new google.maps.LatLngBounds(
-            { lat: sw.lat() - latDiff, lng: sw.lng() - lngDiff },
-            { lat: ne.lat() + latDiff, lng: ne.lng() + lngDiff }
-          );
-
-          map.fitBounds(newBounds);
-
-          // Add listener to prevent auto zoom when map is interacted with
-          google.maps.event.addListenerOnce(map, "bounds_changed", () => {
-            // Add event listener for zoom_changed to maintain user control
-            google.maps.event.addListener(map, "zoom_changed", () => {
-              // This prevents bounds from being re-applied
-              // The user now has control over the zoom
-            });
-          });
-        }
-      }
-
-      onGeocodingComplete(geocodedPointsResult);
+      onGeocodingComplete(geocodedPointsResult, centerPosition);
       setIsGeocoded(true);
     };
 
@@ -203,6 +161,7 @@ function MapView({ isVisible, hotels, activities }: MapViewProps) {
   const [selectedMarker, setSelectedMarker] = useState<MapPoint | null>(null);
   const [geocodedPoints, setGeocodedPoints] = useState<MapPoint[]>([]);
   const [mapLoaded, setMapLoaded] = useState<boolean>(false);
+  const [mapCenter, setMapCenter] = useState({ lat: 49.2827, lng: -123.1207 }); // Default Vancouver
 
   // Combine hotels and activities into a single array of map points
   const mapPoints: MapPoint[] = [
@@ -227,8 +186,12 @@ function MapView({ isVisible, hotels, activities }: MapViewProps) {
     ),
   ];
 
-  const handleGeocodingComplete = (points: MapPoint[]) => {
+  const handleGeocodingComplete = (
+    points: MapPoint[],
+    center: google.maps.LatLngLiteral
+  ) => {
     setGeocodedPoints(points);
+    setMapCenter(center);
     setMapLoaded(true);
   };
 
@@ -241,7 +204,8 @@ function MapView({ isVisible, hotels, activities }: MapViewProps) {
       <div className="w-full h-full rounded-xl border border-gray-300 overflow-hidden shadow-lg">
         <APIProvider apiKey={apiKey}>
           <Map
-            defaultZoom={12}
+            center={mapCenter}
+            zoom={13} // Fixed zoom level - adjust as needed
             gestureHandling="cooperative"
             mapId={mapId}
             className="w-full h-full"
