@@ -37,8 +37,7 @@ async function generateWithRetry(prompt: string) {
           topP: 0.95,
           topK: 40,
         },
-      });
-      
+      });   
       return result.response;
     } catch (apiError) {
       lastError = apiError.message;

@@ -16,7 +16,6 @@ Task: Generate a detailed travel itinerary for the following parameters:
 - Travelers: ${travelers}
 - Preferences: ${preferences}
 - Budget: ${budget}
-
 Requirements:
 1. Your output MUST ONLY be valid JSON. No text before or after the JSON object.
 2. Your output MUST match the schema structure defined below exactly.
@@ -26,7 +25,6 @@ Requirements:
 6. Each activity must have a specific time slot (e.g., "9:00 AM - 11:00 AM").
 7. Ensure all strings are properly escaped and the JSON is complete.
 8. DO NOT truncate or abbreviate any content.
-
 Schema:
 {
   "generatedItinerary": {
