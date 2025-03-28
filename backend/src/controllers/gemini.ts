@@ -1,8 +1,8 @@
 import express from 'express';
-import { AI_PROMPT, UPDATE_PROMPT } from '../helpers/AIprompt';
+import { AI_PROMPT, UPDATE_PROMPT ,schema} from '../helpers/AIprompt';
 import { get } from 'lodash';
 import { createNewTrip, getTripById, updateTripItinerary } from '../db/trip';
-import { getPreferences } from '../db/userPreferences';
+
 
 const {
   GoogleGenerativeAI,
@@ -36,6 +36,8 @@ async function generateWithRetry(prompt: string) {
           maxOutputTokens: 8192,
           topP: 0.95,
           topK: 40,
+          responseMimeType: "application/json",
+          responseSchema:schema 
         },
       });   
       return result.response;

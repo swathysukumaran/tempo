@@ -17,74 +17,14 @@ Task: Generate a detailed travel itinerary for the following parameters:
 - Preferences: ${preferences}
 - Budget: ${budget}
 Requirements:
-1. Your output MUST ONLY be valid JSON. No text before or after the JSON object.
-2. Your output MUST match the schema structure defined below exactly.
-3. The JSON must include all fields from the schema - if data isn't applicable, use null values.
-4. Each day must include breakfast, lunch, and dinner with specific time slots.
+1. The JSON must include all fields from the schema - if data isn't applicable, use null values.
+2. Each day must include breakfast, lunch, and dinner with specific time slots.
+3. Ensure all the activities suggested are in the location specified.
+4. Ensure the activities are suitable for the travelers and preferences.
 5. Include at least 3 hotel suggestions.
-6. Each activity must have a specific time slot (e.g., "9:00 AM - 11:00 AM").
+6. Each activity must have a specific time slot (e.g., "9:00 AM - 11:00 AM") and ensure they are open at the suggested time slot.
 7. Ensure all strings are properly escaped and the JSON is complete.
 8. DO NOT truncate or abbreviate any content.
-Schema:
-{
-  "generatedItinerary": {
-    "trip_name": "string",
-    "destination": "string",
-    "duration": "string",
-    "travelers": "string",
-    "cover_image_url": null,
-    "hotels": [
-      {
-        "hotel_name": "string",
-        "hotel_address": "string",
-        "price": "string",
-        "rating": 4.5,
-        "description": "string",
-        "hotel_image_url": null
-      }
-    ],
-    "itinerary": {
-      "day 1": {
-        "theme": "string",
-        "best_time_to_visit": "string",
-        "activities": [
-          {
-            "place_name": "string",
-            "place_details": "string",
-            "ticket_pricing": "string",
-            "rating": 4.5,
-            "travel_time": "string",
-            "place_image_url": null,
-            "time_slot": "string"
-          }
-        ]
-      }
-    }
-  },
-  "tripDetails": {
-    "budget": "${budget}",
-    "location": {
-      "description": "string",
-      "full_destination_name": "string"
-    },
-    "timeframe": "string",
-    "preferences": "string",
-    "narrative": "string",
-    "transportation": {
-      "airport": {
-        "name": "string",
-        "code": "string",
-        "description": "string"
-      },
-      "local_transport": ["string", "string", "string"],
-      "transportation_tips": [
-        {"tip": "string", "details": "string"},
-        {"tip": "string", "details": "string"},
-        {"tip": "string", "details": "string"}
-      ]
-    }
-  }
-}
 
 Important: I will be directly parsing your response as JSON. Any text before or after the JSON, or any syntax errors, will cause a failure. Return ONLY valid, complete JSON data.
 `;
@@ -115,4 +55,112 @@ Requirements:
 
 Important: I will be directly parsing your response as JSON. Any text before or after the JSON, or any syntax errors, will cause a failure. Return ONLY valid, complete JSON data that matches the EXACT structure of the original.
 `;
+};
+
+export const schema={
+  "type": "object",
+  "properties": {
+    "generatedItinerary": {
+      "type": "object",
+      "properties": {
+        "trip_name": { "type": "string" },
+        "destination": { "type": "string" },
+        "duration": { "type": "string" },
+        "travelers": { "type": "string" },
+        "cover_image_url": { "type": "string", "nullable": true },
+        "hotels": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "hotel_name": { "type": "string" },
+              "hotel_address": { "type": "string" },
+              "price": { "type": "string" },
+              "rating": { "type": "number" },
+              "description": { "type": "string" },
+              "hotel_image_url": { "type": "string", "nullable": true }
+            },
+            "required": ["hotel_name", "hotel_address", "price", "rating", "description"]
+          }
+        },
+        "itinerary": {
+          "type": "object",
+          "properties": {
+            "day 1": {
+              "type": "object",
+              "properties": {
+                "theme": { "type": "string" },
+                "best_time_to_visit": { "type": "string" },
+                "activities": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "place_name": { "type": "string" },
+                      "place_details": { "type": "string" },
+                      "ticket_pricing": { "type": "string" },
+                      "rating": { "type": "number" },
+                      "travel_time": { "type": "string" },
+                      "place_image_url": { "type": "string", "nullable": true },
+                      "time_slot": { "type": "string" }
+                    },
+                    "required": ["place_name", "place_details", "ticket_pricing", "rating", "travel_time", "time_slot"]
+                  }
+                }
+              },
+              "required": ["theme", "best_time_to_visit", "activities"]
+            }
+          },
+          "required": ["day 1"]
+        }
+      },
+      "required": ["trip_name", "destination", "duration", "travelers", "hotels", "itinerary"]
+    },
+    "tripDetails": {
+      "type": "object",
+      "properties": {
+        "budget": { "type": "string" },
+        "location": {
+          "type": "object",
+          "properties": {
+            "description": { "type": "string" },
+            "full_destination_name": { "type": "string" }
+          },
+          "required": ["description", "full_destination_name"]
+        },
+        "timeframe": { "type": "string" },
+        "preferences": { "type": "string" },
+        "narrative": { "type": "string" },
+        "transportation": {
+          "type": "object",
+          "properties": {
+            "airport": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "code": { "type": "string" },
+                "description": { "type": "string" }
+              },
+              "required": ["name", "code", "description"]
+            },
+            "local_transport": { "type": "array", "items": { "type": "string" } },
+            "transportation_tips": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "tip": { "type": "string" },
+                  "details": { "type": "string" }
+                },
+                "required": ["tip", "details"]
+              }
+            }
+          },
+          "required": ["airport", "local_transport", "transportation_tips"]
+        }
+      },
+      "required": ["budget", "location", "timeframe", "preferences", "narrative", "transportation"]
+    }
+  },
+  "required": ["generatedItinerary", "tripDetails"]
 };
