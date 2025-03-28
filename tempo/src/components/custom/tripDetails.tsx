@@ -605,7 +605,7 @@ function TripDetails() {
                   <div className="border-b border-gray-200 p-6">
                     <div className="flex justify-between items-center">
                       <h3 className="text-xl font-bold text-gray-800">
-                        {day.replace("day", "Day ")}
+                        Day {dayData.day}
                       </h3>
                       <div className="flex items-center text-gray-700">
                         <Sun size={20} className="mr-2 text-yellow-600" />
