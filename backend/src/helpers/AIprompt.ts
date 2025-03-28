@@ -18,9 +18,21 @@ Task: Generate a detailed travel itinerary for the following parameters:
 - Budget: ${budget}
 Requirements:
 1. The JSON must include all fields from the schema - if data isn't applicable, use null values.
-2. Each day must include breakfast, lunch, and dinner with specific time slots.
+2. The itinerary must include activities for all the days in the timeframe following {
+  "itinerary": [
+    {
+      "day": 1,
+      "theme": "...",
+      "best_time_to_visit": "...",
+      "activities": [...]
+    },
+    // ... day 2, day 3, etc. ...
+  ]
+}.
+2. Each day must include breakfast, lunch, and dinner with specific time slots .
 3. Ensure all the activities suggested are in the location specified.
 4. Ensure the activities are suitable for the travelers and preferences.
+5. Include at least 3 activities for each day unless specified otherwise in the user preference.
 5. Include at least 3 hotel suggestions.
 6. Each activity must have a specific time slot (e.g., "9:00 AM - 11:00 AM") and ensure they are open at the suggested time slot.
 7. Ensure all strings are properly escaped and the JSON is complete.
@@ -57,7 +69,8 @@ Important: I will be directly parsing your response as JSON. Any text before or 
 `;
 };
 
-export const schema={
+export const schema=
+{
   "type": "object",
   "properties": {
     "generatedItinerary": {
@@ -84,34 +97,32 @@ export const schema={
           }
         },
         "itinerary": {
-          "type": "object",
-          "properties": {
-            "day 1": {
-              "type": "object",
-              "properties": {
-                "theme": { "type": "string" },
-                "best_time_to_visit": { "type": "string" },
-                "activities": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "place_name": { "type": "string" },
-                      "place_details": { "type": "string" },
-                      "ticket_pricing": { "type": "string" },
-                      "rating": { "type": "number" },
-                      "travel_time": { "type": "string" },
-                      "place_image_url": { "type": "string", "nullable": true },
-                      "time_slot": { "type": "string" }
-                    },
-                    "required": ["place_name", "place_details", "ticket_pricing", "rating", "travel_time", "time_slot"]
-                  }
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "day": { "type": "integer" },
+              "theme": { "type": "string" },
+              "best_time_to_visit": { "type": "string" },
+              "activities": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "place_name": { "type": "string" },
+                    "place_details": { "type": "string" },
+                    "ticket_pricing": { "type": "string" },
+                    "rating": { "type": "number" },
+                    "travel_time": { "type": "string" },
+                    "place_image_url": { "type": "string", "nullable": true },
+                    "time_slot": { "type": "string" }
+                  },
+                  "required": ["place_name", "place_details", "ticket_pricing", "rating", "travel_time", "time_slot"]
                 }
-              },
-              "required": ["theme", "best_time_to_visit", "activities"]
-            }
-          },
-          "required": ["day 1"]
+              }
+            },
+            "required": ["day", "theme", "best_time_to_visit", "activities"]
+          }
         }
       },
       "required": ["trip_name", "destination", "duration", "travelers", "hotels", "itinerary"]
@@ -163,4 +174,4 @@ export const schema={
     }
   },
   "required": ["generatedItinerary", "tripDetails"]
-};
+}
