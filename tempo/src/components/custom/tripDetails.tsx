@@ -22,7 +22,7 @@ import { Button } from "../ui/button";
 import { toast } from "sonner";
 import micAnimation from "../../assets/mic.json";
 import Lottie from "lottie-react";
-import MapView from "./MapView";
+// import MapView from "./MapView";
 function TripDetails() {
   const { tripId } = useParams();
   interface TripData {
@@ -557,7 +557,7 @@ function TripDetails() {
       </section>
 
       {/* Inline Map */}
-      <section className="max-w-4xl mx-auto px-6 mt-4">
+      {/* <section className="max-w-4xl mx-auto px-6 mt-4">
         {tripData && (
           <MapView
             hotels={tripData.generatedItinerary.hotels}
@@ -565,7 +565,7 @@ function TripDetails() {
             isVisible={isMapVisible}
           />
         )}
-      </section>
+      </section> */}
 
       {/* Hotels Section */}
       <section className="max-w-4xl mx-auto px-6 mt-8">
