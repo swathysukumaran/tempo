@@ -1,4 +1,28 @@
+@keyframes progress-bar {
+  0% {
+    width: 0%;
+  }
 
+  20% {
+    width: 20%;
+  }
+
+  50% {
+    width: 60%;
+  }
+
+  80% {
+    width: 85%;
+  }
+
+  100% {
+    width: 98%;
+  }
+}
+
+.animate-progress-bar {
+  animation: progress-bar 30s ease-in-out;
+}
 
 .logo {
   height: 6em;

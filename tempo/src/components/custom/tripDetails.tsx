@@ -82,6 +82,7 @@ function TripDetails() {
   // Add these state variables at the top of your component
   const [changeRequest, setChangeRequest] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [modalVisuallyHidden, setModalVisuallyHidden] = useState(false);
   const [activeTab, setActiveTab] = useState<"itinerary" | "hotels">(
     "itinerary"
   );
@@ -94,7 +95,7 @@ function TripDetails() {
     try {
       console.log("Submitting changes...");
       setIsSubmitting(true);
-
+      setModalVisuallyHidden(true);
       const response = await fetch(`${API_URL}/ai/update-trip/${tripId}`, {
         method: "POST",
         headers: {
@@ -118,7 +119,9 @@ function TripDetails() {
       alert("Failed to update itinerary. Please try again.");
     } finally {
       setIsSubmitting(false);
+
       setIsFabModalOpen(false);
+      setModalVisuallyHidden(false);
     }
   };
   const fetchImages = async (data: TripData) => {
@@ -392,8 +395,11 @@ function TripDetails() {
     };
     return (
       <div
-        className="fixed inset-0 bg-black bg-opacity-50 z-[100] 
-      flex items-center justify-center p-4"
+        className={`fixed inset-0 ${
+          modalVisuallyHidden
+            ? "opacity-0 pointer-events-none"
+            : "bg-black bg-opacity-50"
+        } z-[100] flex items-center justify-center p-4 transition-opacity duration-300`}
       >
         <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 relative">
           <button
@@ -485,13 +491,18 @@ function TripDetails() {
   return (
     <div className="min-h-screen bg-white pb-16">
       {isSubmitting && (
-        <div className="fixed inset-0 bg-black/80 z-[180] flex flex-col items-center justify-center backdrop-blur-sm transition-all duration-300">
-          <div className="flex justify-center items-center min-h-screen animate-pulse">
-            <div className="text-white text-2xl font-bold">
-              Updating Your Trip...
-            </div>
+        <>
+          {/* Top progress bar */}
+          <div className="fixed top-0 left-0 w-full h-4 bg-primary/20 z-[100]">
+            <div className="h-full bg-primary animate-progress-bar"></div>
           </div>
-        </div>
+
+          {/* Subtle floating indicator */}
+          <div className="fixed bottom-4 right-4 bg-white rounded-lg shadow-lg p-3 z-[100] flex items-center space-x-3">
+            <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-sm font-medium">Updating your trip...</p>
+          </div>
+        </>
       )}
       <div
         className="text-white py-12 px-6 rounded-b-3xl shadow-xl relative min-h-[50vh]"
