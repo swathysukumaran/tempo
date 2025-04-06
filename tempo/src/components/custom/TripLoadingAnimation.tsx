@@ -10,14 +10,17 @@ const TripLoadingAnimation: React.FC<TripLoadingAnimationProps> = ({
   className,
 }) => {
   const messages = [
-    "Finding your destination...",
     "Crafting your personalized itinerary...",
-    "Discovering hidden gems...",
-    "Selecting the best accommodations...",
-    "Planning your daily adventures...",
-    "Adding local experiences...",
-    "Optimizing travel routes...",
-    "Finalizing your travel plan...",
+    "Analyzing your 'must-try food' vs. 'willingness to walk' ratio...",
+    "Curating your 'perfect blend of adventure and nap-time'...",
+    "Calculating the optimal 'sightseeing to gelato' ratio, based on your preferences...",
+    "Personalizing your 'unexpected detours'...",
+    "Loading your 'I'm on vacation, calories don't count' mindset...",
+    "Adding 'buffer time' for 'unexpectedly long gelato lines'...",
+    "Generating your 'I thought I packed that charger' (but didn't) panic simulation...",
+    "Compiling a list of 'things you'll only buy because you're on vacation'...",
+    "Determining the precise moment you'll forget to exchange currency... almost there...",
+    "Loading your 'pretending to be a local' skills...",
   ];
 
   const [messageIndex, setMessageIndex] = useState(0);
@@ -25,7 +28,7 @@ const TripLoadingAnimation: React.FC<TripLoadingAnimationProps> = ({
   useEffect(() => {
     const interval = setInterval(() => {
       setMessageIndex((prevIndex) => (prevIndex + 1) % messages.length);
-    }, 6000); // Change message every 3 seconds
+    }, 4500); // Change message every 3 seconds
 
     return () => clearInterval(interval); // Cleanup on unmount
   }, [messages.length]);
@@ -42,9 +45,9 @@ const TripLoadingAnimation: React.FC<TripLoadingAnimationProps> = ({
           style={{ width: "50%", height: "auto" }} // Reduced size
           className="w-full h-auto mx-auto"
         />
-        <h2 className="text-center text-h2 text-primary font-semibold mt-4">
+        <h4 className="text-center text-h2 text-primary font-semibold mt-4">
           {messages[messageIndex]} {/* Dynamic message */}
-        </h2>
+        </h4>
       </div>
     </div>
   );
