@@ -41,8 +41,12 @@ export const updateTripItinerary = async (userId: string, tripId: string, genera
       throw new Error("Trip not found or unauthorized");
     }
     
-    console.log("Trip found",generatedItinerary);
-    trip.generatedItinerary = generatedItinerary;
+    
+     if (generatedItinerary.generatedItinerary) {
+      trip.generatedItinerary = generatedItinerary.generatedItinerary;
+    } else {
+      trip.generatedItinerary = generatedItinerary;
+    }
     
     
     trip.markModified('generatedItinerary');
@@ -50,7 +54,7 @@ export const updateTripItinerary = async (userId: string, tripId: string, genera
    
     const updatedTrip = await trip.save();
     
-    console.log("Trip itinerary updated successfully");
+    console.log("Trip itinerary updated successfully", updatedTrip);
     return updatedTrip;
   } catch (err) {
     console.error("Error updating trip itinerary:", err);

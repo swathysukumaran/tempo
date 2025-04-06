@@ -188,7 +188,7 @@ export const updateItinerary=async (req:express.Request,res:express.Response)=>{
     
     // Extract and validate JSON from the response
     const updatedItinerary = extractJSON(text);
-    
+    console.log('Updated Itinerary:',updatedItinerary);
     const newTrip=await updateTripItinerary(userId,tripId,updatedItinerary);
             res.status(200).json(newTrip);
             return;

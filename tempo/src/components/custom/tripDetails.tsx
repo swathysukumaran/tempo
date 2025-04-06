@@ -123,6 +123,8 @@ function TripDetails() {
       data.tripDetails.location?.label || ""
     );
 
+    console.log("data", data);
+
     const hotelImagePromises = data.generatedItinerary.hotels.map((hotel) =>
       googlePlacePhotos(`${hotel.hotel_name} ${hotel.hotel_address}`)
     );
