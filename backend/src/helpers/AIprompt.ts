@@ -110,6 +110,7 @@ export const schema=
                   "type": "object",
                   "properties": {
                     "place_name": { "type": "string" },
+                    "place_address": { "type": "string" },
                     "place_details": { "type": "string" },
                     "ticket_pricing": { "type": "string" },
                     "rating": { "type": "number" },

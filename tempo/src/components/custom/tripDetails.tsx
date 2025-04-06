@@ -59,6 +59,7 @@ function TripDetails() {
           best_time_to_visit: string;
           activities: {
             place_name: string;
+            place_address: string;
             place_details: string;
             ticket_pricing: string;
             rating: number;
