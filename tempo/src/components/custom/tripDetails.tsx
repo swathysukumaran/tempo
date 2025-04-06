@@ -15,13 +15,14 @@ import {
   Edit,
   X,
   CheckCircle,
-  MapIcon,
 } from "lucide-react";
 import { googlePlacePhotos } from "@/config/googlePlaces";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import micAnimation from "../../assets/mic.json";
 import Lottie from "lottie-react";
+// import TripMap from "./TripMap";
+
 // import MapView from "./MapView";
 function TripDetails() {
   const { tripId } = useParams();
@@ -56,6 +57,7 @@ function TripDetails() {
       itinerary: {
         [day: string]: {
           theme: string;
+          day: number;
           best_time_to_visit: string;
           activities: {
             place_name: string;
@@ -84,7 +86,7 @@ function TripDetails() {
     "itinerary"
   );
   const [isFabModalOpen, setIsFabModalOpen] = useState(false);
-  const [isMapVisible, setIsMapVisible] = useState<boolean>(false);
+  // const [isMapVisible, setIsMapVisible] = useState<boolean>(false);
   const handleSubmitChanges = async () => {
     console.log("change request", changeRequest);
     if (!changeRequest.trim()) return;
@@ -178,6 +180,7 @@ function TripDetails() {
         console.log("Itinerary", itinerary);
         type DayData = {
           theme: string;
+          day: number;
           best_time_to_visit: string;
           activities: {
             place_name: string;
@@ -547,7 +550,7 @@ function TripDetails() {
           </p>
         </div>
       </section>
-      <section className="max-w-4xl mx-auto px-6 mt-8">
+      {/* <section className="max-w-4xl mx-auto px-6 mt-8">
         <div className="flex justify-center">
           <Button
             onClick={() => setIsMapVisible(!isMapVisible)}
@@ -557,17 +560,7 @@ function TripDetails() {
             {isMapVisible ? "Hide Map" : "Show Trip Map"}
           </Button>
         </div>
-      </section>
-
-      {/* Inline Map */}
-      {/* <section className="max-w-4xl mx-auto px-6 mt-4">
-        {tripData && (
-          <MapView
-            hotels={tripData.generatedItinerary.hotels}
-            activities={tripData.generatedItinerary.itinerary}
-            isVisible={isMapVisible}
-          />
-        )}
+        {isMapVisible && <TripMap tripData={tripData} />}
       </section> */}
 
       {/* Hotels Section */}

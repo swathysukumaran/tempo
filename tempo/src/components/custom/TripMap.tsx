@@ -1,18 +1,26 @@
-import React from "react";
-import { GoogleMap, LoadScript } from "@react-google-maps/api";
+import React, { useEffect, useState } from "react";
+import { GoogleMap, Marker } from "@react-google-maps/api";
+import { geocodeAddress } from "@/lib/geocode";
+
+interface MarkerData {
+  name: string;
+  lat: number;
+  lng: number;
+}
+
 interface TripData {
   _id: string;
   userId: string;
   tripDetails: {
     budget: "budget" | "moderate" | "luxury";
     location: {
-      label?: string; // Making optional as it might be missing
+      label?: string;
       value?: string;
     };
     timeframe: string;
     narrative: string;
     preferences: string;
-    transportation?: object; // Adding new field
+    transportation?: object;
   };
   generatedItinerary: {
     trip_name: string;
@@ -40,7 +48,7 @@ interface TripData {
           rating: number;
           time_slot: string;
           travel_time: string;
-          place_image_url: string | null; // Updated to allow null
+          place_image_url: string | null;
         }[];
       };
     };
@@ -50,6 +58,7 @@ interface TripData {
 }
 
 function TripMap({ tripData }: { tripData: TripData }) {
+  console.log("Trip Data in map:", tripData);
   const hotels = tripData.generatedItinerary.hotels;
   const itinerary = tripData.generatedItinerary.itinerary;
   const mapContainerStyle = {
@@ -61,33 +70,72 @@ function TripMap({ tripData }: { tripData: TripData }) {
     lat: 20.5937, // fallback center (India)
     lng: 78.9629,
   };
-  const allMarkers: { name: string; address: string }[] = [];
-  hotels.forEach((hotel) =>
-    allMarkers.push({
-      name: hotel.hotel_name,
-      address: hotel.hotel_address,
-    })
-  );
-  Object.values(itinerary).forEach((day) => {
-    day.activities.forEach((act) =>
-      allMarkers.push({
-        name: act.place_name,
-        address: act.place_address,
-      })
-    );
-  });
+
+  const [markers, setMarkers] = useState<MarkerData[]>([]);
+
+  const fetchCoordinates = async () => {
+    const allMarkers: MarkerData[] = [];
+
+    // Geocode hotels
+    for (const hotel of hotels) {
+      try {
+        const coords = (await geocodeAddress(hotel.hotel_address)) as {
+          lat: number;
+          lng: number;
+        };
+        allMarkers.push({
+          name: hotel.hotel_name,
+          lat: coords.lat,
+          lng: coords.lng,
+        });
+      } catch {
+        console.warn("Error geocoding hotel:", hotel.hotel_name);
+      }
+    }
+
+    // Geocode activities
+    for (const day of Object.values(itinerary)) {
+      for (const activity of day.activities) {
+        try {
+          const coords = (await geocodeAddress(activity.place_address)) as {
+            lat: number;
+            lng: number;
+          };
+          allMarkers.push({
+            name: activity.place_name,
+            lat: coords.lat,
+            lng: coords.lng,
+          });
+        } catch {
+          console.warn("Error geocoding activity:", activity.place_name);
+        }
+      }
+    }
+
+    setMarkers(allMarkers);
+  };
+
+  // Fetch coordinates when component mounts
+  useEffect(() => {
+    fetchCoordinates();
+  }, [tripData]);
+
   return (
-    <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
-      <GoogleMap
-        mapContainerStyle={mapContainerStyle}
-        zoom={6}
-        center={defaultCenter}
-      >
-        {allMarkers.map((item, idx) => (
-          <GeocodedMarker key={idx} name={item.name} address={item.address} />
-        ))}
-      </GoogleMap>
-    </LoadScript>
+    <GoogleMap
+      mapContainerStyle={mapContainerStyle}
+      zoom={6}
+      center={defaultCenter}
+    >
+      {/* Render markers for all hotels and activities */}
+      {markers.map((item, idx) => (
+        <Marker
+          key={idx}
+          position={{ lat: item.lat, lng: item.lng }}
+          title={item.name}
+          googleMapsApiKey={API_KEY}
+        />
+      ))}
+    </GoogleMap>
   );
 }
 
