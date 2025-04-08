@@ -1,4 +1,4 @@
-import defaultActivityImage from "@/assets/default-activity.jpg";
+import defaultActivityImage from "@/assets/default_activity.jpg";
 
 export const googlePlacePhotos=async(placeName:string):Promise<string | null>=>{
     const mapDiv = document.createElement('div');

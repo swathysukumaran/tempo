@@ -45,7 +45,7 @@ const TripLoadingAnimation: React.FC<TripLoadingAnimationProps> = ({
           style={{ width: "50%", height: "auto" }} // Reduced size
           className="w-full h-auto mx-auto"
         />
-        <h4 className="text-center text-h2 text-primary font-semibold mt-4">
+        <h4 className="text-center  text-primary font-semibold mt-4">
           {messages[messageIndex]} {/* Dynamic message */}
         </h4>
       </div>

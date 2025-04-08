@@ -1,7 +1,9 @@
 import { API_URL } from "@/config/api";
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import defaultActivityImage from "../../assets/default-activity.jpg";
+import default_activity from "../../assets/default_activity.jpg";
+import default_hotel from "../../assets/default_hotel.jpg";
+import default_cover from "../../assets/default_cover.jpg";
 import {
   MapPin,
   Clock,
@@ -149,17 +151,17 @@ function TripDetails() {
       Promise.all(activityImagePromises),
     ]);
 
-    data.generatedItinerary.cover_image_url = coverImage ?? undefined;
+    data.generatedItinerary.cover_image_url = coverImage || default_cover;
 
     data.generatedItinerary.hotels.forEach((hotel, index) => {
-      hotel.hotel_image_url = hotelImages[index] ?? undefined;
+      hotel.hotel_image_url = hotelImages[index] || default_hotel;
     });
 
     let activityIndex = 0;
     Object.values(data.generatedItinerary.itinerary).forEach((dayData) => {
       dayData.activities.forEach((activity) => {
         activity.place_image_url =
-          activityImages[activityIndex] || defaultActivityImage;
+          activityImages[activityIndex] || default_activity;
         activityIndex++;
       });
     });
@@ -199,7 +201,7 @@ function TripDetails() {
         for (const dayData of Object.values(itinerary) as DayData[]) {
           for (const activity of dayData.activities) {
             const activityImage = await googlePlacePhotos(activity.place_name);
-            activity.place_image_url = activityImage || defaultActivityImage;
+            activity.place_image_url = activityImage || default_activity;
           }
         }
 
@@ -630,7 +632,7 @@ function TripDetails() {
                           className="hidden md:block h-24 w-24 flex-shrink-0 rounded-lg bg-cover bg-center border border-gray-200"
                           style={{
                             backgroundImage: `url(${
-                              activity.place_image_url || defaultActivityImage
+                              activity.place_image_url || default_activity
                             })`,
                             backgroundSize: "cover",
                             backgroundPosition: "center",
