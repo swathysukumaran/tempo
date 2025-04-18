@@ -23,9 +23,7 @@ import { Button } from "../ui/button";
 import { toast } from "sonner";
 import micAnimation from "../../assets/mic.json";
 import Lottie from "lottie-react";
-// import TripMap from "./TripMap";
 
-// import MapView from "./MapView";
 function TripDetails() {
   const { tripId } = useParams();
   interface TripData {
@@ -563,18 +561,6 @@ function TripDetails() {
           </p>
         </div>
       </section>
-      {/* <section className="max-w-4xl mx-auto px-6 mt-8">
-        <div className="flex justify-center">
-          <Button
-            onClick={() => setIsMapVisible(!isMapVisible)}
-            className="bg-primary text-white hover:bg-primary-dark flex items-center"
-          >
-            <MapIcon className="mr-2" size={20} />
-            {isMapVisible ? "Hide Map" : "Show Trip Map"}
-          </Button>
-        </div>
-        {isMapVisible && <TripMap tripData={tripData} />}
-      </section> */}
 
       {/* Hotels Section */}
       <section className="max-w-4xl mx-auto px-6 mt-8">
