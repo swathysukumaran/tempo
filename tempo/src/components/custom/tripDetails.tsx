@@ -23,6 +23,7 @@ import { Button } from "../ui/button";
 import { toast } from "sonner";
 import micAnimation from "../../assets/mic.json";
 import Lottie from "lottie-react";
+import ShareTrip from "./ShareTrip"; // adjust path if different
 
 function TripDetails() {
   const { tripId } = useParams();
@@ -715,6 +716,7 @@ function TripDetails() {
           </section>
         )}
       </section>
+      {tripData && <ShareTrip tripId={tripData._id} />}
 
       <FloatingActionButton />
       {/* FAB Modal */}
