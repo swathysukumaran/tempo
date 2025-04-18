@@ -70,7 +70,7 @@ export const shareTrip = async(req:express.Request, res:express.Response)=>{
             res.status(403).json({error:'Target user not found'});
             return;
         }
-        const alreadyShared=trip.sharedWith?.some((entry)=>entry.userid.toString()=== targetUser._id.toString());
+        const alreadyShared=trip.sharedWith?.some((entry)=>entry.userId.toString()=== targetUser._id.toString());
         if(alreadyShared){
             res.status(403).json({error:'Trip already shared with this user'});
             return;

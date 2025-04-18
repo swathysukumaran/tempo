@@ -8,20 +8,24 @@ const TripSchema=new mongoose.Schema({
     },
     tripDetails:Object,
     generatedItinerary:Object,
-    sharedWith:[
-        {
-            userid:{
-                type:mongoose.Schema.Types.ObjectId,
-                ref:'User',
-                required:true
-            },
-            permission:{
-                type:String,
-                enum:['view'],
-                default:'view'
-            }
-        }
-    ],
+    sharedWith: {
+  type: [
+    {
+      userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+      },
+      permission: {
+        type: String,
+        enum: ['view'],
+        default: 'view'
+      }
+    }
+  ],
+  default: [] // ✅ ensures .push() will always work
+    },
+
     createdAt:{type:Date,default:Date.now},
 });
 
