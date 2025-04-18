@@ -2,7 +2,35 @@ import React, { useState } from "react";
 import { Share2 } from "lucide-react";
 import { Button } from "../ui/button"; // adjust path if needed
 import { API_URL } from "@/config/api";
-function ShareTrip({ tripId }) {
+function ShareTrip({ tripId }: { tripId: string }) {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<string | null>(null);
+  const handleShare = async () => {
+    if (!email.trim()) return;
+    try {
+      const res = await fetch(`${API_URL}/trips/${tripId}/share`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || "Failed to share trip");
+
+      setStatus("Trip shared successfully!");
+      setEmail("");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setStatus(err.message);
+      } else {
+        setStatus("An unexpected error occurred");
+      }
+    }
+  };
   return (
     <section className="max-w-4xl mx-auto px-6 mt-8">
       <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
