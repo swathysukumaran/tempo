@@ -10,7 +10,18 @@ export const getTripDetails=async(req:express.Request,res:express.Response)=>{
     try{
         const tripId=req.params.tripId;
         const trip=await getTripById(tripId);
-
+        if(!trip){
+            res.status(404).json({error:'Trip not found'});
+            return;
+        }
+        const userId=get(req,'identity._id') as string;
+        const isOwner=trip.userId.toString()===userId.toString();
+        const isShared=trip.sharedWith?.some((entry)=>entry.userId.toString() === userId.toString());
+        
+        if(!isOwner && !isShared){
+            res.status(403).json({error:'Access denied'});
+            return;
+        }
         res.status(200).json(trip);
         return;
 
@@ -61,10 +72,7 @@ export const shareTrip = async(req:express.Request, res:express.Response)=>{
             res.status(403).json({error:'Trip not found'});
             return;
         }
-        if(trip.userId.toString()!== userId.toString()){
-            res.status(403).json({ error: 'Not authorized to share this trip' });
-            return ;
-        }
+        
         const targetUser=await UserModel.findOne({email});
         if(!targetUser){
             res.status(403).json({error:'Target user not found'});
