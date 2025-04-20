@@ -26,6 +26,16 @@ export const register: express.RequestHandler = async(req:express.Request,res:ex
                 password:authentication(salt,password),
             }
         });
+        const sessionSalt = random();
+        user.authentication.sessionToken = authentication(sessionSalt, user._id.toString());
+        await user.save();
+
+  
+        res.cookie('TEMPO-AUTH', user.authentication.sessionToken, {
+        domain: 'localhost',
+        path: '/',
+        });
+
         res.status(201).json(user); // Send the response
         return;
 

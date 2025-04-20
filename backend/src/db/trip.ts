@@ -9,18 +9,18 @@ const TripSchema=new mongoose.Schema({
     tripDetails:Object,
     generatedItinerary:Object,
     sharedWith: {
-  type: [
-    {
-      email: { type: String, required: true },
-      permission: {
-        type: String,
-        enum: ['view'],
-        default: 'view'
-      }
-    }
-  ],
-  default: [] // ✅ ensures .push() will always work
-    },
+      type: [
+        {
+          email: { type: String, required: true },
+          permission: {
+            type: String,
+            enum: ['view'],
+            default: 'view'
+          }
+        }
+      ],
+      default: [] 
+        },
 
     createdAt:{type:Date,default:Date.now},
 });

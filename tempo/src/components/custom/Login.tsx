@@ -9,7 +9,7 @@ import {
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { API_URL } from "@/config/api";
 import { Alert, AlertDescription } from "../ui/alert";
 
@@ -105,6 +105,12 @@ function Login() {
             Login
           </Button>
         </form>
+        <p>
+          Don’t have an account?{" "}
+          <Link to="/register" state={{ from: location.state?.from }}>
+            Register here
+          </Link>
+        </p>
       </CardContent>
     </Card>
   );

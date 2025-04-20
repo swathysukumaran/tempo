@@ -74,25 +74,27 @@ export const shareTrip = async(req:express.Request, res:express.Response)=>{
             return;
         }
         
-        const targetUser=await UserModel.findOne({email});
+        const targetUser=await UserModel.findOne({email}) ;
         if(!targetUser){
             trip.sharedWith.push({
             email,
             permission: 'view'
             });
+            
         }
-        const alreadyShared=trip.sharedWith?.some((entry)=>entry.email=== targetUser.email);
+        console.log('Target user:',targetUser);
+        const alreadyShared=trip.sharedWith?.some((entry)=> entry?.email && entry?.email === email);
         if(alreadyShared){
             res.status(403).json({error:'Trip already shared with this user'});
             return;
         }
         trip.sharedWith?.push({
-            email:targetUser.email,
+            email:email,
             permission: 'view'
         });
 
         await trip.save();
-        await sendTripShareEmail(targetUser.email, trip._id,userId);
+        await sendTripShareEmail(email, trip._id,userId);
         res.status(200).json({message:'Trip shared successfully'});
         return;
 

@@ -10,13 +10,15 @@ import { Alert, AlertDescription } from "../ui/alert";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { API_URL } from "../../config/api";
 interface RegisterProps {
   onLoginClick?: () => void; // Optional function with no parameters and no return value
 }
 function Register({ onLoginClick }: RegisterProps) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/create-trip-new";
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -38,7 +40,7 @@ function Register({ onLoginClick }: RegisterProps) {
       });
 
       if (response.ok) {
-        navigate("/login");
+        navigate(from, { replace: true });
       } else {
         const data: ErrorResponse = await response.json();
         setError(data.error || "Registration failed");
