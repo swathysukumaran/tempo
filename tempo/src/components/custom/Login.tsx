@@ -9,13 +9,15 @@ import {
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { API_URL } from "@/config/api";
 import { Alert, AlertDescription } from "../ui/alert";
 
 import { toast } from "sonner";
 function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/create-trip-new";
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -45,7 +47,7 @@ function Login() {
       }
       toast.success("Login successful! Redirecting...");
 
-      navigate("/create-trip-new");
+      navigate(from, { replace: true });
     } catch (err) {
       console.error("Login error:", err);
       setError("Network error. Please try again");
@@ -56,7 +58,7 @@ function Login() {
   };
 
   return (
-    <Card className="w-full bg-white max-w-md">
+    <Card className="w-full justify-center align-middle mt-6 bg-white max-w-md">
       <CardHeader>
         <CardTitle>Welcome back</CardTitle>
         <CardDescription>Enter your credentials to login</CardDescription>

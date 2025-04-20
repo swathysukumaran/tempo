@@ -82,7 +82,7 @@ const router = createBrowserRouter([
         element: <TermsOfService />,
       },
       {
-        path: "/trip-details/:tripId",
+        path: "/trip/:tripId",
         element: (
           <ProtectedRoute>
             <TripDetails />
