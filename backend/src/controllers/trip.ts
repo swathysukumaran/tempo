@@ -83,11 +83,7 @@ export const shareTrip = async(req:express.Request, res:express.Response)=>{
             
         }
         console.log('Target user:',targetUser);
-        const alreadyShared=trip.sharedWith?.some((entry)=> entry?.email && entry?.email === email);
-        if(alreadyShared){
-            res.status(403).json({error:'Trip already shared with this user'});
-            return;
-        }
+        
         trip.sharedWith?.push({
             email:email,
             permission: 'view'
@@ -126,46 +122,60 @@ export const sendTripShareEmail=async (toEmail:string,tripId:mongoose.Types.Obje
         from:process.env.SENDER_EMAIL,
         to:toEmail,
         subject:'You have been invited to a trip!',
-        html: `
-    <div style="font-family: 'Segoe UI', Roboto, sans-serif; background-color: #f6f6f6; padding: 20px;">
-      <div style="max-width: 600px; margin: auto; background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-        
-        <!-- Header -->
-        <div style="background-color: #3c8453; color: white; padding: 24px 20px; text-align: center;">
-          <h2 style="margin: 0; font-size: 24px;">Your Travel Adventure Awaits ✈️</h2>
-          <p style="margin: 6px 0 0;">Curated by Tempo, your personal AI travel planner</p>
-        </div>
-        
-        <!-- Body -->
-        <div style="padding: 30px; text-align: center;">
-          <p style="font-size: 16px; color: #333;">
-            <strong>${inviterName}</strong> has shared a personalized travel itinerary with you via <strong>Tempo</strong> 🌍
-          </p>
-          <p style="font-size: 15px; color: #666;">
-            Dive in to explore destinations, hotels, activities, and more — all tailored just for you.
-          </p>
-          <a href="${frontendURL}" style="
-            display: inline-block;
-            margin-top: 20px;
-            padding: 14px 28px;
-            background-color: #3c8453;
-            color: white;
-            text-decoration: none;
-            font-weight: 600;
-            border-radius: 8px;
-            transition: background-color 0.3s ease;">
-            View Trip Plan 🚀
-          </a>
-        </div>
+        html: `<div style="font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif; background-color: #F9FAFB; padding: 24px;">
+  <div style="
+      max-width: 600px;
+      margin: auto;
+      background-color: #ffffff;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #E5E7EB; /* soft gray border */
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06); /* subtle soft shadow */
+    ">
 
-        <!-- Footer -->
-        <div style="background-color: #f0f0f0; padding: 16px; text-align: center; font-size: 12px; color: #666;">
-          <p style="margin: 0;">This trip was shared with you by ${inviterName}</p>
-          <p style="margin: 4px 0 0;">Made with 💚 by <strong>Tempo</strong> — AI Travel Planning, Reimagined.</p>
-        </div>
-
-      </div>
+    <!-- Header -->
+    <div style="background-color: #0D9488; color: white; padding: 28px 24px; text-align: center;">
+      <h2 style="margin: 0; font-size: 2rem; font-weight: 700;">🌟 Your Trip is Ready</h2>
+      <p style="margin-top: 8px; font-size: 1rem;">Shared with you via <strong>Tempo</strong>, your AI travel companion</p>
     </div>
-  `,
+
+    <!-- Body -->
+    <div style="padding: 32px 24px; text-align: center;">
+      <p style="font-size: 1rem; color: #374151; margin-bottom: 16px;">
+        <strong>${inviterName}</strong> just shared a curated travel plan with you 🌍
+      </p>
+      <p style="font-size: 0.95rem; color: #6B7280; margin-bottom: 24px;">
+        Handpicked hotels, must-see attractions, and personalized tips — your itinerary is just a click away.
+      </p>
+
+      <!-- Button -->
+      <a href="${frontendURL}" style="
+        display: inline-block;
+        margin-top: 10px;
+        padding: 14px 28px;
+        background-color: #D14343;
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: background-color 0.3s ease;">
+        ✈️ View My Trip Plan
+      </a>
+    </div>
+
+    <!-- Divider -->
+    <div style="border-top: 1px solid #E5E7EB; margin: 0 24px;"></div>
+
+    <!-- Footer -->
+    <div style="background-color: #F3F4F6; padding: 20px 24px; text-align: center; font-size: 0.85rem; color: #6B7280;">
+      <p style="margin: 0;">👤 Shared by <strong>${inviterName}</strong></p>
+      <p style="margin-top: 6px;">Made with 💚 by <strong>Tempo</strong></p>
+    </div>
+
+  </div>
+</div>
+
+`,
     })
 }
