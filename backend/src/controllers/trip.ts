@@ -15,8 +15,9 @@ export const getTripDetails=async(req:express.Request,res:express.Response)=>{
             return;
         }
         const userId=get(req,'identity._id') as string;
+        const user=await UserModel.findById(userId);
         const isOwner=trip.userId.toString()===userId.toString();
-        const isShared=trip.sharedWith?.some((entry)=>entry.userId.toString() === userId.toString());
+        const isShared=trip.sharedWith?.some((entry)=>entry.email=== user.email);
         
         if(!isOwner && !isShared){
             res.status(403).json({error:'Access denied'});
@@ -75,16 +76,18 @@ export const shareTrip = async(req:express.Request, res:express.Response)=>{
         
         const targetUser=await UserModel.findOne({email});
         if(!targetUser){
-            res.status(403).json({error:'Target user not found'});
-            return;
+            trip.sharedWith.push({
+            email,
+            permission: 'view'
+            });
         }
-        const alreadyShared=trip.sharedWith?.some((entry)=>entry.userId.toString()=== targetUser._id.toString());
+        const alreadyShared=trip.sharedWith?.some((entry)=>entry.email=== targetUser.email);
         if(alreadyShared){
             res.status(403).json({error:'Trip already shared with this user'});
             return;
         }
         trip.sharedWith?.push({
-            userId: targetUser._id,
+            email:targetUser.email,
             permission: 'view'
         });
 

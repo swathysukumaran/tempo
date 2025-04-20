@@ -11,11 +11,7 @@ const TripSchema=new mongoose.Schema({
     sharedWith: {
   type: [
     {
-      userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-      },
+      email: { type: String, required: true },
       permission: {
         type: String,
         enum: ['view'],
