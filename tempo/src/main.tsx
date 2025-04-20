@@ -20,7 +20,7 @@ import CreateTripNew from "./components/custom/createTripNew.tsx";
 import Contact from "./components/custom/Contact.tsx";
 import PrivacyPolicy from "./components/custom/PrivacyPolicy.tsx";
 import TermsOfService from "./components/custom/TermsOfService.tsx";
-
+import ProtectedRoute from "./components/custom/ProtectedRoute.tsx";
 // Create a layout component that conditionally renders Header
 const RootLayout = () => {
   const location = useLocation();
@@ -80,6 +80,14 @@ const router = createBrowserRouter([
       {
         path: "/terms",
         element: <TermsOfService />,
+      },
+      {
+        path: "/trip-details/:tripId",
+        element: (
+          <ProtectedRoute>
+            <TripDetails />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
