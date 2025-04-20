@@ -14,7 +14,7 @@ const TripSchema=new mongoose.Schema({
           email: { type: String, required: true },
           permission: {
             type: String,
-            enum: ['view'],
+            enum: ['view','edit'],
             default: 'view'
           }
         }

@@ -2,6 +2,7 @@ import express from 'express';
 import { AI_PROMPT, UPDATE_PROMPT ,schema} from '../helpers/AIprompt';
 import { get } from 'lodash';
 import { createNewTrip, getTripById, updateTripItinerary } from '../db/trip';
+import { getUserById } from 'db/users';
 
 
 const {
@@ -178,6 +179,14 @@ export const updateItinerary=async (req:express.Request,res:express.Response)=>{
          res.status(404).json({ error: "Trip not found" });
          return;
         }
+
+        const currentUser=await getUserById(userId);
+        const isOwner = trip.userId.toString() === ((userId ?? '').toString());
+        const isSharedEditor=trip.sharedWith?.some((entry)=>entry.email===currentUser.email&& entry.permission === 'edit');
+         if (!isOwner && !isSharedEditor) {
+            res.status(403).json({ error: "You don't have permission to modify this trip" });
+            return;
+          }
         const prompt=UPDATE_PROMPT(trip,changeRequest);
         if(prompt.length>30000){
             res.status(400).json({error:'Prompt exceeds maximum allowed length'});
