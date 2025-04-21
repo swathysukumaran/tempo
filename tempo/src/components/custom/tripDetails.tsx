@@ -89,9 +89,9 @@ function TripDetails() {
   );
   const [isFabModalOpen, setIsFabModalOpen] = useState(false);
   // const [isMapVisible, setIsMapVisible] = useState<boolean>(false);
-  const handleSubmitChanges = async () => {
+  const handleSubmitChanges = async (request: string) => {
     console.log("change request", changeRequest);
-    if (!changeRequest.trim()) return;
+    if (!request.trim()) return;
 
     try {
       console.log("Submitting changes...");
@@ -104,7 +104,7 @@ function TripDetails() {
         },
         credentials: "include",
         body: JSON.stringify({
-          changeRequest,
+          changeRequest: request,
         }),
       });
 
@@ -274,7 +274,7 @@ function TripDetails() {
     const handleSubmit = () => {
       // Update the parent component's state when submitting
       setChangeRequest(localChangeRequest);
-      handleSubmitChanges();
+      handleSubmitChanges(localChangeRequest);
     };
 
     const startRecording = async () => {
