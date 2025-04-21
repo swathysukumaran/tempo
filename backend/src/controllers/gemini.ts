@@ -2,7 +2,7 @@ import express from 'express';
 import { AI_PROMPT, UPDATE_PROMPT ,schema} from '../helpers/AIprompt';
 import { get } from 'lodash';
 import { createNewTrip, getTripById, updateTripItinerary } from '../db/trip';
-import { getUserById } from 'db/users';
+import { getUserById } from '../db/users';
 
 
 const {
@@ -41,6 +41,7 @@ async function generateWithRetry(prompt: string) {
           responseSchema:schema 
         },
       });   
+      console.log('API call successful:', result.response);
       return result.response;
     } catch (apiError) {
       lastError = apiError.message;
@@ -181,19 +182,24 @@ export const updateItinerary=async (req:express.Request,res:express.Response)=>{
         }
 
         const currentUser=await getUserById(userId);
+        console.log('Current User:',currentUser);
+        console.log("Trip owner ID:", trip.userId.toString());
+        console.log("Shared editors:", trip.sharedWith);
         const isOwner = trip.userId.toString() === ((userId ?? '').toString());
         const isSharedEditor=trip.sharedWith?.some((entry)=>entry.email===currentUser.email&& entry.permission === 'edit');
          if (!isOwner && !isSharedEditor) {
+            console.log('User does not have permission to modify this trip');
             res.status(403).json({ error: "You don't have permission to modify this trip" });
             return;
           }
         const prompt=UPDATE_PROMPT(trip,changeRequest);
+        console.log('Prompt:',prompt);
         if(prompt.length>30000){
             res.status(400).json({error:'Prompt exceeds maximum allowed length'});
             return;
         }
         const response = await generateWithRetry(prompt);
-    const text = response.text();
+        const text = response.text();
     
     // Extract and validate JSON from the response
     const updatedItinerary = extractJSON(text);

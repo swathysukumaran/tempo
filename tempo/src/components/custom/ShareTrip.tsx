@@ -5,6 +5,7 @@ import { API_URL } from "@/config/api";
 function ShareTrip({ tripId }: { tripId: string }) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<string | null>(null);
+  const [permission, setPermission] = useState("view");
   const handleShare = async () => {
     if (!email.trim()) return;
     try {
@@ -14,7 +15,7 @@ function ShareTrip({ tripId }: { tripId: string }) {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, permission }),
       });
 
       const data = await res.json();
@@ -46,6 +47,13 @@ function ShareTrip({ tripId }: { tripId: string }) {
             onChange={(e) => setEmail(e.target.value)}
             className="border border-gray-300 rounded-lg p-2 w-full sm:w-auto flex-1"
           />
+          <select
+            value={permission}
+            onChange={(e) => setPermission(e.target.value)}
+          >
+            <option value="view">View Only</option>
+            <option value="edit">Allowed to Edit</option>
+          </select>
           <Button
             onClick={handleShare}
             className="bg-primary text-white hover:bg-primary-dark"

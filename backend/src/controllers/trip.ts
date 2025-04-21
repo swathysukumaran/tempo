@@ -58,7 +58,7 @@ export const shareTrip = async(req:express.Request, res:express.Response)=>{
     try{
         
         const userId=get(req,'identity._id') as string;
-        const email=req.body.email;
+        const { email, permission = 'view' }=req.body;
         const tripId=req.params.tripId;
         if(!userId){
             res.status(401).json({error:'User not authenticated'});
@@ -78,7 +78,7 @@ export const shareTrip = async(req:express.Request, res:express.Response)=>{
         if(!targetUser){
             trip.sharedWith.push({
             email,
-            permission: 'view'
+            permission
             });
             
         }
@@ -86,7 +86,7 @@ export const shareTrip = async(req:express.Request, res:express.Response)=>{
         
         trip.sharedWith?.push({
             email:email,
-            permission: 'view'
+            permission
         });
 
         await trip.save();

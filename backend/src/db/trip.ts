@@ -51,8 +51,8 @@ export const updateTripItinerary = async (userId: string, tripId: string, genera
     const trip = await TripModel.findById(tripId);
     
    
-    if (!trip || trip.userId.toString() !== userId.toString()) {
-      throw new Error("Trip not found or unauthorized");
+    if (!trip) {
+      throw new Error("Trip not found");
     }
     
     
