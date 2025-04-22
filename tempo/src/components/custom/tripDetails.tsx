@@ -24,6 +24,7 @@ import { toast } from "sonner";
 import micAnimation from "../../assets/mic.json";
 import Lottie from "lottie-react";
 import ShareTrip from "./ShareTrip"; // adjust path if different
+import TripMap from "./TripMap";
 
 function TripDetails() {
   const { tripId } = useParams();
@@ -88,6 +89,10 @@ function TripDetails() {
     "itinerary"
   );
   const [isFabModalOpen, setIsFabModalOpen] = useState(false);
+  const [isMapVisible, setIsMapVisible] = useState(false);
+  const [markers, setMarkers] = useState<
+    { name: string; lat: number; lng: number }[]
+  >([]);
   // const [isMapVisible, setIsMapVisible] = useState<boolean>(false);
   const handleSubmitChanges = async (request: string) => {
     console.log("change request", changeRequest);
@@ -126,6 +131,7 @@ function TripDetails() {
     }
   };
   const fetchImages = async (data: TripData) => {
+    const markersList: { name: string; lat: number; lng: number }[] = [];
     const coverPlace = await googlePlaceLookup(
       data.tripDetails.location?.label || ""
     );
@@ -150,19 +156,38 @@ function TripDetails() {
 
     // ⬇️ Set hotel images
     data.generatedItinerary.hotels.forEach((hotel, index) => {
-      hotel.hotel_image_url = hotelPlaces[index]?.photoUrl || default_hotel;
+      const hotelPlace = hotelPlaces[index];
+      hotel.hotel_image_url = hotelPlace?.photoUrl || default_hotel;
+
+      if (hotelPlace?.lat && hotelPlace?.lng) {
+        markersList.push({
+          name: hotel.hotel_name,
+          lat: hotelPlace.lat,
+          lng: hotelPlace.lng,
+        });
+      }
     });
 
     // ⬇️ Set activity images
     let activityIndex = 0;
     Object.values(data.generatedItinerary.itinerary).forEach((dayData) => {
       dayData.activities.forEach((activity) => {
-        activity.place_image_url =
-          activityPlaces[activityIndex]?.photoUrl || default_activity;
+        const place = activityPlaces[activityIndex];
+        activity.place_image_url = place?.photoUrl || default_activity;
+
+        if (place?.lat && place?.lng) {
+          markersList.push({
+            name: activity.place_name,
+            lat: place.lat,
+            lng: place.lng,
+          });
+        }
+
         activityIndex++;
       });
     });
 
+    setMarkers(markersList); //  Store all markers here
     return data;
   };
 
@@ -548,6 +573,19 @@ function TripDetails() {
           </div>
         </div>
       </div>
+      <div className="flex justify-center mt-6">
+        <Button
+          onClick={() => setIsMapVisible((prev) => !prev)}
+          className="bg-primary text-white hover:bg-primary-dark transition"
+        >
+          {isMapVisible ? "Hide Map" : "Show Trip Map"}
+        </Button>
+      </div>
+      {isMapVisible && (
+        <div className="mt-4 rounded-xl overflow-hidden shadow-lg border border-gray-200">
+          <TripMap markers={markers} />
+        </div>
+      )}
       <section className="max-w-4xl mx-auto px-6 mt-8">
         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
           <div className="flex items-center mb-4">
