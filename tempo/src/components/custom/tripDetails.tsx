@@ -18,7 +18,7 @@ import {
   X,
   CheckCircle,
 } from "lucide-react";
-import { googlePlacePhotos } from "@/config/googlePlaces";
+import { googlePlaceLookup } from "@/config/googlePlaces";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import micAnimation from "../../assets/mic.json";
@@ -126,41 +126,39 @@ function TripDetails() {
     }
   };
   const fetchImages = async (data: TripData) => {
-    const coverImagePromise = googlePlacePhotos(
+    const coverPlace = await googlePlaceLookup(
       data.tripDetails.location?.label || ""
     );
 
-    console.log("data", data);
-
-    const hotelImagePromises = data.generatedItinerary.hotels.map((hotel) =>
-      googlePlacePhotos(`${hotel.hotel_name} ${hotel.hotel_address}`)
-    );
-
-    const activityImagePromises = Object.values(
-      data.generatedItinerary.itinerary
-    ).flatMap((dayData) =>
-      dayData.activities.map((activity) =>
-        googlePlacePhotos(activity.place_name)
+    const hotelPlaces = await Promise.all(
+      data.generatedItinerary.hotels.map((hotel) =>
+        googlePlaceLookup(`${hotel.hotel_name} ${hotel.hotel_address}`)
       )
     );
 
-    const [coverImage, hotelImages, activityImages] = await Promise.all([
-      coverImagePromise,
-      Promise.all(hotelImagePromises),
-      Promise.all(activityImagePromises),
-    ]);
+    const activityPlaces = await Promise.all(
+      Object.values(data.generatedItinerary.itinerary).flatMap((dayData) =>
+        dayData.activities.map((activity) =>
+          googlePlaceLookup(activity.place_name)
+        )
+      )
+    );
 
-    data.generatedItinerary.cover_image_url = coverImage || default_cover;
+    // ⬇️ Set cover image
+    data.generatedItinerary.cover_image_url =
+      coverPlace?.photoUrl || default_cover;
 
+    // ⬇️ Set hotel images
     data.generatedItinerary.hotels.forEach((hotel, index) => {
-      hotel.hotel_image_url = hotelImages[index] || default_hotel;
+      hotel.hotel_image_url = hotelPlaces[index]?.photoUrl || default_hotel;
     });
 
+    // ⬇️ Set activity images
     let activityIndex = 0;
     Object.values(data.generatedItinerary.itinerary).forEach((dayData) => {
       dayData.activities.forEach((activity) => {
         activity.place_image_url =
-          activityImages[activityIndex] || default_activity;
+          activityPlaces[activityIndex]?.photoUrl || default_activity;
         activityIndex++;
       });
     });
@@ -199,8 +197,9 @@ function TripDetails() {
 
         for (const dayData of Object.values(itinerary) as DayData[]) {
           for (const activity of dayData.activities) {
-            const activityImage = await googlePlacePhotos(activity.place_name);
-            activity.place_image_url = activityImage || default_activity;
+            const placeData = await googlePlaceLookup(activity.place_name);
+
+            activity.place_image_url = placeData?.photoUrl || default_activity;
           }
         }
 
