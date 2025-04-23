@@ -43,23 +43,30 @@ const TripMap: React.FC<TripMapProps> = ({ markers }) => {
   };
 
   return (
-    <MapContainer
-      center={center}
-      zoom={13}
-      scrollWheelZoom={false}
-      style={{ height: "500px", width: "100%" }}
-    >
-      <TileLayer
-        attribution="&copy; OpenStreetMap contributors"
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
+    <div className="rounded-xl overflow-hidden shadow-lg border border-gray-300 max-w-3xl mx-auto">
+      <MapContainer
+        center={center}
+        zoom={14}
+        scrollWheelZoom={false}
+        style={{ height: "500px", width: "100%" }}
+        className="z-0"
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png"
+        />
 
-      {markers.map((marker, index) => (
-        <Marker key={index} position={[marker.lat, marker.lng]}>
-          <Popup>{marker.name}</Popup>
-        </Marker>
-      ))}
-    </MapContainer>
+        {markers.map((marker, index) => (
+          <Marker key={index} position={[marker.lat, marker.lng]}>
+            <Popup>
+              <span className="text-sm font-medium text-gray-800">
+                {marker.name}
+              </span>
+            </Popup>
+          </Marker>
+        ))}
+      </MapContainer>
+    </div>
   );
 };
 
