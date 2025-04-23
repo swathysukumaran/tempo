@@ -583,7 +583,7 @@ function TripDetails() {
         </Button>
       </div>
       {isMapVisible && (
-        <div className="mt-4 rounded-xl overflow-hidden shadow-lg border border-gray-200">
+        <div className="mt-4 rounded-xl overflow-hidden ">
           <TripMap markers={markers} />
         </div>
       )}
@@ -669,8 +669,18 @@ function TripDetails() {
                         <div className="flex-1">
                           <div className="flex items-center mb-2">
                             <h4 className="text-lg font-semibold text-gray-900 mr-4">
-                              {activity.place_name}
+                              <a
+                                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                                  activity.place_name
+                                )}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hover:border-primary transition duration-200 text-primary"
+                              >
+                                {activity.place_name}
+                              </a>
                             </h4>
+
                             <div className="flex items-center text-yellow-600">
                               <Star size={16} className="mr-1" />
                               {activity.rating}/5
@@ -719,36 +729,47 @@ function TripDetails() {
           <section>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {generatedItinerary.hotels.map((hotel, index) => (
-                <div
-                  key={index}
-                  className="bg-white rounded-xl shadow-lg hover:shadow-xl border border-gray-200 transition-all transform hover:-translate-y-2"
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                    hotel.hotel_name + " " + hotel.hotel_address
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:border-primary transition duration-200 text-primary"
                 >
                   <div
-                    className="h-48 w-full bg-cover bg-center rounded-t-xl"
-                    style={{
-                      backgroundImage: `url(${hotel.hotel_image_url})`,
-                    }}
-                  />
-                  <div className="p-4">
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                      {hotel.hotel_name}
-                    </h3>
-                    <div className="flex items-center text-sm text-gray-700 mb-4">
-                      <MapPin size={16} className="mr-2 text-primary" />
-                      {hotel.hotel_address}
-                    </div>
-                    <div className="flex justify-between items-center mb-4">
-                      <div className="text-lg font-bold text-primary">
-                        {hotel.price}
+                    key={index}
+                    className="bg-white rounded-xl shadow-lg hover:shadow-xl border border-gray-200 transition-all transform hover:-translate-y-2"
+                  >
+                    <div
+                      className="h-48 w-full bg-cover bg-center rounded-t-xl"
+                      style={{
+                        backgroundImage: `url(${hotel.hotel_image_url})`,
+                      }}
+                    />
+                    <div className="p-4">
+                      <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                        {hotel.hotel_name}
+                      </h3>
+                      <div className="flex items-center text-sm text-gray-700 mb-4">
+                        <MapPin size={16} className="mr-2 text-primary" />
+                        {hotel.hotel_address}
                       </div>
-                      <div className="flex items-center text-yellow-600">
-                        <Star size={16} className="mr-1" />
-                        <span>{hotel.rating}/5</span>
+                      <div className="flex justify-between items-center mb-4">
+                        <div className="text-lg font-bold text-primary">
+                          {hotel.price}
+                        </div>
+                        <div className="flex items-center text-yellow-600">
+                          <Star size={16} className="mr-1" />
+                          <span>{hotel.rating}/5</span>
+                        </div>
                       </div>
+                      <p className="text-sm text-gray-800">
+                        {hotel.description}
+                      </p>
                     </div>
-                    <p className="text-sm text-gray-800">{hotel.description}</p>
                   </div>
-                </div>
+                </a>
               ))}
             </div>
           </section>

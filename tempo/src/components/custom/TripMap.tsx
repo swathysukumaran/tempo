@@ -43,7 +43,7 @@ const TripMap: React.FC<TripMapProps> = ({ markers }) => {
   };
 
   return (
-    <div className="rounded-xl overflow-hidden shadow-lg border border-gray-300 max-w-3xl mx-auto">
+    <div className="rounded-xl overflow-hidden  border border-gray-300 max-w-3xl mx-auto">
       <MapContainer
         center={center}
         zoom={14}
