@@ -1,45 +1,66 @@
 import React from "react";
-import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+
+// Fix Leaflet's default icon path issues in React builds
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
+
+// Avoid use of 'any' by explicitly typing prototype
+const iconDefault = L.Icon.Default.prototype as unknown as {
+  _getIconUrl?: () => string;
+};
+delete iconDefault._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
 
 interface MarkerData {
-  name: string;
   lat: number;
   lng: number;
+  name: string;
 }
+
 interface TripMapProps {
   markers: MarkerData[];
 }
 
-const containerStyle = {
-  width: "100%",
-  height: "400px",
-  orderRadius: "1rem",
-};
-const center = {
-  lat: 20,
-  lng: 0,
-};
-function TripMap({ markers }: TripMapProps) {
-  console.log("Markers in map component", markers);
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.VITE_GOOGLE_PLACE_API_KEY || "",
-  });
-  if (!isLoaded) return <div>Loading...</div>;
+const TripMap: React.FC<TripMapProps> = ({ markers }) => {
+  if (!markers || markers.length === 0) {
+    return (
+      <div className="text-gray-500 text-center p-4">No map data available</div>
+    );
+  }
+
+  const center = {
+    lat: markers[0].lat,
+    lng: markers[0].lng,
+  };
+
   return (
-    <GoogleMap
-      mapContainerStyle={containerStyle}
-      center={markers[0] || center}
-      zoom={5}
+    <MapContainer
+      center={center}
+      zoom={13}
+      scrollWheelZoom={false}
+      style={{ height: "500px", width: "100%" }}
     >
+      <TileLayer
+        attribution="&copy; OpenStreetMap contributors"
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+
       {markers.map((marker, index) => (
-        <Marker
-          key={index}
-          position={{ lat: marker.lat, lng: marker.lng }}
-          title={marker.name}
-        />
+        <Marker key={index} position={[marker.lat, marker.lng]}>
+          <Popup>{marker.name}</Popup>
+        </Marker>
       ))}
-    </GoogleMap>
+    </MapContainer>
   );
-}
+};
 
 export default TripMap;
