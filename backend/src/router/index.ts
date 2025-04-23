@@ -7,6 +7,7 @@ import onboarding from './onboarding';
 import preferences from './preferences';
 import speechRoutes from './speechRoutes';
 import me from './me';
+import places from './places';
 
 const router=express.Router();
 
@@ -19,6 +20,7 @@ export default():express.Router=>{
     onboarding(router);
     speechRoutes(router);
     me(router);
+    places(router);
     
     return router;
 }

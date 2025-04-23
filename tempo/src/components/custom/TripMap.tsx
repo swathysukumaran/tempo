@@ -20,6 +20,7 @@ const center = {
   lng: 0,
 };
 function TripMap({ markers }: TripMapProps) {
+  console.log("Markers in map component", markers);
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.VITE_GOOGLE_PLACE_API_KEY || "",
   });
