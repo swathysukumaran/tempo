@@ -188,6 +188,7 @@ function TripDetails() {
     });
 
     setMarkers(markersList); //  Store all markers here
+    console.log("Markers loaded:", markersList);
     return data;
   };
 
