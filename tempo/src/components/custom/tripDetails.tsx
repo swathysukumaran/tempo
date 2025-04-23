@@ -18,13 +18,13 @@ import {
   X,
   CheckCircle,
 } from "lucide-react";
-import { googlePlaceLookup } from "@/config/googlePlaces";
+import { googlePlacePhotos } from "@/config/googlePlaces";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import micAnimation from "../../assets/mic.json";
 import Lottie from "lottie-react";
 import ShareTrip from "./ShareTrip"; // adjust path if different
-import TripMap from "./TripMap";
+import { useJsApiLoader } from "@react-google-maps/api";
 
 function TripDetails() {
   const { tripId } = useParams();
@@ -89,10 +89,7 @@ function TripDetails() {
     "itinerary"
   );
   const [isFabModalOpen, setIsFabModalOpen] = useState(false);
-  const [isMapVisible, setIsMapVisible] = useState(false);
-  const [markers, setMarkers] = useState<
-    { name: string; lat: number; lng: number }[]
-  >([]);
+
   // const [isMapVisible, setIsMapVisible] = useState<boolean>(false);
   const handleSubmitChanges = async (request: string) => {
     console.log("change request", changeRequest);
@@ -131,68 +128,52 @@ function TripDetails() {
     }
   };
   const fetchImages = async (data: TripData) => {
-    const markersList: { name: string; lat: number; lng: number }[] = [];
-    const coverPlace = await googlePlaceLookup(
+    const coverPlace = await googlePlacePhotos(
       data.tripDetails.location?.label || ""
     );
 
     const hotelPlaces = await Promise.all(
       data.generatedItinerary.hotels.map((hotel) =>
-        googlePlaceLookup(`${hotel.hotel_name} ${hotel.hotel_address}`)
+        googlePlacePhotos(`${hotel.hotel_name} ${hotel.hotel_address}`)
       )
     );
 
     const activityPlaces = await Promise.all(
       Object.values(data.generatedItinerary.itinerary).flatMap((dayData) =>
         dayData.activities.map((activity) =>
-          googlePlaceLookup(activity.place_name)
+          googlePlacePhotos(activity.place_name)
         )
       )
     );
 
     // ⬇️ Set cover image
-    data.generatedItinerary.cover_image_url =
-      coverPlace?.photoUrl || default_cover;
+    data.generatedItinerary.cover_image_url = coverPlace || default_cover;
 
     // ⬇️ Set hotel images
     data.generatedItinerary.hotels.forEach((hotel, index) => {
-      const hotelPlace = hotelPlaces[index];
-      hotel.hotel_image_url = hotelPlace?.photoUrl || default_hotel;
-
-      if (hotelPlace?.lat && hotelPlace?.lng) {
-        markersList.push({
-          name: hotel.hotel_name,
-          lat: hotelPlace.lat,
-          lng: hotelPlace.lng,
-        });
-      }
+      const photoUrl = hotelPlaces[index];
+      hotel.hotel_image_url = photoUrl || default_hotel;
     });
 
     // ⬇️ Set activity images
     let activityIndex = 0;
     Object.values(data.generatedItinerary.itinerary).forEach((dayData) => {
       dayData.activities.forEach((activity) => {
-        const place = activityPlaces[activityIndex];
-        activity.place_image_url = place?.photoUrl || default_activity;
-
-        if (place?.lat && place?.lng) {
-          markersList.push({
-            name: activity.place_name,
-            lat: place.lat,
-            lng: place.lng,
-          });
-        }
+        const photoUrl = activityPlaces[activityIndex];
+        activity.place_image_url = photoUrl || default_activity;
 
         activityIndex++;
       });
     });
 
-    setMarkers(markersList); //  Store all markers here
-    console.log("Markers loaded:", markersList);
     return data;
   };
-
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_PLACE_API_KEY || "",
+    libraries: ["places"], // required for PlacesService
+  });
   useEffect(() => {
+    if (!isLoaded) return;
     const fetchTripDetails = async () => {
       try {
         const response = await fetch(`${API_URL}/trip-details/${tripId}`, {
@@ -223,9 +204,9 @@ function TripDetails() {
 
         for (const dayData of Object.values(itinerary) as DayData[]) {
           for (const activity of dayData.activities) {
-            const placeData = await googlePlaceLookup(activity.place_name);
+            const photoUrl = await googlePlacePhotos(activity.place_name);
 
-            activity.place_image_url = placeData?.photoUrl || default_activity;
+            activity.place_image_url = photoUrl || default_activity;
           }
         }
 
@@ -242,7 +223,7 @@ function TripDetails() {
     };
 
     fetchTripDetails();
-  }, [tripId]);
+  }, [tripId, isLoaded]);
   if (loading)
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-50 animate-pulse">
@@ -574,19 +555,7 @@ function TripDetails() {
           </div>
         </div>
       </div>
-      <div className="flex justify-center mt-6">
-        <Button
-          onClick={() => setIsMapVisible((prev) => !prev)}
-          className="bg-primary text-white hover:bg-primary-dark transition"
-        >
-          {isMapVisible ? "Hide Map" : "Show Trip Map"}
-        </Button>
-      </div>
-      {isMapVisible && (
-        <div className="mt-4 rounded-xl overflow-hidden ">
-          <TripMap markers={markers} />
-        </div>
-      )}
+
       <section className="max-w-4xl mx-auto px-6 mt-8">
         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
           <div className="flex items-center mb-4">

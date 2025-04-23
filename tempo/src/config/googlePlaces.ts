@@ -1,32 +1,40 @@
-import { API_URL } from "./api";
+import defaultActivityImage from "@/assets/default_activity.jpg";
 
-export const googlePlaceLookup = async (
-  placeName: string
-): Promise<{
-  name: string;
-  lat: number;
-  lng: number;
-  photoUrl: string;
-} | null> => {
-  
-  try{
-    const res=await fetch(`${API_URL}/lookup-place`,{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json",
-      },
-      credentials:"include",
-      body:JSON.stringify({placeName}),
-    });
-
-    if(!res.ok){
-      console.error("Place lookup failed",await res.text());
-      return null;
-    }
-     return await res.json();
-  }catch(err){
-    console.error("Lookup failed",err);
-    return null;
+// Return string instead of string | null to simplify usage
+export const googlePlacePhotos = async (placeName: string): Promise<string> => {
+  // Check if the Google Maps JavaScript API is available
+  if (
+    !window.google ||
+    !window.google.maps ||
+    !window.google.maps.places
+  ) {
+    console.error("Google Maps JavaScript API not loaded");
+    return defaultActivityImage;
   }
 
+  // Create a temporary map container
+  const mapDiv = document.createElement("div");
+  const service = new window.google.maps.places.PlacesService(
+    new window.google.maps.Map(mapDiv)
+  );
+
+  const request: google.maps.places.TextSearchRequest = {
+    query: placeName,
+  };
+
+  return new Promise((resolve) => {
+    service.textSearch(request, (results, status) => {
+      if (
+        status === window.google.maps.places.PlacesServiceStatus.OK &&
+        results &&
+        results[0]?.photos?.length
+      ) {
+        const photoUrl = results[0].photos[0].getUrl();
+        resolve(photoUrl);
+      } else {
+        console.warn("No photo found for:", placeName, "Status:", status);
+        resolve(defaultActivityImage);
+      }
+    });
+  });
 };

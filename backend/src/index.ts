@@ -39,4 +39,8 @@ app.use(bodyparser.urlencoded({
   limit: '50mb', 
   extended: true 
 }));
-app.use('/',router())
+app.use('/',router());
+app.use((req, res) => {
+  console.log('🔥 Unmatched route:', req.method, req.path);
+  res.status(404).json({ error: 'Route not found' });
+});
