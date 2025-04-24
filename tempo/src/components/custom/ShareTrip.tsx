@@ -33,10 +33,10 @@ function ShareTrip({ tripId }: { tripId: string }) {
     }
   };
   return (
-    <section className="max-w-4xl mx-auto px-6 mt-8">
-      <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+    <section className="max-w-4xl mx-auto px-6 ">
+      <div className="bg-white rounded-xl  ">
         <h3 className="text-xl font-bold flex items-center mb-4 text-gray-800">
-          <Share2 className="mr-2 text-primary" size={20} />
+          <Share2 className="mr-2 text-primary hidden sm:inline" size={20} />
           Share this trip with a friend
         </h3>
         <div className="flex flex-col sm:flex-row items-center gap-4">

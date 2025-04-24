@@ -17,6 +17,7 @@ import {
   Edit,
   X,
   CheckCircle,
+  Share2,
 } from "lucide-react";
 import { googlePlacePhotos } from "@/config/googlePlaces";
 import { Button } from "../ui/button";
@@ -89,7 +90,7 @@ function TripDetails() {
     "itinerary"
   );
   const [isFabModalOpen, setIsFabModalOpen] = useState(false);
-
+  const [isShareOpen, setIsShareOpen] = useState(false);
   // const [isMapVisible, setIsMapVisible] = useState<boolean>(false);
   const handleSubmitChanges = async (request: string) => {
     console.log("change request", changeRequest);
@@ -119,7 +120,7 @@ function TripDetails() {
       setTripData(updatedDataWithImages);
     } catch (err) {
       console.error("Error updating itinerary:", err);
-      alert("Failed to update itinerary. Please try again.");
+      alert(err);
     } finally {
       setIsSubmitting(false);
 
@@ -257,18 +258,26 @@ function TripDetails() {
   const { generatedItinerary, tripDetails } = tripData;
   const FloatingActionButton = () => {
     return (
-      <Button
-        onClick={() => setIsFabModalOpen(true)}
-        className="fixed bottom-10 right-10 z-50 bg-primary text-white 
+      <div className="fixed bottom-10 right-10 z-50 flex flex-col items-end gap-4">
+        <Button
+          onClick={() => setIsFabModalOpen(true)}
+          className=" bg-primary text-white 
          h-12  shadow-xl hover:bg-primary-dark 
         transition-all duration-300 ease-in-out transform 
         hover:scale-110 flex items-center justify-center"
-      >
-        <div className="flex items-center justify-center">
-          <h6>Make Modifications</h6>
-          <Edit className="w-8 h-8" />
-        </div>
-      </Button>
+        >
+          <div className="flex items-center justify-center">
+            <h6>Make Modifications</h6>
+            <Edit className="w-8 h-8" />
+          </div>
+        </Button>
+        <Button
+          onClick={() => setIsShareOpen(true)}
+          className="bg-gray-100 text-primary border-primary h-12 shadow-md hover:bg-gray-200 transition-all duration-300 ease-in-out transform hover:scale-110 flex items-center justify-center"
+        >
+          <Share2 className="w-5 h-5 mr-2" /> Share
+        </Button>
+      </div>
     );
   };
   const ChangeRequestModal = () => {
@@ -744,11 +753,24 @@ function TripDetails() {
           </section>
         )}
       </section>
-      {tripData && <ShareTrip tripId={tripData._id} />}
+      {/* {tripData && <ShareTrip tripId={tripData._id} />} */}
 
       <FloatingActionButton />
       {/* FAB Modal */}
       {isFabModalOpen && <ChangeRequestModal />}
+      {isShareOpen && tripData && (
+        <div className="fixed inset-0 z-[60] bg-black/40 flex items-center justify-center p-6">
+          <div className="bg-white rounded-xl shadow-2xl p-6 w-full max-w-xl relative">
+            <button
+              onClick={() => setIsShareOpen(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+            >
+              <X size={24} />
+            </button>
+            <ShareTrip tripId={tripData._id} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

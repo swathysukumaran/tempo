@@ -269,18 +269,7 @@ function CreateTripNew() {
               <h2 className="text-xl md:text-2xl font-medium text-gray-800">
                 What dates are you thinking of, and how long will you be away?
               </h2>
-              {isRecording && (
-                <div className="mb-2 text-sm flex items-center">
-                  <span className=" text-lg animate-pulse mr-1">⏺️</span>{" "}
-                  {/* Recording symbol */}
-                  <p className="text-gray-600">
-                    Recording <span className="ml-1 animate-pulse">...</span>
-                  </p>
-                  <p className="ml-2 text-gray-500">
-                    Press mic again to transcribe
-                  </p>
-                </div>
-              )}
+
               <div className="flex  items-center gap-2 mt-2">
                 <textarea
                   placeholder="E.g., June 15-22, 2024;  5 days around Christmas;    A week in late spring"
@@ -290,33 +279,42 @@ function CreateTripNew() {
                   }
                   className="w-full min-h-[100px] p-3 rounded-md border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (isRecording) {
-                      stopRecording();
-                    } else {
-                      startRecording("timeframe");
-                    }
-                  }}
-                  className=" p-1 h-fit rounded-full bg-primary text-white transition-transform transform hover:scale-105"
-                >
-                  {isRecording ? (
-                    <Lottie
-                      animationData={micAnimation}
-                      style={{ height: 36, width: 36 }}
-                      loop={true}
-                      autoplay={true} // Use autoplay instead of play
-                    />
-                  ) : (
-                    <Lottie
-                      animationData={micAnimation}
-                      style={{ height: 36, width: 36 }}
-                      loop={false}
-                      autoplay={false}
-                    />
+                <div className="flex flex-col items-center justify-center">
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (isRecording) {
+                        stopRecording();
+                      } else {
+                        startRecording("timeframe");
+                      }
+                    }}
+                    className=" p-1 h-fit rounded-full bg-primary text-white transition-transform transform hover:scale-105"
+                  >
+                    {isRecording ? (
+                      <Lottie
+                        animationData={micAnimation}
+                        style={{ height: 36, width: 36 }}
+                        loop={true}
+                        autoplay={true} // Use autoplay instead of play
+                      />
+                    ) : (
+                      <Lottie
+                        animationData={micAnimation}
+                        style={{ height: 36, width: 36 }}
+                        loop={false}
+                        autoplay={false}
+                      />
+                    )}
+                  </button>
+                  {isRecording && (
+                    <div className="mb-2 text-sm flex flex-col items-center">
+                      <p className="ml-2 text-red-500">
+                        Press mic again to transcribe
+                      </p>
+                    </div>
                   )}
-                </button>
+                </div>
               </div>
               <div className="flex flex-wrap gap-2 mb-4">
                 {quickOptions.map((option) => (
@@ -354,18 +352,6 @@ function CreateTripNew() {
                 Tell us about your travel preferences
               </h2>
 
-              {isRecording && (
-                <div className="mb-2 text-sm flex items-center">
-                  <span className=" text-lg animate-pulse mr-1">⏺️</span>{" "}
-                  {/* Recording symbol */}
-                  <p className="text-gray-600">
-                    Recording <span className="ml-1 animate-pulse">...</span>
-                  </p>
-                  <p className="ml-2 text-gray-500">
-                    Press mic again to transcribe
-                  </p>
-                </div>
-              )}
               <div className="flex  items-center gap-2 mt-2">
                 <textarea
                   placeholder="Tell us your travel dreams, and we'll bring them to life. The more detail, the more magic we can create."
@@ -376,33 +362,42 @@ function CreateTripNew() {
                   className="w-full min-h-[100px] p-3 rounded-md border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
 
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (isRecording) {
-                      stopRecording();
-                    } else {
-                      startRecording("preferences");
-                    }
-                  }}
-                  className=" p-1 h-fit rounded-full bg-primary text-white transition-transform transform hover:scale-105"
-                >
-                  {isRecording ? (
-                    <Lottie
-                      animationData={micAnimation}
-                      style={{ height: 36, width: 36 }}
-                      loop={true}
-                      autoplay={true} // Use autoplay instead of play
-                    />
-                  ) : (
-                    <Lottie
-                      animationData={micAnimation}
-                      style={{ height: 36, width: 36 }}
-                      loop={false}
-                      autoplay={false}
-                    />
+                <div className="flex flex-col items-center justify-center">
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (isRecording) {
+                        stopRecording();
+                      } else {
+                        startRecording("timeframe");
+                      }
+                    }}
+                    className=" p-1 h-fit rounded-full bg-primary text-white transition-transform transform hover:scale-105"
+                  >
+                    {isRecording ? (
+                      <Lottie
+                        animationData={micAnimation}
+                        style={{ height: 36, width: 36 }}
+                        loop={true}
+                        autoplay={true} // Use autoplay instead of play
+                      />
+                    ) : (
+                      <Lottie
+                        animationData={micAnimation}
+                        style={{ height: 36, width: 36 }}
+                        loop={false}
+                        autoplay={false}
+                      />
+                    )}
+                  </button>
+                  {isRecording && (
+                    <div className="mb-2 text-sm flex flex-col items-center">
+                      <p className="ml-2 text-red-500">
+                        Press mic again to transcribe
+                      </p>
+                    </div>
                   )}
-                </button>
+                </div>
               </div>
 
               <div className="mt-6">
@@ -439,17 +434,6 @@ function CreateTripNew() {
               <h2 className="text-xl md:text-2xl font-medium text-gray-800">
                 What's your budget for this trip?
               </h2>
-              {isRecording && (
-                <div className="mb-2 text-sm flex items-center">
-                  <span className="text-lg animate-pulse mr-1">⏺️</span>
-                  <p className="text-gray-600">
-                    Recording <span className="ml-1 animate-pulse">...</span>
-                  </p>
-                  <p className="ml-2 text-gray-500">
-                    Press mic again to transcribe
-                  </p>
-                </div>
-              )}
 
               <div className="flex items-center gap-2 mt-2">
                 <textarea
@@ -462,33 +446,42 @@ function CreateTripNew() {
                   className="w-full min-h-[150px] p-3 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
 
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (isRecording) {
-                      stopRecording();
-                    } else {
-                      startRecording("budget");
-                    }
-                  }}
-                  className="p-1 h-fit rounded-full bg-primary text-white transition-transform transform hover:scale-105"
-                >
-                  {isRecording ? (
-                    <Lottie
-                      animationData={micAnimation}
-                      style={{ height: 36, width: 36 }}
-                      loop={true}
-                      autoplay={true}
-                    />
-                  ) : (
-                    <Lottie
-                      animationData={micAnimation}
-                      style={{ height: 36, width: 36 }}
-                      loop={false}
-                      autoplay={false}
-                    />
+                <div className="flex flex-col items-center justify-center">
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (isRecording) {
+                        stopRecording();
+                      } else {
+                        startRecording("timeframe");
+                      }
+                    }}
+                    className=" p-1 h-fit rounded-full bg-primary text-white transition-transform transform hover:scale-105"
+                  >
+                    {isRecording ? (
+                      <Lottie
+                        animationData={micAnimation}
+                        style={{ height: 36, width: 36 }}
+                        loop={true}
+                        autoplay={true} // Use autoplay instead of play
+                      />
+                    ) : (
+                      <Lottie
+                        animationData={micAnimation}
+                        style={{ height: 36, width: 36 }}
+                        loop={false}
+                        autoplay={false}
+                      />
+                    )}
+                  </button>
+                  {isRecording && (
+                    <div className="mb-2 text-sm flex flex-col items-center">
+                      <p className="ml-2 text-red-500">
+                        Press mic again to transcribe
+                      </p>
+                    </div>
                   )}
-                </button>
+                </div>
               </div>
               <div className="mt-4">
                 <div className="flex flex-wrap gap-2 mt-1">
@@ -545,33 +538,42 @@ function CreateTripNew() {
                       }
                       className="w-full min-h-[150px] p-3 rounded-md border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
                     />
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        if (isRecording) {
-                          stopRecording();
-                        } else {
-                          startRecording("travelers");
-                        }
-                      }}
-                      className=" p-1 h-fit rounded-full bg-primary text-white transition-transform transform hover:scale-105"
-                    >
-                      {isRecording ? (
-                        <Lottie
-                          animationData={micAnimation}
-                          style={{ height: 36, width: 36 }}
-                          loop={true}
-                          autoplay={true} // Use autoplay instead of play
-                        />
-                      ) : (
-                        <Lottie
-                          animationData={micAnimation}
-                          style={{ height: 36, width: 36 }}
-                          loop={false}
-                          autoplay={false}
-                        />
+                    <div className="flex flex-col items-center justify-center">
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (isRecording) {
+                            stopRecording();
+                          } else {
+                            startRecording("timeframe");
+                          }
+                        }}
+                        className=" p-1 h-fit rounded-full bg-primary text-white transition-transform transform hover:scale-105"
+                      >
+                        {isRecording ? (
+                          <Lottie
+                            animationData={micAnimation}
+                            style={{ height: 36, width: 36 }}
+                            loop={true}
+                            autoplay={true} // Use autoplay instead of play
+                          />
+                        ) : (
+                          <Lottie
+                            animationData={micAnimation}
+                            style={{ height: 36, width: 36 }}
+                            loop={false}
+                            autoplay={false}
+                          />
+                        )}
+                      </button>
+                      {isRecording && (
+                        <div className="mb-2 text-sm flex flex-col items-center">
+                          <p className="ml-2 text-red-500">
+                            Press mic again to transcribe
+                          </p>
+                        </div>
                       )}
-                    </button>
+                    </div>
                   </div>
                   <div className="flex flex-wrap gap-2 mt-2">
                     {commonTravelers.map((traveler) => (
