@@ -43,18 +43,6 @@ function LandingPage() {
             </div>
 
             <nav className="hidden md:flex items-center space-x-8">
-              <a
-                href="#how-it-works"
-                className="text-gray-600 hover:text-gray-900"
-              >
-                How It Works
-              </a>
-              <a href="#features" className="text-gray-600 hover:text-gray-900">
-                Features
-              </a>
-              <a href="#examples" className="text-gray-600 hover:text-gray-900">
-                Examples
-              </a>
               <Dialog
                 open={dialogContent === "login"}
                 onOpenChange={() =>
