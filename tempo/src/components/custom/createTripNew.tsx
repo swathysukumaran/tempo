@@ -569,7 +569,7 @@ function CreateTripNew() {
                       {isRecording && (
                         <div className="mb-2 text-sm flex flex-col items-center">
                           <p className="ml-2 text-red-500">
-                            Press mic again to transcribe
+                            Press mic again to transcribe..
                           </p>
                         </div>
                       )}
