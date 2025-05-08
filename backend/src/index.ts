@@ -11,7 +11,7 @@ require('dotenv').config();
 const app=express();
 
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
   credentials: true
 }));
 
@@ -21,11 +21,12 @@ app.use(cookieParser());
 const client = new SpeechClient();
 const server=http.createServer(app);
 
-server.listen(8081,()=>{
-    console.log('Server is running on http://localhost:8081/');
+const PORT = process.env.PORT || 8081;
+server.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
 
-const MONGO_URL="mongodb+srv://swathysukumaran:g4pGjXwj22IlponE@cluster0.95gfw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const MONGO_URL=process.env.MONGO_URI;
 
 mongoose.Promise=Promise;
 mongoose.connect(MONGO_URL);
