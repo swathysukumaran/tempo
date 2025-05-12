@@ -6,7 +6,6 @@ import compression from 'compression';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import router from './router';
-import { SpeechClient } from '@google-cloud/speech';
 require('dotenv').config();
 const app=express();
 
@@ -18,7 +17,7 @@ app.use(cors({
 app.use(compression());
 app.use(cookieParser());
 
-const client = new SpeechClient();
+
 const server=http.createServer(app);
 
 const PORT = process.env.PORT || 8081;
