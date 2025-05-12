@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { SpeechClient, protos } from '@google-cloud/speech';
-const credentials = JSON.parse(process.env.GOOGLE_CLOUD_KEY_JSON!);
+const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS!);
 const client = new SpeechClient({
     credentials
   });;
