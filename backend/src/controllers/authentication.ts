@@ -34,6 +34,8 @@ export const register: express.RequestHandler = async(req:express.Request,res:ex
         res.cookie('TEMPO-AUTH', user.authentication.sessionToken, {
         // domain: 'localhost',
         path: '/',
+        sameSite: 'none',
+        secure: true, // Set to true if using HTTPS
         });
 
         res.status(201).json(user); // Send the response
@@ -69,7 +71,10 @@ export const login=async (req:express.Request,res:express.Response)=>{
         console.log(user.authentication.sessionToken);
         await user.save();
 
-        res.cookie('TEMPO-AUTH',user.authentication.sessionToken,{path:'/'});
+        res.cookie('TEMPO-AUTH',user.authentication.sessionToken,{path:'/',
+        sameSite:'none',
+        secure:true, // Set to true if using HTTPS
+        });
         res.status(200).json(user);
         return;
     }catch(error){
