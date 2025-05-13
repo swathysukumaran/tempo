@@ -111,7 +111,7 @@ export const sendTripShareEmail=async (toEmail:string,tripId:mongoose.Types.Obje
         }
     });
 
-    const frontendURL=`${process.env.FRONTEND_URL}/${tripId}`;
+    const frontendURL=`${process.env.FRONTEND_URL}/trip/${tripId}`;
     const inviter=await UserModel.findById(userId);
     if(!inviter){
         console.error('Inviter not found');
