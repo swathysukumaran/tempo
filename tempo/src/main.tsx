@@ -74,10 +74,6 @@ const router = createBrowserRouter([
       },
 
       {
-        path: "/trip-details/:tripId",
-        element: <TripDetails />,
-      },
-      {
         path: "/contact",
         element: <Contact />,
       },
