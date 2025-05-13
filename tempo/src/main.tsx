@@ -7,6 +7,7 @@ import {
   RouterProvider,
   Outlet,
   useLocation,
+  Navigate,
 } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import Header from "./components/custom/Header.tsx";
@@ -63,6 +64,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <LandingPage />,
+      },
+      {
+        path: "/index.html",
+        element: <Navigate to="/" replace />,
       },
       {
         path: "/home",
