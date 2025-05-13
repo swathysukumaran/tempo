@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 
 function ProtectedRoute({ children }: { children: JSX.Element }) {
+  console.log("ProtectedRoute rendered");
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const location = useLocation();
   useEffect(() => {
@@ -13,6 +14,7 @@ function ProtectedRoute({ children }: { children: JSX.Element }) {
         });
         setIsAuthenticated(res.ok);
       } catch (err) {
+        console.error("Error checking me:", err);
         console.log(err);
         setIsAuthenticated(false);
       }
