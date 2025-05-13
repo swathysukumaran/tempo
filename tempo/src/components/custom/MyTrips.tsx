@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Wallet, MapPin, Globe } from "lucide-react";
 import { API_URL } from "@/config/api";
+import { useNavigate } from "react-router-dom";
 interface Trip {
   _id: string;
   userId: string;
@@ -50,6 +51,7 @@ function MyTrips() {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchTrips = async () => {
       try {
@@ -74,7 +76,7 @@ function MyTrips() {
     window.location.href = "/create-trip-new";
   };
   const handleTripClick = (tripId: string) => {
-    window.location.href = `/trip/${tripId}`;
+    navigate(`/trip/${tripId}`);
   };
   if (loading) {
     return (
