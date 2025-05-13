@@ -163,7 +163,7 @@ function CreateTripNew() {
       if (!response.ok) throw new Error("Failed to generate trip");
       const trip = await response.json();
       console.log(trip);
-      navigate(`/trip-details/${trip.tripId}`);
+      navigate(`/trips/${trip.tripId}`);
     } catch (error) {
       toast("Something went wrong");
       setIsLoading(false);
