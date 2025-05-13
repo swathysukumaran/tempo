@@ -74,7 +74,7 @@ function MyTrips() {
     window.location.href = "/create-trip-new";
   };
   const handleTripClick = (tripId: string) => {
-    window.location.href = `/trips/${tripId}`;
+    window.location.href = `/trip/${tripId}`;
   };
   if (loading) {
     return (
