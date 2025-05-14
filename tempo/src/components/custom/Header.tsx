@@ -48,7 +48,7 @@ function Header() {
         <div
           className={`absolute md:relative top-full right-0 w-full bg-white  p-4 ${
             isMenuOpen
-              ? "flex flex-col w-max items-end gap-4"
+              ? "flex flex-col w-max items-end gap-4 z-100"
               : "hidden md:flex md:flex-row gap-4 md:items-center"
           }`}
         >
