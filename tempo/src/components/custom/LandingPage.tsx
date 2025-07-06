@@ -192,10 +192,10 @@ function LandingPage() {
               Discover personalized itineraries powered by AI, designed to match
               your interests, pace, and travel style.
             </p>
-            <h4>
+            <h2 className="text-error">
               *** Demo available on request. Currently unavailable due to Google
               Cloud Budget constraints. ***
-            </h4>
+            </h2>
             <div className="pt-4 flex flex-col sm:flex-row gap-4">
               <Dialog
                 open={dialogContent === "register"}

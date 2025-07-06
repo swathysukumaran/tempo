@@ -25,10 +25,10 @@ function AuthLayout() {
             Discover personalized itineraries powered by AI, designed to match
             your interests, and style.
           </p>
-          <h4>
+          <h2 className="text-error">
             *** Demo available on request. Currently unavailable due to Google
             Cloud Budget constraints. ***
-          </h4>
+          </h2>
         </div>
         <Outlet />
       </div>
