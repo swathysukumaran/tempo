@@ -1,4 +1,3 @@
-
 import { Outlet } from "react-router-dom";
 import registerImage from "../../assets/register.jpeg";
 import logo from "../../assets/logo.png";
@@ -26,6 +25,10 @@ function AuthLayout() {
             Discover personalized itineraries powered by AI, designed to match
             your interests, and style.
           </p>
+          <h4>
+            *** Demo available on request. Currently unavailable due to Google
+            Cloud Budget constraints. ***
+          </h4>
         </div>
         <Outlet />
       </div>

@@ -1,4 +1,4 @@
-import  { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import {
   ChevronLeft,
@@ -776,6 +776,8 @@ function CreateTripNew() {
         <p className="text-white mt-2">
           We handle the details, you create the memories.
         </p>
+
+       
 
         {/* Progress Indicator */}
         <div className="mt-2 w-[90%] md:w-[70%] mx-auto">
