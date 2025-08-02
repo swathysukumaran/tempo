@@ -80,12 +80,111 @@ export const createTrip = async (req: express.Request, res: express.Response) =>
 
        
             
-            
-            const response = await generateWithRetry(FINAL_PROMPT);
-    const text = response.text();
+            // TODO: Uncomment this when ready to use Gemini
+    //         const response = await generateWithRetry(FINAL_PROMPT);
+    // const text = response.text();
     // Extract the JSON content from the response if there's any text before or after
 
-    const itinerary=extractJSON(text);
+    // const itinerary=extractJSON(text);
+    // MOCKED RESPONSE for development
+    const itinerary = {
+      tripDetails: {
+    budget: "moderate",
+    location: {
+      label: "Paris, France",
+      value: "paris_france",
+    },
+    timeframe: "2025-08-10 to 2025-08-15",
+    narrative: "A romantic and culturally rich trip to Paris, exploring landmarks, museums, and enjoying local cuisine.",
+    preferences: "culture, museums, river cruises",
+    transportation: {
+      type: "Metro Pass",
+      coverage: "Unlimited rides for 5 days",
+    }
+  },
+  generatedItinerary: {
+    trip_name: "Paris Discovery",
+    destination: "Paris, France",
+    duration: "5 days",
+    travelers: "2 adults",
+    cover_image_url: "https://example.com/paris-cover.jpg",
+    hotels: [
+      {
+        hotel_name: "Hotel Lumiere",
+        hotel_address: "42 Rue de Paris, 75000 Paris, France",
+        price: "$180 per night",
+        rating: 4.4,
+        description: "Elegant hotel close to city center with great amenities.",
+        hotel_image_url: "https://example.com/hotel1.jpg"
+      },
+      {
+        hotel_name: "Eiffel View Suites",
+        hotel_address: "99 Eiffel Lane, 75007 Paris, France",
+        price: "$250 per night",
+        rating: 4.7,
+        description: "Luxury suites with Eiffel Tower view.",
+        hotel_image_url: "https://example.com/hotel2.jpg"
+      }
+    ],
+    itinerary: {
+      "1": {
+        theme: "Iconic Paris",
+        day: 1,
+        best_time_to_visit: "Morning",
+        activities: [
+          {
+            place_name: "Eiffel Tower",
+            place_address: "Champ de Mars, 5 Avenue Anatole France, 75007 Paris",
+            place_details: "World-famous landmark and observation tower.",
+            ticket_pricing: "$25",
+            rating: 4.8,
+            time_slot: "10:00 AM - 12:00 PM",
+            travel_time: "15 mins",
+            place_image_url: "https://example.com/eiffel.jpg"
+          },
+          {
+            place_name: "Seine River Cruise",
+            place_address: "Port de la Bourdonnais, 75007 Paris",
+            place_details: "Scenic boat ride with views of Paris landmarks.",
+            ticket_pricing: "$20",
+            rating: 4.6,
+            time_slot: "3:00 PM - 4:30 PM",
+            travel_time: "10 mins",
+            place_image_url: "https://example.com/seine.jpg"
+          }
+        ]
+      },
+      "2": {
+        theme: "Art & Culture",
+        day: 2,
+        best_time_to_visit: "Afternoon",
+        activities: [
+          {
+            place_name: "Louvre Museum",
+            place_address: "Rue de Rivoli, 75001 Paris",
+            place_details: "Home of the Mona Lisa and thousands of other works.",
+            ticket_pricing: "$17",
+            rating: 4.9,
+            time_slot: "1:00 PM - 4:00 PM",
+            travel_time: "20 mins",
+            place_image_url: "https://example.com/louvre.jpg"
+          },
+          {
+            place_name: "Montmartre",
+            place_address: "75018 Paris",
+            place_details: "Charming hilltop neighborhood with artist vibe.",
+            ticket_pricing: "Free",
+            rating: 4.5,
+            time_slot: "5:00 PM - 7:00 PM",
+            travel_time: "25 mins",
+            place_image_url: null
+          }
+        ]
+      }
+    }
+  },
+        
+    };
     console.log('Itinerary:',itinerary);
     const narrative=itinerary.tripDetails.narrative;
             const generatedItinerary=itinerary.generatedItinerary;
@@ -182,18 +281,16 @@ export const updateItinerary=async (req:express.Request,res:express.Response)=>{
         }
 
         const currentUser=await getUserById(userId);
-        console.log('Current User:',currentUser);
-        console.log("Trip owner ID:", trip.userId.toString());
-        console.log("Shared editors:", trip.sharedWith);
+        
         const isOwner = trip.userId.toString() === ((userId ?? '').toString());
         const isSharedEditor=trip.sharedWith?.some((entry)=>entry.email===currentUser.email&& entry.permission === 'edit');
          if (!isOwner && !isSharedEditor) {
-            console.log('User does not have permission to modify this trip');
+            
             res.status(403).json({ error: "You don't have permission to modify this trip" });
             return;
           }
         const prompt=UPDATE_PROMPT(trip,changeRequest);
-        console.log('Prompt:',prompt);
+        
         if(prompt.length>30000){
             res.status(400).json({error:'Prompt exceeds maximum allowed length'});
             return;
@@ -208,7 +305,7 @@ export const updateItinerary=async (req:express.Request,res:express.Response)=>{
             res.status(200).json(newTrip);
             return;
     }catch(error){
-        console.error('Error updating itinerary:',error);
+        
         res.status(500).json({
             error:'Failed to update itinerary',
             details:error.message

@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import { SpeechClient, protos } from '@google-cloud/speech';
-const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS!);
+// const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS!);
 const client = new SpeechClient({
-    credentials
-  });;
+    // credentials
+  });
 
 export const transcribeAudio = async (req: Request, res: Response) => {
     try {
