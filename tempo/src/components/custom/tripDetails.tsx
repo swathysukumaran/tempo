@@ -189,8 +189,7 @@ function TripDetails() {
         const dataWithImages = await fetchImages(data);
         console.log("Data with images", dataWithImages);
         setTripData(dataWithImages);
-        // TODO: Use  data.generatedItinerary.itinerary
-        // const itinerary = data.generatedItinerary.itinerary;
+
         const itinerary = data.generatedItinerary.itinerary;
 
         console.log("Itinerary", itinerary);
