@@ -193,3 +193,17 @@ export const schema=
   },
   "required": ["generatedItinerary", "tripDetails"]
 }
+
+export const formFieldSchema = {
+  type: "object",
+  properties:{
+    location: { type: "string" },
+    timeframe: { type: "string" },
+    travelers: { type: "string" },
+    preferences: { type: "string" },
+    budget: { type: "string" },
+    companions: { type: "string" },
+    travel_style: { type: "string" },
+    special_requirements: { type: "string" }
+  }
+}
