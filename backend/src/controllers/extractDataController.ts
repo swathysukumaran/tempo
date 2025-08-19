@@ -1,5 +1,6 @@
 import express from 'express';
 import {get} from 'lodash';
+import { EXTRACT_PROMPT } from 'helpers/AIprompt';
 const {
   GoogleGenerativeAI,
 } = require("@google/generative-ai");
@@ -13,6 +14,6 @@ const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
 export const extractDataFromPrompt= async (req:express.Request,res:express.Response)=>{
     const {prompt}=req.body;
     try{
-        
+
     }
 }

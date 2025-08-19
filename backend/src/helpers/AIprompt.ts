@@ -69,6 +69,23 @@ Important: I will be directly parsing your response as JSON. Any text before or 
 `;
 };
 
+export const EXTRACT_PROMPT=(prompt:string)=>{
+  return `You are a specialized travel API that extracts data from user prompts.
+  task: Extract destination,timeframe,travelers,purpose,preferences,budget,companions,travel_style,special_requirements from the user prompt:${prompt} and return as a valid JSON object with the following structure:
+  {
+    "location": "string",
+    "timeframe": "string",
+    "travelers": "string",
+    "purpose": "string",
+    "preferences": "string",
+    "budget": "string",
+    "companions": "string",
+    "travel_style": "string",
+    "special_requirements": "string"
+  }
+  
+  `
+}
 export const schema=
 {
   "type": "object",
