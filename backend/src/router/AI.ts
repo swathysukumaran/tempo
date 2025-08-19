@@ -1,5 +1,5 @@
 import { isAuthenticated } from '../middlewares';
-import { createTrip ,updateItinerary} from '../controllers/gemini';
+import { createTrip ,updateItinerary} from '../controllers/itinerary';
 import express from 'express';
 
 export default (router:express.Router)=>{
