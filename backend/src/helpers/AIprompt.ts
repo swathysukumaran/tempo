@@ -83,7 +83,7 @@ export const EXTRACT_PROMPT=(prompt:string)=>{
     "travel_style": "string",
     "special_requirements": "string"
   }
-  
+  Do not include any explanations or additional text. Only extract the data. Ensure the JSON is properly formatted and complete. If any field is not mentioned in the prompt, return it as an empty string.
   `
 }
 export const schema=
