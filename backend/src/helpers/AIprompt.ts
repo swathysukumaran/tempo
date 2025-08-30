@@ -70,20 +70,79 @@ Important: I will be directly parsing your response as JSON. Any text before or 
 };
 
 export const EXTRACT_PROMPT=(prompt:string)=>{
-  return `You are a specialized travel API that extracts data from user prompts.
-  task: Extract destination,timeframe,travelers,purpose,preferences,budget,companions,travel_style,special_requirements from the user prompt:${prompt} and return as a valid JSON object with the following structure:
-  {
-    "location": "string",
-    "timeframe": "string",
-    "travelers": "string",
-    "purpose": "string",
-    "preferences": "string",
-    "budget": "string",
-    "companions": "string",
-    "travel_style": "string",
-    "special_requirements": "string"
-  }
-  Do not include any explanations or additional text. Only extract the data. Ensure the JSON is properly formatted and complete. If any field is not mentioned in the prompt, return it as an empty string.
+  return `You are Tempo’s Trip Brief extractor. Read and analyze the user’s free-text and return ONLY JSON (no prose) to prefill a verification form.
+Do NOT generate an itinerary or hotels.
+
+INPUT
+<<<
+${prompt}
+>>>
+
+RULES
+- Return exactly one JSON object. No extra text.
+- Use numbers when the user gives them (e.g., “3 days” → nights: 3).
+- When something is vague, don’t invent details. Use null and add a short clarify question.
+- Keep required anchors structured; let nuanced preferences be strings.
+- Multi-city allowed (destinations is an array).
+- Keep the output compact; avoid full sentences where a short phrase works.
+
+SCHEMA (keep keys as written)
+{
+  "parsed": {
+    "destinations": [ { "name": "string", "place_id": "string|null" } ],
+
+    "time": {
+      "dateRange": { "start": "YYYY-MM-DD|null", "end": "YYYY-MM-DD|null" } | null,
+      "month": "YYYY-MM|null",
+      "nights": number|null,
+      "season": "spring|summer|fall|winter|null",
+      "availability": [ "string" ]  // e.g., "weekdays 9-17 busy", "evenings only", "mornings preferred"
+    },
+
+    "party": {
+      "tags": [ "string" ],          // e.g., "friends","couple","family","with-kid:7","with-senior"
+      "notes": "string|null"         // free text like “two families traveling together”
+    },
+
+    "intent": "string|null",         // e.g., "explore","romantic","foodie","relax"
+    "priorities": [ "string" ],      // up to 3 short phrases, e.g., "kid-friendly","local food","budget-friendly"
+    "interests": [ "string" ],       // e.g., "museums","bakeries","nightlife"
+    "mustDos": [ "string" ],         // explicit must-do items mentioned
+
+    "budgetPolicy": {
+      "overall": "string|null",      // e.g., "economy","moderate","premium"
+      "hotels": "string|null",       // allows split like "economy for hotels"
+      "food": "string|null",
+      "activities": "string|null",
+      "notes": "string|null"         // e.g., "splurge on experiences only"
+    },
+
+    "constraints": [ "string" ],     // e.g., "max-walk:2h","no late nights","wheelchair-friendly"
+
+    "specialEvents": [
+      { "date": "YYYY-MM-DD|null", "description": "string" }  // e.g., romantic dinner on 2025-05-12
+    ],
+
+    "rules": [
+      { "scope": "day|evening|hotels|activities|dining|specific_date",
+        "requirement": "string",     // e.g., "weekday daytime blocked (meetings)", "evenings only"
+        "strength": "lock|prefer" }
+    ]
+  },
+
+  "assumptions": [ { "field": "string", "value": "string|number", "reason": "string" } ],
+  "clarify": [ "string" ],           // max 2 short questions for missing required items
+  "confidences": [ { "name": "string", "confidence": 0.0 } ],
+  "missingRequired": [ "destinations" | "time.dateRange" | "time.month" | "time.nights" ]
+}
+
+REQUIRED ANCHORS FOR LATER:
+- Must have destinations AND (time.dateRange OR (time.month AND time.nights)).
+- If these are missing, leave them null and add appropriate items to missingRequired and clarify.
+
+OUTPUT
+- Return ONLY the JSON object above. No explanations or markdown.
+
   `
 }
 export const schema=
@@ -196,14 +255,137 @@ export const schema=
 
 export const formFieldSchema = {
   type: "object",
-  properties:{
-    location: { type: "string" },
-    timeframe: { type: "string" },
-    travelers: { type: "string" },
-    preferences: { type: "string" },
-    budget: { type: "string" },
-    companions: { type: "string" },
-    travel_style: { type: "string" },
-    special_requirements: { type: "string" }
-  }
-}
+  additionalProperties: false,
+  properties: {
+    normalized: {
+      type: "object",
+      additionalProperties: false,
+      properties: {
+        destinations: {
+          type: "array",
+          items: {
+            type: "object",
+            additionalProperties: false,
+            properties: {
+              name: { type: "string" },
+              place_id: { type: ["string", "null"] }
+            },
+            required: ["name"]
+          }
+        },
+        time: {
+          type: ["object", "null"],
+          additionalProperties: false,
+          properties: {
+            dateRange: {
+              type: ["object", "null"],
+              additionalProperties: false,
+              properties: {
+                start: { type: ["string", "null"] }, // "YYYY-MM-DD"
+                end:   { type: ["string", "null"] }  // "YYYY-MM-DD"
+              }
+            },
+            month:        { type: ["string", "null"] }, // "YYYY-MM"
+            nights:       { type: ["number", "null"] },
+            season:       { type: ["string", "null"] }, // e.g., "spring"
+            durationHint: { type: ["string", "null"] }, // e.g., "few_days","weekend"
+            availability: {
+              type: "array",
+              items: { type: "string" } // e.g., "evenings only"
+            }
+          }
+        },
+        party: {
+          type: "object",
+          additionalProperties: false,
+          properties: {
+            tags:  { type: "array", items: { type: "string" } }, // "friends","couple","with-kid:7"
+            notes: { type: ["string", "null"] }
+          }
+        },
+        intent:      { type: ["string", "null"] },
+        priorities:  { type: "array", items: { type: "string" } }, // up to 3 short phrases
+        interests:   { type: "array", items: { type: "string" } },
+        mustDos:     { type: "array", items: { type: "string" } },
+        budgetPolicy: {
+          type: "object",
+          additionalProperties: false,
+          properties: {
+            overall:   { type: ["string", "null"] }, // "economy","moderate","comfort","premium"
+            hotels:    { type: ["string", "null"] },
+            food:      { type: ["string", "null"] },
+            activities:{ type: ["string", "null"] },
+            notes:     { type: ["string", "null"] }  // e.g., "splurge on experiences"
+          }
+        },
+        constraints:   { type: "array", items: { type: "string" } },
+        specialEvents: {
+          type: "array",
+          items: {
+            type: "object",
+            additionalProperties: false,
+            properties: {
+              date:        { type: ["string", "null"] }, // "YYYY-MM-DD"
+              description: { type: "string" }
+            },
+            required: ["description"]
+          }
+        },
+        rules: {
+          type: "array",
+          items: {
+            type: "object",
+            additionalProperties: false,
+            properties: {
+              scope:       { type: "string" }, // "day","evening","hotels","activities","dining","specific_date"
+              requirement: { type: "string" },
+              strength:    { type: "string" }  // "lock" or "prefer"
+            },
+            required: ["scope","requirement","strength"]
+          }
+        }
+      }
+    },
+
+    form: {
+      type: "object",
+      additionalProperties: false,
+      properties: {
+        location:             { type: "string" },
+        timeframe:            { type: "string" },
+        travelers:            { type: "string" },
+        preferences:          { type: "string" },
+        budget:               { type: "string" },
+        companions:           { type: "string" },
+        travel_style:         { type: "string" },
+        special_requirements: { type: "string" }
+      }
+    },
+
+    meta: {
+      type: "object",
+      additionalProperties: false,
+      properties: {
+        missingRequired: {
+          type: "array",
+          items: { type: "string" } // e.g., "destinations","time.dateRange","time.month","time.nights"
+        },
+        confidences: {
+          type: "array",
+          items: {
+            type: "object",
+            additionalProperties: false,
+            properties: {
+              name:       { type: "string" },
+              confidence: { type: "number", minimum: 0, maximum: 1 }
+            },
+            required: ["name","confidence"]
+          }
+        },
+        clarify: { type: "array", items: { type: "string" } } // short follow-up questions
+      },
+      required: ["missingRequired","confidences"]
+    }
+  },
+  required: ["normalized","form","meta"]
+};
