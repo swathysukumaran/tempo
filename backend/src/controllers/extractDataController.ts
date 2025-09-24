@@ -14,7 +14,8 @@ const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
 export const extractDataFromPrompt= async (req:express.Request,res:express.Response)=>{
     const {prompt}=req.body;
     if(!prompt?.trim()){
-        return res.status(400).json({error:'Prompt is required'});
+        res.status(400).json({error:'Prompt is required'});
+        return ;
     }
     try{
         const result=await model.generateContent({
@@ -29,7 +30,8 @@ export const extractDataFromPrompt= async (req:express.Request,res:express.Respo
                     },
         });
         const body= await result.response.text();
-        return res.status(200).json(JSON.parse(body));
+         res.status(200).json(JSON.parse(body));
+         return;
 
     }catch(error){
         console.error('Error extracting data from prompt:', error);
