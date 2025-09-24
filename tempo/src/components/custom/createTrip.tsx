@@ -27,21 +27,21 @@ function CreateTripNew() {
   const [transcriptionLoading, setTranscriptionLoading] = useState(false);
   const mediaRecorder = useRef<MediaRecorder | null>(null);
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const updateFormData = (updates: Partial<TripFormData>) => {
     setFormData((prev) => ({ ...prev, ...updates }));
     console.log("Form data updated:", formData);
   };
   const handleSubmit = async () => {
-    console.log("Generating trip with data:", formData);
+    console.log("Extracting details from:", formData);
     const tripData = {
       location: formData.destination,
       tripDetails: formData.tripDetails,
     };
     try {
       setIsLoading(true);
-      const response = await fetch(`${API_URL}/ai/create-trip`, {
+      const response = await fetch(`${API_URL}/ai/extract`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -52,13 +52,40 @@ function CreateTripNew() {
       if (!response.ok) throw new Error("Failed to generate trip");
       const trip = await response.json();
       console.log(trip);
-      navigate(`/trip/${trip.tripId}`);
+      // navigate(`/trip/${trip.tripId}`);
     } catch (error) {
       toast("Something went wrong");
       setIsLoading(false);
       console.log(error);
     }
   };
+
+  // const handleSubmit = async () => {
+  //   console.log("Generating trip with data:", formData);
+  //   const tripData = {
+  //     location: formData.destination,
+  //     tripDetails: formData.tripDetails,
+  //   };
+  //   try {
+  //     setIsLoading(true);
+  //     const response = await fetch(`${API_URL}/ai/create-trip`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       credentials: "include",
+  //       body: JSON.stringify(tripData),
+  //     });
+  //     if (!response.ok) throw new Error("Failed to generate trip");
+  //     const trip = await response.json();
+  //     console.log(trip);
+  //     navigate(`/trip/${trip.tripId}`);
+  //   } catch (error) {
+  //     toast("Something went wrong");
+  //     setIsLoading(false);
+  //     console.log(error);
+  //   }
+  // };
 
   if (isLoading) {
     return <TripLoadingAnimation />;
