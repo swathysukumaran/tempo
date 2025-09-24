@@ -27,7 +27,7 @@ function CreateTripNew() {
   const [transcriptionLoading, setTranscriptionLoading] = useState(false);
   const mediaRecorder = useRef<MediaRecorder | null>(null);
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const updateFormData = (updates: Partial<TripFormData>) => {
     setFormData((prev) => ({ ...prev, ...updates }));
@@ -52,7 +52,7 @@ function CreateTripNew() {
       if (!response.ok) throw new Error("Failed to generate trip");
       const trip = await response.json();
       console.log(trip);
-      // navigate(`/trip/${trip.tripId}`);
+      navigate(`/trip/${trip.tripId}`);
     } catch (error) {
       toast("Something went wrong");
       setIsLoading(false);
