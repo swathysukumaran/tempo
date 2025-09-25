@@ -12,14 +12,14 @@ const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
 
 // Extract data fields from the prompt
 export const extractDataFromPrompt= async (req:express.Request,res:express.Response)=>{
-    const {prompt}=req.body;
+    const {destination,prompt}=req.body;
     if(!prompt?.trim()){
         res.status(400).json({error:'Prompt is required'});
         return ;
     }
     try{
         const result=await model.generateContent({
-            contents:[{role:"user",parts:[{text:EXTRACT_PROMPT(prompt)}]}],
+            contents:[{role:"user",parts:[{text:EXTRACT_PROMPT(destination,prompt)}]}],
             generationConfig: {
                       temperature: 0.4, // Lower temperature for more deterministic responses
                       maxOutputTokens:500,

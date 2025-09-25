@@ -69,13 +69,14 @@ Important: I will be directly parsing your response as JSON. Any text before or 
 `;
 };
 
-export const EXTRACT_PROMPT=(prompt:string)=>{
+export const EXTRACT_PROMPT=(destination:string,prompt:string)=>{
   return `You are Tempo’s Trip Brief extractor.
 Return ONLY JSON (no prose / no markdown). The API supplies a responseSchema; follow it exactly.
 
 INPUT
 <<<
-${prompt}
+Destination: ${destination},
+User Prompt: ${prompt}
 >>>
 
 FILLING RULES (important)

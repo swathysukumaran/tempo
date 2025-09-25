@@ -36,8 +36,8 @@ function CreateTripNew() {
   const handleSubmit = async () => {
     console.log("Extracting details from:", formData);
     const tripData = {
-      location: formData.destination,
-      tripDetails: formData.tripDetails,
+      destination: formData.destination,
+      prompt: formData.tripDetails,
     };
     try {
       setIsLoading(true);
