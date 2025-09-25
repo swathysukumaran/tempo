@@ -81,8 +81,9 @@ User Prompt: ${prompt}
 
 FILLING RULES (important)
 - Output EXACTLY ONE JSON object with BOTH keys: { "fields": {…}, "missingRequired": [...] }.
+- Always copy ${destination} into fields.destination.
 - Under "fields", ALWAYS include ALL of these keys (use [] or null if unknown):
-  destinations, time, tags, interests, mustDos, constraints, budget, specialNotes.
+ time, tags, interests, mustDos, constraints, budget, specialNotes.
 - Use numbers when explicit (“3 days” → time.nights: 3).
 - Never invent exact dates. If only a month word is given (“in October”), set time.month = null, push "month_hint: October" to specialNotes, and include "time.month" in missingRequired.
 - For “few days / weekend / spring”, leave date fields null; add short hints to specialNotes (e.g., "duration_hint: few days", "season: spring") and include the right keys in missingRequired ("time.dateRange" OR ["time.month","time.nights"]).
@@ -219,16 +220,9 @@ export const formFieldSchema = {
     fields: {
       type: "object",
       properties: {
-        destinations: {
-          type: "array",
-          items: {
-            type: "object",
-            properties: {
-              name: { type: "string" },
-              place_id: { type: "string", nullable: true }
-            },
-            required: ["name"]
-          }
+        destination: {
+          type: "string",
+          required: true
         },
         time: {
           type: "object",
