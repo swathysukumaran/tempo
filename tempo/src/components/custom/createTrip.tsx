@@ -53,7 +53,7 @@ function CreateTripNew() {
       const trip = await response.json();
       console.log(trip);
       navigate(`/confirm`, {
-        state: { tripData: trip },
+        state: { tripData: trip.fields },
       });
     } catch (error) {
       toast("Something went wrong");

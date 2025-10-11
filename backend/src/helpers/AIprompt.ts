@@ -222,7 +222,7 @@ export const formFieldSchema = {
       properties: {
         destination: {
           type: "string",
-          required: true
+          
         },
         time: {
           type: "object",
@@ -247,7 +247,7 @@ export const formFieldSchema = {
         budget:      { type: "string", nullable: true },             // e.g., "economy","moderate","premium"
         specialNotes:{ type: "array", items: { type: "string" } }    // dump leftover info here
       },
-      required: ["destinations"]
+      required: ["destination"]
     },
     missingRequired: { type: "array", items: { type: "string" } }     // e.g., ["time.dateRange"] or ["time.month","time.nights"]
   },
