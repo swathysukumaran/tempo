@@ -1,6 +1,6 @@
 import React from "react";
 
-function confirmDetails() {
+function ConfirmDetails() {
   return (
     <div>
       <h2>Confirm Your Details</h2>
@@ -8,4 +8,4 @@ function confirmDetails() {
   );
 }
 
-export default confirmDetails;
+export default ConfirmDetails;

@@ -52,7 +52,9 @@ function CreateTripNew() {
       if (!response.ok) throw new Error("Failed to generate trip");
       const trip = await response.json();
       console.log(trip);
-      navigate(`/confirm`);
+      navigate(`/confirm`, {
+        state: { tripData: trip },
+      });
     } catch (error) {
       toast("Something went wrong");
       setIsLoading(false);
