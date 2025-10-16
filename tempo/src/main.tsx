@@ -22,7 +22,7 @@ import Contact from "./components/custom/Contact.tsx";
 import PrivacyPolicy from "./components/custom/PrivacyPolicy.tsx";
 import TermsOfService from "./components/custom/TermsOfService.tsx";
 import ProtectedRoute from "./components/custom/ProtectedRoute.tsx";
-import ConfirmDetails from "./components/custom/confirmDetails.tsx";
+
 // Create a layout component that conditionally renders Header
 const RootLayout = () => {
   const location = useLocation();
@@ -77,10 +77,6 @@ const router = createBrowserRouter([
       {
         path: "/create-trip-new",
         element: <CreateTrip />,
-      },
-      {
-        path: "/confirm",
-        element: <ConfirmDetails />,
       },
 
       {
