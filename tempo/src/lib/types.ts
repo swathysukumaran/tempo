@@ -1,5 +1,5 @@
 export type TripData={
-    destination:string;
+    destination:object;
     time:object;
     tags:string[];
     interests:string[];
@@ -7,5 +7,5 @@ export type TripData={
     constraints:string[];
     budget:string;
     specialNotes:string[];
-    
+
 }

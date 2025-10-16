@@ -43,8 +43,6 @@ Important: I will be directly parsing your response as JSON. Any text before or 
 };
 
 
-
-
 export const UPDATE_PROMPT = (trip: any, changeRequest: string) => {
   return `
 You are a specialized travel API that ONLY outputs valid JSON data.
@@ -69,43 +67,7 @@ Important: I will be directly parsing your response as JSON. Any text before or 
 `;
 };
 
-export const EXTRACT_PROMPT=(destination:string,prompt:string)=>{
-  return `You are Tempo’s Trip Brief extractor.
-Return ONLY JSON (no prose / no markdown). The API supplies a responseSchema; follow it exactly.
 
-INPUT
-<<<
-Destination: ${destination},
-User Prompt: ${prompt}
->>>
-
-FILLING RULES (important)
-- Output EXACTLY ONE JSON object with BOTH keys: { "fields": {…}, "missingRequired": [...] }.
-- Always copy ${destination} into fields.destination.
-- Under "fields", ALWAYS include ALL of these keys (use [] or null if unknown):
- time, tags, interests, mustDos, constraints, budget, specialNotes.
-- Use numbers when explicit (“3 days” → time.nights: 3).
-- Never invent exact dates. If only a month word is given (“in October”), set time.month = null, push "month_hint: October" to specialNotes, and include "time.month" in missingRequired.
-- For “few days / weekend / spring”, leave date fields null; add short hints to specialNotes (e.g., "duration_hint: few days", "season: spring") and include the right keys in missingRequired ("time.dateRange" OR ["time.month","time.nights"]).
-- Multi-city allowed: destinations is an array. If user mentions a day trip (“day trip to X”), add "day trip to X" to mustDos and include X as a destination if it’s a distinct place.
-- Map companions to tags:
-  "family" → "family"; "friends" → "friends"; "couple" → "couple";
-  "my 7-year-old" / "kid 7" → "with-kid:7"; "parents"/"seniors" → "with-senior".
-- Map budget words to budget (fields.budget):
-  cheap/low/budget → "economy"; moderate/mid → "moderate"; nice/comfortable → "comfort"; premium/luxury/expensive → "premium".
-- Preferences:
-  “slow mornings / late starts” → tag "slow-mornings" (or constraint "no-early-mornings");
-  Food prefs (bakeries, street food, cafes) → add to interests;
-  Museums, nightlife, nature, shopping → interests.
-- Keep phrases short (chips, not sentences). Deduplicate arrays. Lowercase where reasonable.
-- specialNotes:Always fill this. Write user needs, vibe of the travel, what they want to achieve,any leftover info that couldn't fit in the previous fields (e.g., “I want to relax”, “it’s my honeymoon”, “I love art”, “no hiking”).
-
-REQUIRED ANCHORS (for missingRequired)
-- required = destinations AND (time.dateRange OR (time.month AND time.nights)).
-- If missing, list the appropriate keys in missingRequired.
-
-  `
-}
 export const schema=
 {
   "type": "object",
@@ -214,42 +176,3 @@ export const schema=
   "required": ["generatedItinerary", "tripDetails"]
 }
 
-export const formFieldSchema = {
-  type: "object",
-  properties: {
-    fields: {
-      type: "object",
-      properties: {
-        destination: {
-          type: "string",
-          
-        },
-        time: {
-          type: "object",
-          nullable: true,
-          properties: {
-            dateRange: {
-              type: "object",
-              nullable: true,
-              properties: {
-                start: { type: "string", nullable: true }, // YYYY-MM-DD
-                end:   { type: "string", nullable: true }  // YYYY-MM-DD
-              }
-            },
-            month:  { type: "string", nullable: true },     // YYYY-MM
-            nights: { type: "number", nullable: true }
-          }
-        },
-        tags:        { type: "array", items: { type: "string" } },   // "friends","family","with-kid:7","business-daytime","evenings-only"
-        interests:   { type: "array", items: { type: "string" } },
-        mustDos:     { type: "array", items: { type: "string" } },
-        constraints: { type: "array", items: { type: "string" } },
-        budget:      { type: "string", nullable: true },             // e.g., "economy","moderate","premium"
-        specialNotes:{ type: "array", items: { type: "string" } }    // dump leftover info here
-      },
-      required: ["destination"]
-    },
-    missingRequired: { type: "array", items: { type: "string" } }     // e.g., ["time.dateRange"] or ["time.month","time.nights"]
-  },
-  required: ["fields","missingRequired"]
-};

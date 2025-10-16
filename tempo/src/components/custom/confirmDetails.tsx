@@ -5,6 +5,7 @@ function ConfirmDetails() {
   const navigate = useNavigate();
   const location = useLocation() as { state?: { tripData?: TripData } };
   const tripData = location.state?.tripData;
+  console.log("confirm page", tripData);
   if (!tripData) {
     navigate("/", { replace: true });
     return null;

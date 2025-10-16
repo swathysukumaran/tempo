@@ -51,7 +51,7 @@ function CreateTripNew() {
       });
       if (!response.ok) throw new Error("Failed to generate trip");
       const trip = await response.json();
-      console.log(trip);
+      console.log("Generated trip:", trip);
       navigate(`/confirm`, {
         state: { tripData: trip.fields },
       });
