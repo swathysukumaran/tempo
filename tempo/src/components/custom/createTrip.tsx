@@ -225,123 +225,129 @@ function CreateTripNew() {
     >
       {/* Dark Overlay for Contrast (covers everything behind the form/header) */}
       <div className="absolute inset-0 bg-gray-900/60 z-0"></div>
-      <header className=" p-4 text-center">
-        <h1 className="text-h1 font-semibold text-white">
-          Every trip, uniquely yours. Powered by AI.
-        </h1>
-        <p className="text-white mt-2">Speak your dream trip. Get a plan.</p>
-      </header>
+      {/* Main Content Wrapper - everything else goes inside this */}
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center p-4">
+        <header className="w-full max-w-4xl py-6 md:py-8 mb-8 text-center">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight drop-shadow-lg">
+            Every Journey,{" "}
+            <span className="text-amber-400">Uniquely Yours.</span>
+          </h1>
+          <p className="text-lg md:text-xl text-gray-200 mt-2 font-light">
+            Powered by AI. Speak your dream trip. Get a plan.
+          </p>
+        </header>
 
-      <main className="flex-1 p-4  overflow-y-auto pb-24 md:pb-16">
-        <div className="md:max-w-[50%] mx-auto space-y-12 mt-6">
-          <div className="space-y-6">
-            <h2 className="text-xl md:text-2xl font-medium text-gray-800">
-              Select your destination
-            </h2>
+        <main className="flex-1 p-4  overflow-y-auto pb-24 md:pb-16">
+          <div className="md:max-w-[50%] mx-auto space-y-12 mt-6">
+            <div className="space-y-6">
+              <h2 className="text-xl md:text-2xl font-medium text-gray-800">
+                Select your destination
+              </h2>
 
-            <GooglePlacesAutocomplete
-              apiKey={apiKey}
-              selectProps={{
-                value: formData.destination,
-                onChange: (value) => updateFormData({ destination: value }),
-                placeholder: " Search for a destination...",
-                styles: {
-                  control: (provided) => ({
-                    ...provided,
-                    padding: "8px",
-                    width: "92%",
-                    borderRadius: "8px",
-                    border: "1px solid #111827",
-                    boxShadow: "none",
-                    transition: "all 150ms ease",
+              <GooglePlacesAutocomplete
+                apiKey={apiKey}
+                selectProps={{
+                  value: formData.destination,
+                  onChange: (value) => updateFormData({ destination: value }),
+                  placeholder: " Search for a destination...",
+                  styles: {
+                    control: (provided) => ({
+                      ...provided,
+                      padding: "8px",
+                      width: "92%",
+                      borderRadius: "8px",
+                      border: "1px solid #111827",
+                      boxShadow: "none",
+                      transition: "all 150ms ease",
 
-                    "&:hover": {
-                      borderColor: "#0F766E",
-                    },
-                    "&:focus-within": {
-                      borderColor: "#0D9488",
-                      boxShadow: "0 0 0 2px rgba(13, 148, 136, 0.3)",
-                    },
-                  }),
-                  placeholder: (provided) => ({
-                    ...provided,
-                    color: "#374151",
-                  }),
-                  option: (provided, state) => ({
-                    ...provided,
-                    backgroundColor: state.isFocused ? "#F3F4F6" : "white",
-                    color: "#1F2937",
-                    "&:hover": {
-                      backgroundColor: "#F3F4F6",
-                    },
-                  }),
-                },
-              }}
-            />
-          </div>
-          <div className="space-y-6">
-            <h2 className="text-xl md:text-2xl font-medium text-gray-800 mt-10">
-              Tell us when you’re going and what matters most.
-            </h2>
-
-            <div className="flex  items-center gap-2 mt-2">
-              <textarea
-                placeholder="E.g., June 15-22, 2024;  5 days around Christmas;    A week in late spring"
-                value={formData.tripDetails}
-                onChange={(e) =>
-                  updateFormData({ tripDetails: e.target.value })
-                }
-                className="w-full min-h-[100px] p-3 rounded-md border border-gray-900 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                      "&:hover": {
+                        borderColor: "#0F766E",
+                      },
+                      "&:focus-within": {
+                        borderColor: "#0D9488",
+                        boxShadow: "0 0 0 2px rgba(13, 148, 136, 0.3)",
+                      },
+                    }),
+                    placeholder: (provided) => ({
+                      ...provided,
+                      color: "#374151",
+                    }),
+                    option: (provided, state) => ({
+                      ...provided,
+                      backgroundColor: state.isFocused ? "#F3F4F6" : "white",
+                      color: "#1F2937",
+                      "&:hover": {
+                        backgroundColor: "#F3F4F6",
+                      },
+                    }),
+                  },
+                }}
               />
-              <div className="flex flex-col items-center justify-center">
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (isRecording) {
-                      stopRecording();
-                    } else {
-                      startRecording("timeframe");
-                    }
-                  }}
-                  className=" p-1 h-fit rounded-full bg-primary text-white transition-transform transform hover:scale-105"
-                >
-                  {isRecording ? (
-                    <Lottie
-                      animationData={micAnimation}
-                      style={{ height: 36, width: 36 }}
-                      loop={true}
-                      autoplay={true} // Use autoplay instead of play
-                    />
-                  ) : (
-                    <Lottie
-                      animationData={micAnimation}
-                      style={{ height: 36, width: 36 }}
-                      loop={false}
-                      autoplay={false}
-                    />
-                  )}
-                </button>
-                {isRecording && (
-                  <div className="mb-2 text-sm flex flex-col items-center">
-                    <p className="ml-2 text-red-500">
-                      Press mic again to transcribe
-                    </p>
-                  </div>
-                )}
-              </div>
             </div>
+            <div className="space-y-6">
+              <h2 className="text-xl md:text-2xl font-medium text-gray-800 mt-10">
+                Tell us when you’re going and what matters most.
+              </h2>
 
-            {transcriptionLoading && (
-              <div className="absolute top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center">
-                <div className="flex items-center space-x-2">
-                  <p className="text-white">Transcribing...</p>
-                  <CheckCircle className="h-6 w-6 text-white animate-spin-slow" />
+              <div className="flex  items-center gap-2 mt-2">
+                <textarea
+                  placeholder="E.g., June 15-22, 2024;  5 days around Christmas;    A week in late spring"
+                  value={formData.tripDetails}
+                  onChange={(e) =>
+                    updateFormData({ tripDetails: e.target.value })
+                  }
+                  className="w-full min-h-[100px] p-3 rounded-md border border-gray-900 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                />
+                <div className="flex flex-col items-center justify-center">
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (isRecording) {
+                        stopRecording();
+                      } else {
+                        startRecording("timeframe");
+                      }
+                    }}
+                    className=" p-1 h-fit rounded-full bg-primary text-white transition-transform transform hover:scale-105"
+                  >
+                    {isRecording ? (
+                      <Lottie
+                        animationData={micAnimation}
+                        style={{ height: 36, width: 36 }}
+                        loop={true}
+                        autoplay={true} // Use autoplay instead of play
+                      />
+                    ) : (
+                      <Lottie
+                        animationData={micAnimation}
+                        style={{ height: 36, width: 36 }}
+                        loop={false}
+                        autoplay={false}
+                      />
+                    )}
+                  </button>
+                  {isRecording && (
+                    <div className="mb-2 text-sm flex flex-col items-center">
+                      <p className="ml-2 text-red-500">
+                        Press mic again to transcribe
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
-            )}
+
+              {transcriptionLoading && (
+                <div className="absolute top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center">
+                  <div className="flex items-center space-x-2">
+                    <p className="text-white">Transcribing...</p>
+                    <CheckCircle className="h-6 w-6 text-white animate-spin-slow" />
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
 
       <footer className=" p-5 flex sm:flex-row left-0 right-0 fixed bottom-5  bg-none md:bg-none  w-full z-50 gap-4 align-bottom justify-end">
         <Button
