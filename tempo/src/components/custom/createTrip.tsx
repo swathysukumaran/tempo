@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { Button } from "../ui/button";
-import { CheckCircle, MapPin } from "lucide-react";
+import { CheckCircle, MapPin, Mic, Sparkles } from "lucide-react";
 
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { toast } from "sonner";
@@ -291,53 +291,68 @@ function CreateTripNew() {
                 }}
               />
             </div>
+            <div className="space-y-3 relative">
+              <label
+                htmlFor="priorities"
+                className="block text-xl font-bold text-gray-700 flex items-center"
+              >
+                <Sparkles className="h-5 w-5 mr-2 text-amber-500" />{" "}
+                {/* Icon added */}
+                Tell us your travel style and details
+              </label>
+
+              <div className="flex items-start gap-4">
+                {" "}
+                {/* Use flex to align textarea and mic button */}
+                <textarea
+                  id="priorities"
+                  name="priorities"
+                  rows={6} // Increased rows for more "blabber" space
+                  required
+                  placeholder="E.g., 'A two-week honeymoon in October. We love history, need luxurious but private stays, and our budget is $10k.' (Use the mic for a faster input!)"
+                  value={formData.tripDetails}
+                  onChange={(e) =>
+                    updateFormData({ tripDetails: e.target.value })
+                  }
+                  className="flex-1 rounded-2xl border-2 border-gray-300 shadow-inner p-5 text-base md:text-lg 
+                             focus:ring-indigo-500 focus:border-indigo-500 transition duration-300 ease-in-out resize-none"
+                />
+                <div className="flex flex-col items-center justify-start h-full pt-1">
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (isRecording) {
+                        stopRecording();
+                      } else {
+                        startRecording("timeframe");
+                      }
+                    }}
+                    className={`p-4 rounded-full text-white shadow-xl hover:shadow-2xl active:shadow-none focus:outline-none focus:ring-4 transition duration-200 relative
+                                ${
+                                  isRecording
+                                    ? "bg-red-600 ring-red-300"
+                                    : "bg-emerald-500 ring-emerald-300 hover:bg-emerald-600"
+                                }`} // Conditional styling for recording
+                    aria-label={
+                      isRecording ? "Stop recording" : "Start voice input"
+                    }
+                    disabled={transcriptionLoading}
+                  >
+                    {isRecording && (
+                      <span className="absolute inset-0 inline-flex h-full w-full rounded-full bg-red-400 opacity-75 animate-ping"></span>
+                    )}
+                    <Mic className="h-6 w-6 relative z-10" />
+                  </button>
+                  {isRecording && (
+                    <p className="text-xs text-red-500 mt-2 font-medium animate-pulse">
+                      STOP & TRANSCRIBE
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
           </form>
           <div className="md:max-w-[50%] mx-auto space-y-12 mt-6">
-            <div className="space-y-6">
-              <h2 className="text-xl md:text-2xl font-medium text-gray-800">
-                Select your destination
-              </h2>
-
-              <GooglePlacesAutocomplete
-                apiKey={apiKey}
-                selectProps={{
-                  value: formData.destination,
-                  onChange: (value) => updateFormData({ destination: value }),
-                  placeholder: " Search for a destination...",
-                  styles: {
-                    control: (provided) => ({
-                      ...provided,
-                      padding: "8px",
-                      width: "92%",
-                      borderRadius: "8px",
-                      border: "1px solid #111827",
-                      boxShadow: "none",
-                      transition: "all 150ms ease",
-
-                      "&:hover": {
-                        borderColor: "#0F766E",
-                      },
-                      "&:focus-within": {
-                        borderColor: "#0D9488",
-                        boxShadow: "0 0 0 2px rgba(13, 148, 136, 0.3)",
-                      },
-                    }),
-                    placeholder: (provided) => ({
-                      ...provided,
-                      color: "#374151",
-                    }),
-                    option: (provided, state) => ({
-                      ...provided,
-                      backgroundColor: state.isFocused ? "#F3F4F6" : "white",
-                      color: "#1F2937",
-                      "&:hover": {
-                        backgroundColor: "#F3F4F6",
-                      },
-                    }),
-                  },
-                }}
-              />
-            </div>
             <div className="space-y-6">
               <h2 className="text-xl md:text-2xl font-medium text-gray-800 mt-10">
                 Tell us when you’re going and what matters most.
