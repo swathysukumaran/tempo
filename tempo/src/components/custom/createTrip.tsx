@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { Button } from "../ui/button";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, MapPin } from "lucide-react";
 
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { toast } from "sonner";
@@ -237,7 +237,61 @@ function CreateTripNew() {
           </p>
         </header>
 
-        <main className="flex-1 p-4  overflow-y-auto pb-24 md:pb-16">
+        <main className="w-full max-w-xl px-4">
+          <form
+            onSubmit={handleSubmit}
+            className="g-white rounded-3xl p-6 md:p-10 space-y-6 md:space-y-8 border-4 border-indigo-500 shadow-2xl transition duration-500 hover:shadow-4xl"
+          >
+            <div className="space-y-3 relative">
+              <label
+                htmlFor="destination-search"
+                className="block text-xl font-bold text-gray-700 flex items-center"
+              >
+                <MapPin className="h-5 w-5 mr-2 text-indigo-500" />{" "}
+                {/* Icon added */}
+                Select your destination
+              </label>
+              <GooglePlacesAutocomplete
+                apiKey={apiKey}
+                selectProps={{
+                  value: formData.destination,
+                  onChange: (value) => updateFormData({ destination: value }),
+                  placeholder: " Search for a destination...",
+                  styles: {
+                    control: (provided) => ({
+                      ...provided,
+                      padding: "8px",
+                      width: "92%",
+                      borderRadius: "8px",
+                      border: "1px solid #111827",
+                      boxShadow: "none",
+                      transition: "all 150ms ease",
+
+                      "&:hover": {
+                        borderColor: "#0F766E",
+                      },
+                      "&:focus-within": {
+                        borderColor: "#0D9488",
+                        boxShadow: "0 0 0 2px rgba(13, 148, 136, 0.3)",
+                      },
+                    }),
+                    placeholder: (provided) => ({
+                      ...provided,
+                      color: "#374151",
+                    }),
+                    option: (provided, state) => ({
+                      ...provided,
+                      backgroundColor: state.isFocused ? "#F3F4F6" : "white",
+                      color: "#1F2937",
+                      "&:hover": {
+                        backgroundColor: "#F3F4F6",
+                      },
+                    }),
+                  },
+                }}
+              />
+            </div>
+          </form>
           <div className="md:max-w-[50%] mx-auto space-y-12 mt-6">
             <div className="space-y-6">
               <h2 className="text-xl md:text-2xl font-medium text-gray-800">
