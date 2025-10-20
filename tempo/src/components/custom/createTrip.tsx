@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import TripLoadingAnimation from "./TripLoadingAnimation";
 import micAnimation from "../../assets/mic.json";
 import Lottie from "lottie-react";
+
 const apiKey = import.meta.env.VITE_GOOGLE_PLACE_API_KEY || "";
 
 type TripFormData = {
@@ -217,12 +218,16 @@ function CreateTripNew() {
     }
   };
   return (
-    <div className="min-h-screen flex flex-col font-sans">
+    <div
+      className={
+        "min-h-screen bg-[url('/primary_bg.jpg')] bg-cover bg-center flex flex-col font-sans"
+      }
+    >
       <header className="bg-primary border-b p-4 text-center">
         <h1 className="text-h1 font-semibold text-white">
           Every trip, uniquely yours. Powered by AI.
         </h1>
-        <p className="text-white mt-2">Speak your trip. Get a plan.</p>
+        <p className="text-white mt-2">Speak your dream trip. Get a plan.</p>
       </header>
 
       <main className="flex-1 p-4  overflow-y-auto pb-24 md:pb-16">
