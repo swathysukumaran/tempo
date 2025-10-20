@@ -223,7 +223,9 @@ function CreateTripNew() {
         "min-h-screen bg-[url('/primary_bg.jpg')] bg-cover bg-center flex flex-col font-sans"
       }
     >
-      <header className="bg-primary border-b p-4 text-center">
+      {/* Dark Overlay for Contrast (covers everything behind the form/header) */}
+      <div className="absolute inset-0 bg-gray-900/60 z-0"></div>
+      <header className=" p-4 text-center">
         <h1 className="text-h1 font-semibold text-white">
           Every trip, uniquely yours. Powered by AI.
         </h1>
