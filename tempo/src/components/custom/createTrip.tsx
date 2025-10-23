@@ -331,7 +331,7 @@ function CreateTripNew() {
                                 ${
                                   isRecording
                                     ? "bg-red-600 ring-red-300"
-                                    : "bg-emerald-500 ring-emerald-300 hover:bg-emerald-600"
+                                    : "bg-primary-dark ring-primary hover:bg-primary"
                                 }`} // Conditional styling for recording
                   aria-label={
                     isRecording ? "Stop recording" : "Start voice input"
@@ -350,89 +350,18 @@ function CreateTripNew() {
                 )}
               </div>
             </div>
+            <div></div>
             <Button
               type="submit"
               onClick={handleSubmit}
-              className="bg-primary w-max hover:bg-primary-dark text-white text-lg p-6"
+              className="bg-primary w-max hover:bg-primary-dark text-white text-lg p-6 justify-center mx-auto mt-4"
               disabled={!formData.destination || transcriptionLoading}
             >
               Generate My Custom Plan✨
             </Button>
           </form>
-          <div className="md:max-w-[50%] mx-auto space-y-12 mt-6">
-            <div className="space-y-6">
-              <h2 className="text-xl md:text-2xl font-medium text-gray-800 mt-10">
-                Tell us when you’re going and what matters most.
-              </h2>
-
-              <div className="flex  items-center gap-2 mt-2">
-                <textarea
-                  placeholder="E.g., June 15-22, 2024;  5 days around Christmas;    A week in late spring"
-                  value={formData.tripDetails}
-                  onChange={(e) =>
-                    updateFormData({ tripDetails: e.target.value })
-                  }
-                  className="w-full min-h-[100px] p-3 rounded-md border border-gray-900 focus:border-primary focus:ring-2 focus:ring-primary/20"
-                />
-                <div className="flex flex-col items-center justify-center">
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      if (isRecording) {
-                        stopRecording();
-                      } else {
-                        startRecording("timeframe");
-                      }
-                    }}
-                    className=" p-1 h-fit rounded-full bg-primary text-white transition-transform transform hover:scale-105"
-                  >
-                    {isRecording ? (
-                      <Lottie
-                        animationData={micAnimation}
-                        style={{ height: 36, width: 36 }}
-                        loop={true}
-                        autoplay={true} // Use autoplay instead of play
-                      />
-                    ) : (
-                      <Lottie
-                        animationData={micAnimation}
-                        style={{ height: 36, width: 36 }}
-                        loop={false}
-                        autoplay={false}
-                      />
-                    )}
-                  </button>
-                  {isRecording && (
-                    <div className="mb-2 text-sm flex flex-col items-center">
-                      <p className="ml-2 text-red-500">
-                        Press mic again to transcribe
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {transcriptionLoading && (
-                <div className="absolute top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center">
-                  <div className="flex items-center space-x-2">
-                    <p className="text-white">Transcribing...</p>
-                    <CheckCircle className="h-6 w-6 text-white animate-spin-slow" />
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
         </main>
       </div>
-
-      <footer className=" p-5 flex sm:flex-row left-0 right-0 fixed bottom-5  bg-none md:bg-none  w-full z-50 gap-4 align-bottom justify-end">
-        <Button
-          onClick={handleSubmit}
-          className="bg-primary w-max hover:bg-primary-dark text-white text-lg p-6"
-        >
-          Submit ✨
-        </Button>
-      </footer>
     </div>
   );
 }
