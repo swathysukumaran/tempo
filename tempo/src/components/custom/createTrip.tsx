@@ -1,14 +1,12 @@
 import { useRef, useState } from "react";
 import { Button } from "../ui/button";
-import { CheckCircle, MapPin, Mic, Sparkles } from "lucide-react";
+import { MapPin, Mic, Sparkles } from "lucide-react";
 
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { toast } from "sonner";
 import { API_URL } from "@/config/api";
 import { useNavigate } from "react-router-dom";
 import TripLoadingAnimation from "./TripLoadingAnimation";
-import micAnimation from "../../assets/mic.json";
-import Lottie from "lottie-react";
 
 const apiKey = import.meta.env.VITE_GOOGLE_PLACE_API_KEY || "";
 
@@ -223,11 +221,11 @@ function CreateTripNew() {
         "min-h-screen bg-[url('/primary_bg.jpg')] bg-cover bg-center flex flex-col font-sans"
       }
     >
-      {/* Dark Overlay for Contrast (covers everything behind the form/header) */}
-      <div className="absolute inset-0 bg-gray-900/60 z-0"></div>
       {/* Main Content Wrapper - everything else goes inside this */}
-      <div className="relative z-10 flex-1 flex flex-col items-center justify-center p-4">
-        <header className="w-full max-w-4xl py-6 md:py-8 mb-8 text-center">
+      <div className="relative z-0 flex-1 flex flex-col items-center justify-center p-4">
+        {/* Dark Overlay for Contrast (covers everything behind the form/header) */}
+        <div className="absolute inset-0 bg-gray-900/60 z-1"></div>
+        <header className="w-full max-w-4xl py-6 md:py-8 mb-8 text-center z-10">
           <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight drop-shadow-lg">
             Every Journey,{" "}
             <span className="text-amber-400">Uniquely Yours.</span>
@@ -237,7 +235,7 @@ function CreateTripNew() {
           </p>
         </header>
 
-        <main className="w-full max-w-xl px-4">
+        <main className="w-full max-w-xl px-4 z-10">
           <form
             onSubmit={handleSubmit}
             className="bg-white rounded-3xl p-6 md:p-10 space-y-6 md:space-y-8 border-4 border-indigo-500 shadow-2xl transition duration-500 hover:shadow-4xl"
