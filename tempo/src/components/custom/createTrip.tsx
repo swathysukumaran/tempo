@@ -32,15 +32,16 @@ function CreateTripNew() {
     setFormData((prev) => ({ ...prev, ...updates }));
     console.log("Form data updated:", formData);
   };
+
   const handleSubmit = async () => {
-    console.log("Extracting details from:", formData);
+    console.log("Generating trip with data:", formData);
     const tripData = {
-      destination: formData.destination,
-      prompt: formData.tripDetails,
+      location: formData.destination,
+      tripDetails: formData.tripDetails,
     };
     try {
       setIsLoading(true);
-      const response = await fetch(`${API_URL}/ai/extract`, {
+      const response = await fetch(`${API_URL}/ai/create-trip`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -50,43 +51,14 @@ function CreateTripNew() {
       });
       if (!response.ok) throw new Error("Failed to generate trip");
       const trip = await response.json();
-      console.log("Generated trip:", trip);
-      navigate(`/confirm`, {
-        state: { tripData: trip.fields },
-      });
+      console.log(trip);
+      navigate(`/trip/${trip.tripId}`);
     } catch (error) {
       toast("Something went wrong");
       setIsLoading(false);
       console.log(error);
     }
   };
-
-  // const handleSubmit = async () => {
-  //   console.log("Generating trip with data:", formData);
-  //   const tripData = {
-  //     location: formData.destination,
-  //     tripDetails: formData.tripDetails,
-  //   };
-  //   try {
-  //     setIsLoading(true);
-  //     const response = await fetch(`${API_URL}/ai/create-trip`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       credentials: "include",
-  //       body: JSON.stringify(tripData),
-  //     });
-  //     if (!response.ok) throw new Error("Failed to generate trip");
-  //     const trip = await response.json();
-  //     console.log(trip);
-  //     navigate(`/trip/${trip.tripId}`);
-  //   } catch (error) {
-  //     toast("Something went wrong");
-  //     setIsLoading(false);
-  //     console.log(error);
-  //   }
-  // };
 
   if (isLoading) {
     return <TripLoadingAnimation />;
