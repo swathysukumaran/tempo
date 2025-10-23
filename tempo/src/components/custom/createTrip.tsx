@@ -299,7 +299,7 @@ function CreateTripNew() {
                 Tell us your travel style and details
               </label>
             </div>
-            <div className="flex items-start gap-4">
+            <div className="flex items-center gap-4">
               {" "}
               {/* Use flex to align textarea and mic button */}
               <textarea
@@ -315,7 +315,7 @@ function CreateTripNew() {
                 className="flex-1 rounded-2xl border-2 border-gray-300 shadow-inner p-5 text-base md:text-lg 
                              focus:ring-indigo-500 focus:border-indigo-500 transition duration-300 ease-in-out resize-none"
               />
-              <div className="flex flex-col items-center justify-start h-full pt-1">
+              <div className="flex flex-col items-center  justify-start h-full pt-1">
                 <button
                   onClick={(e) => {
                     e.preventDefault();
