@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { Button } from "../ui/button";
-import { CheckCircle, MapPin, Mic, Sparkles, Wand2 } from "lucide-react";
+import { CheckCircle, MapPin, Mic, Sparkles } from "lucide-react";
 
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { toast } from "sonner";
@@ -240,7 +240,7 @@ function CreateTripNew() {
         <main className="w-full max-w-xl px-4">
           <form
             onSubmit={handleSubmit}
-            className="g-white rounded-3xl p-6 md:p-10 space-y-6 md:space-y-8 border-4 border-indigo-500 shadow-2xl transition duration-500 hover:shadow-4xl"
+            className="bg-white rounded-3xl p-6 md:p-10 space-y-6 md:space-y-8 border-4 border-indigo-500 shadow-2xl transition duration-500 hover:shadow-4xl"
           >
             <div className="space-y-3 relative">
               <label
@@ -300,69 +300,64 @@ function CreateTripNew() {
                 {/* Icon added */}
                 Tell us your travel style and details
               </label>
-
-              <div className="flex items-start gap-4">
-                {" "}
-                {/* Use flex to align textarea and mic button */}
-                <textarea
-                  id="priorities"
-                  name="priorities"
-                  rows={6} // Increased rows for more "blabber" space
-                  required
-                  placeholder="E.g., 'A two-week honeymoon in October. We love history, need luxurious but private stays, and our budget is $10k.' (Use the mic for a faster input!)"
-                  value={formData.tripDetails}
-                  onChange={(e) =>
-                    updateFormData({ tripDetails: e.target.value })
-                  }
-                  className="flex-1 rounded-2xl border-2 border-gray-300 shadow-inner p-5 text-base md:text-lg 
+            </div>
+            <div className="flex items-start gap-4">
+              {" "}
+              {/* Use flex to align textarea and mic button */}
+              <textarea
+                id="priorities"
+                name="priorities"
+                rows={6} // Increased rows for more "blabber" space
+                required
+                placeholder="E.g., 'A two-week honeymoon in October. We love history, need luxurious but private stays, and our budget is $10k.' (Use the mic for a faster input!)"
+                value={formData.tripDetails}
+                onChange={(e) =>
+                  updateFormData({ tripDetails: e.target.value })
+                }
+                className="flex-1 rounded-2xl border-2 border-gray-300 shadow-inner p-5 text-base md:text-lg 
                              focus:ring-indigo-500 focus:border-indigo-500 transition duration-300 ease-in-out resize-none"
-                />
-                <div className="flex flex-col items-center justify-start h-full pt-1">
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      if (isRecording) {
-                        stopRecording();
-                      } else {
-                        startRecording("timeframe");
-                      }
-                    }}
-                    className={`p-4 rounded-full text-white shadow-xl hover:shadow-2xl active:shadow-none focus:outline-none focus:ring-4 transition duration-200 relative
+              />
+              <div className="flex flex-col items-center justify-start h-full pt-1">
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (isRecording) {
+                      stopRecording();
+                    } else {
+                      startRecording("timeframe");
+                    }
+                  }}
+                  className={`p-2 rounded-full text-white shadow-xl hover:shadow-2xl active:shadow-none focus:outline-none focus:ring-4 transition duration-200 relative
                                 ${
                                   isRecording
                                     ? "bg-red-600 ring-red-300"
                                     : "bg-emerald-500 ring-emerald-300 hover:bg-emerald-600"
                                 }`} // Conditional styling for recording
-                    aria-label={
-                      isRecording ? "Stop recording" : "Start voice input"
-                    }
-                    disabled={transcriptionLoading}
-                  >
-                    {isRecording && (
-                      <span className="absolute inset-0 inline-flex h-full w-full rounded-full bg-red-400 opacity-75 animate-ping"></span>
-                    )}
-                    <Mic className="h-6 w-6 relative z-10" />
-                  </button>
+                  aria-label={
+                    isRecording ? "Stop recording" : "Start voice input"
+                  }
+                  disabled={transcriptionLoading}
+                >
                   {isRecording && (
-                    <p className="text-xs text-red-500 mt-2 font-medium animate-pulse">
-                      STOP & TRANSCRIBE
-                    </p>
+                    <span className="absolute inset-0 inline-flex h-full w-full rounded-full bg-red-400 opacity-75 animate-ping"></span>
                   )}
-                </div>
+                  <Mic className="h-6 w-6 relative z-10" />
+                </button>
+                {isRecording && (
+                  <p className="text-xs text-red-500 mt-2 font-medium animate-pulse">
+                    STOP & TRANSCRIBE
+                  </p>
+                )}
               </div>
-              <div className="pt-4">
-              <Button
-                type="submit"
-                className="w-full flex items-center justify-center space-x-3 px-4 py-4 text-xl font-bold rounded-2xl shadow-xl 
-                           text-white bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 
-                           transition duration-200 ease-in-out transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-indigo-300"
-                disabled={!formData.destination || formData.tripDetails.length < 5 || transcriptionLoading}
-              >
-                <Wand2 className="h-6 w-6" />
-                <span>Generate My Custom Plan</span>
-              </Button>
             </div>
-            
+            <Button
+              type="submit"
+              onClick={handleSubmit}
+              className="bg-primary w-max hover:bg-primary-dark text-white text-lg p-6"
+              disabled={!formData.destination || transcriptionLoading}
+            >
+              Generate My Custom Plan✨
+            </Button>
           </form>
           <div className="md:max-w-[50%] mx-auto space-y-12 mt-6">
             <div className="space-y-6">
