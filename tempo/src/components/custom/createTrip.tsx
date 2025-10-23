@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { Button } from "../ui/button";
-import { CheckCircle, MapPin, Mic, Sparkles } from "lucide-react";
+import { CheckCircle, MapPin, Mic, Sparkles, Wand2 } from "lucide-react";
 
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { toast } from "sonner";
@@ -350,7 +350,19 @@ function CreateTripNew() {
                   )}
                 </div>
               </div>
+              <div className="pt-4">
+              <Button
+                type="submit"
+                className="w-full flex items-center justify-center space-x-3 px-4 py-4 text-xl font-bold rounded-2xl shadow-xl 
+                           text-white bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 
+                           transition duration-200 ease-in-out transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-indigo-300"
+                disabled={!formData.destination || formData.tripDetails.length < 5 || transcriptionLoading}
+              >
+                <Wand2 className="h-6 w-6" />
+                <span>Generate My Custom Plan</span>
+              </Button>
             </div>
+            
           </form>
           <div className="md:max-w-[50%] mx-auto space-y-12 mt-6">
             <div className="space-y-6">
