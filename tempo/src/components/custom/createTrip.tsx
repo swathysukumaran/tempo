@@ -301,7 +301,7 @@ function CreateTripNew() {
                                 ${
                                   isRecording
                                     ? "bg-red-600 ring-red-300"
-                                    : "bg-primary-dark ring-primary hover:bg-primary"
+                                    : "bg-primary ring-primary-dark hover:bg-primary-dark"
                                 }`} // Conditional styling for recording
                   aria-label={
                     isRecording ? "Stop recording" : "Start voice input"
@@ -320,15 +320,16 @@ function CreateTripNew() {
                 )}
               </div>
             </div>
-            <div></div>
-            <Button
-              type="submit"
-              onClick={handleSubmit}
-              className="bg-primary w-max hover:bg-primary-dark text-white text-lg p-6 justify-center mx-auto mt-4"
-              disabled={!formData.destination || transcriptionLoading}
-            >
-              Generate My Custom Plan✨
-            </Button>
+            <div className="mt-6 flex justify-center">
+              <Button
+                type="submit"
+                onClick={handleSubmit}
+                className="bg-primary w-max hover:bg-primary-dark text-white text-lg p-6 justify-center mx-auto mt-4"
+                disabled={!formData.destination || transcriptionLoading}
+              >
+                Generate My Custom Plan✨
+              </Button>
+            </div>
           </form>
         </main>
       </div>
