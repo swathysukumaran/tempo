@@ -43,8 +43,6 @@ Important: I will be directly parsing your response as JSON. Any text before or 
 };
 
 
-
-
 export const UPDATE_PROMPT = (trip: any, changeRequest: string) => {
   return `
 You are a specialized travel API that ONLY outputs valid JSON data.
@@ -68,6 +66,7 @@ Requirements:
 Important: I will be directly parsing your response as JSON. Any text before or after the JSON, or any syntax errors, will cause a failure. Return ONLY valid, complete JSON data that matches the EXACT structure of the original.
 `;
 };
+
 
 export const schema=
 {
@@ -176,3 +175,4 @@ export const schema=
   },
   "required": ["generatedItinerary", "tripDetails"]
 }
+

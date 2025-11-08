@@ -78,14 +78,10 @@ export const createTrip = async (req: express.Request, res: express.Response) =>
        return;
     }
 
-       
-            
-            
-            const response = await generateWithRetry(FINAL_PROMPT);
+    const response = await generateWithRetry(FINAL_PROMPT);
     const text = response.text();
-    // Extract the JSON content from the response if there's any text before or after
-
     const itinerary=extractJSON(text);
+    
     console.log('Itinerary:',itinerary);
     const narrative=itinerary.tripDetails.narrative;
             const generatedItinerary=itinerary.generatedItinerary;
@@ -182,18 +178,16 @@ export const updateItinerary=async (req:express.Request,res:express.Response)=>{
         }
 
         const currentUser=await getUserById(userId);
-        console.log('Current User:',currentUser);
-        console.log("Trip owner ID:", trip.userId.toString());
-        console.log("Shared editors:", trip.sharedWith);
+        
         const isOwner = trip.userId.toString() === ((userId ?? '').toString());
         const isSharedEditor=trip.sharedWith?.some((entry)=>entry.email===currentUser.email&& entry.permission === 'edit');
          if (!isOwner && !isSharedEditor) {
-            console.log('User does not have permission to modify this trip');
+            
             res.status(403).json({ error: "You don't have permission to modify this trip" });
             return;
           }
         const prompt=UPDATE_PROMPT(trip,changeRequest);
-        console.log('Prompt:',prompt);
+        
         if(prompt.length>30000){
             res.status(400).json({error:'Prompt exceeds maximum allowed length'});
             return;
@@ -208,7 +202,7 @@ export const updateItinerary=async (req:express.Request,res:express.Response)=>{
             res.status(200).json(newTrip);
             return;
     }catch(error){
-        console.error('Error updating itinerary:',error);
+        
         res.status(500).json({
             error:'Failed to update itinerary',
             details:error.message

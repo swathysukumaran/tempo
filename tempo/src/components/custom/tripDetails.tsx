@@ -1,5 +1,5 @@
 import { API_URL } from "@/config/api";
-import  { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import default_activity from "../../assets/default_activity.jpg";
 import default_hotel from "../../assets/default_hotel.jpg";
@@ -129,6 +129,7 @@ function TripDetails() {
     }
   };
   const fetchImages = async (data: TripData) => {
+    console.log("Fetching images for trip data", data);
     const coverPlace = await googlePlacePhotos(
       data.tripDetails.location?.label || ""
     );
@@ -140,11 +141,12 @@ function TripDetails() {
     );
 
     const activityPlaces = await Promise.all(
-      Object.values(data.generatedItinerary.itinerary).flatMap((dayData) =>
+      Object.values(data.generatedItinerary.itinerary).flatMap((dayData) => {
+        console.log("Fetching activity photos for day", dayData);
         dayData.activities.map((activity) =>
           googlePlacePhotos(activity.place_name)
-        )
-      )
+        );
+      })
     );
 
     // ⬇️ Set cover image
@@ -183,10 +185,13 @@ function TripDetails() {
         if (!response.ok) throw new Error("Failed to fetch trip details");
         const data = await response.json();
         console.log("Trip Data", data);
+
         const dataWithImages = await fetchImages(data);
+        console.log("Data with images", dataWithImages);
         setTripData(dataWithImages);
 
         const itinerary = data.generatedItinerary.itinerary;
+
         console.log("Itinerary", itinerary);
         type DayData = {
           theme: string;
@@ -204,6 +209,7 @@ function TripDetails() {
         };
 
         for (const dayData of Object.values(itinerary) as DayData[]) {
+          console.log("Processing day", dayData);
           for (const activity of dayData.activities) {
             const photoUrl = await googlePlacePhotos(activity.place_name);
 

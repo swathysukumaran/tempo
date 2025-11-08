@@ -17,11 +17,12 @@ import Login from "./components/custom/Login.tsx";
 import TripDetails from "./components/custom/tripDetails.tsx";
 import MyTrips from "./components/custom/MyTrips.tsx";
 import LandingPage from "./components/custom/LandingPage.tsx";
-import CreateTripNew from "./components/custom/createTripNew.tsx";
+import CreateTrip from "./components/custom/createTrip.tsx";
 import Contact from "./components/custom/Contact.tsx";
 import PrivacyPolicy from "./components/custom/PrivacyPolicy.tsx";
 import TermsOfService from "./components/custom/TermsOfService.tsx";
 import ProtectedRoute from "./components/custom/ProtectedRoute.tsx";
+
 // Create a layout component that conditionally renders Header
 const RootLayout = () => {
   const location = useLocation();
@@ -75,7 +76,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/create-trip-new",
-        element: <CreateTripNew />,
+        element: <CreateTrip />,
       },
 
       {
