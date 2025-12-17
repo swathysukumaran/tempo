@@ -207,5 +207,6 @@ export const updateItinerary=async (req:express.Request,res:express.Response)=>{
             error:'Failed to update itinerary',
             details:error.message
         });
+        return;
     }
 };
