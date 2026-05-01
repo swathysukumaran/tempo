@@ -31,11 +31,11 @@ export const register: express.RequestHandler = async(req:express.Request,res:ex
         await user.save();
 
   
+        const isProd = process.env.NODE_ENV === 'production';
         res.cookie('TEMPO-AUTH', user.authentication.sessionToken, {
-        // domain: 'localhost',
         path: '/',
-        sameSite: 'none',
-        secure: true, // Set to true if using HTTPS
+        sameSite: isProd ? 'none' : 'lax',
+        secure: isProd,
         });
 
         res.status(201).json(user); // Send the response
@@ -71,9 +71,11 @@ export const login=async (req:express.Request,res:express.Response)=>{
         console.log(user.authentication.sessionToken);
         await user.save();
 
-        res.cookie('TEMPO-AUTH',user.authentication.sessionToken,{path:'/',
-        sameSite:'none',
-        secure:true, // Set to true if using HTTPS
+        const isProd = process.env.NODE_ENV === 'production';
+        res.cookie('TEMPO-AUTH', user.authentication.sessionToken, {
+        path: '/',
+        sameSite: isProd ? 'none' : 'lax',
+        secure: isProd,
         });
         res.status(200).json(user);
         return;
