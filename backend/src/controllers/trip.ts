@@ -17,7 +17,7 @@ export const getTripDetails=async(req:express.Request,res:express.Response)=>{
         const userId=get(req,'identity._id') as unknown as string;
         const user=await UserModel.findById(userId);
         const isOwner=trip.userId.toString()===userId.toString();
-        const isShared=trip.sharedWith?.some((entry)=>entry.email=== user.email);
+        const isShared=trip.sharedWith?.some((entry)=>entry.email=== user?.email);
         
         if(!isOwner && !isShared){
             res.status(403).json({error:'Access denied'});
