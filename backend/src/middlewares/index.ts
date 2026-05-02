@@ -6,7 +6,7 @@ export const isOwner=async(req:express.Request,res:express.Response,next:express
 
     try{
         const {id}=req.params;
-        const currentUserId=get(req,'identity._id') as string;
+        const currentUserId=get(req,'identity._id') as unknown as string;
         if(!currentUserId){
             res.status(403);
             return;

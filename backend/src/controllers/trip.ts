@@ -14,7 +14,7 @@ export const getTripDetails=async(req:express.Request,res:express.Response)=>{
             res.status(404).json({error:'Trip not found'});
             return;
         }
-        const userId=get(req,'identity._id') as string;
+        const userId=get(req,'identity._id') as unknown as string;
         const user=await UserModel.findById(userId);
         const isOwner=trip.userId.toString()===userId.toString();
         const isShared=trip.sharedWith?.some((entry)=>entry.email=== user.email);
@@ -57,7 +57,8 @@ export const getAllTrips = async (req: express.Request, res: express.Response) =
 export const shareTrip = async(req:express.Request, res:express.Response)=>{
     try{
         
-        const userId=get(req,'identity._id') as string;
+        const userId=get(req,'identity._id') as unknown as string;
+
         const { email, permission = 'view' }=req.body;
         const tripId=req.params.tripId;
         if(!userId){
@@ -68,30 +69,22 @@ export const shareTrip = async(req:express.Request, res:express.Response)=>{
             res.status(400).json({error:'Email not provided'});
             return;
         }
-        const trip=await getTripById(tripId);
-        if(!trip){
-            res.status(403).json({error:'Trip not found'});
+        const trip = await getTripById(tripId);
+        if (!trip) {
+            res.status(404).json({ error: 'Trip not found' });
             return;
         }
-        
-        const targetUser=await UserModel.findOne({email}) ;
-        if(!targetUser){
-            trip.sharedWith.push({
-            email,
-            permission
-            });
-            
-        }
-        console.log('Target user:',targetUser);
-        
-        trip.sharedWith?.push({
-            email:email,
-            permission
-        });
 
+        const alreadyShared = trip.sharedWith?.some((entry) => entry.email === email);
+        if (alreadyShared) {
+            res.status(400).json({ error: 'Trip already shared with this user' });
+            return;
+        }
+
+        trip.sharedWith.push({ email, permission });
         await trip.save();
-        await sendTripShareEmail(email, trip._id,userId);
-        res.status(200).json({message:'Trip shared successfully'});
+        await sendTripShareEmail(email, trip._id, userId);
+        res.status(200).json({ message: 'Trip shared successfully' });
         return;
 
     }catch(error){
