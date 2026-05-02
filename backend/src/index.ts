@@ -39,8 +39,15 @@ app.use(bodyparser.urlencoded({
   limit: '50mb', 
   extended: true 
 }));
-app.use('/',router());
+app.use('/', router());
+
 app.use((req, res) => {
-  console.log('🔥 Unmatched route:', req.method, req.path);
   res.status(404).json({ error: 'Route not found' });
+});
+
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error(`[${req.method}] ${req.path} →`, err);
+  res.status(err.status || 500).json({
+    error: err.message || 'Internal Server Error',
+  });
 });
