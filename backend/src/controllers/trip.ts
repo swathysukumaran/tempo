@@ -27,8 +27,8 @@ export const getTripDetails=async(req:express.Request,res:express.Response)=>{
         return;
 
     }catch(error){
-        console.log(error);
-        res.sendStatus(400);
+        console.error(error);
+        res.status(500).json({ error: 'Failed to fetch trip details' });
         return;
     }
 }
