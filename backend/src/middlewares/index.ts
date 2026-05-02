@@ -8,19 +8,19 @@ export const isOwner=async(req:express.Request,res:express.Response,next:express
         const {id}=req.params;
         const currentUserId=get(req,'identity._id') as unknown as string;
         if(!currentUserId){
-            res.status(403);
+            res.status(403).json({ error: 'Forbidden' });
             return;
         }
         if(currentUserId.toString() !== id){
-            res.status(403);
+            res.status(403).json({ error: 'Forbidden' });
             return;
         }
         next();
 
     }catch(error){
         console.error('Authorization Error:',error);
-        res.status(400);
-        return
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
 
     }
 }
@@ -30,13 +30,11 @@ export const isAuthenticated=async(req:express.Request,res:express.Response,next
     try{
         const sessionToken=req.cookies['TEMPO-AUTH'];
         if(!sessionToken){
-            console.log("first");
             res.status(401).json({error:'Unauthorized'});
             return;
         }
         const existingUser=await getUserBySessionToken(sessionToken);
         if(!existingUser){
-            console.log("second");
             res.status(401).json({error:'Unauthorized'});
             return;
         }
