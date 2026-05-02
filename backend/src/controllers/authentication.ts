@@ -1,87 +1,86 @@
 import express from 'express';
-import { createUser,getUserByEmail } from '../db/users';
-import { random,authentication } from '../helpers';
+import { createUser, getUserByEmail } from '../db/users';
+import { random, hashPassword, comparePassword } from '../helpers';
 
-export const register: express.RequestHandler = async(req:express.Request,res:express.Response)=>{
-    try{
-        const {email,password,username}=req.body;
+export const register: express.RequestHandler = async (req: express.Request, res: express.Response) => {
+    try {
+        const { email, password, username } = req.body;
 
-        if(!email||!password||!username){
+        if (!email || !password || !username) {
             res.status(400).json({ error: 'Missing required fields' });
-            return; // Ensure no further execution
+            return;
         }
-        const existingUser=await getUserByEmail(email);
-
-        if(existingUser){
+        const existingUser = await getUserByEmail(email);
+        if (existingUser) {
             res.status(400).json({ error: 'User already exists' });
             return;
         }
 
-        const salt=random();
-        const user= await createUser({
+        const user = await createUser({
             email,
             username,
-            authentication:{
-                salt,
-                password:authentication(salt,password),
+            authentication: {
+                password: await hashPassword(password),
             }
         });
-        const sessionSalt = random();
-        user.authentication.sessionToken = authentication(sessionSalt, user._id.toString());
+
+        user.authentication.sessionToken = random();
         await user.save();
 
-  
         const isProd = process.env.NODE_ENV === 'production';
         res.cookie('TEMPO-AUTH', user.authentication.sessionToken, {
-        path: '/',
-        sameSite: isProd ? 'none' : 'lax',
-        secure: isProd,
+            path: '/',
+            sameSite: isProd ? 'none' : 'lax',
+            secure: isProd,
         });
 
-        res.status(201).json(user); // Send the response
+        const { authentication: _, ...safeUser } = user.toObject();
+        res.status(201).json(safeUser);
         return;
 
-    }catch(error){
-        console.log(error);
+    } catch (error) {
         console.error('Registration Error:', error);
-        res.status(500).json({ error: 'Internal Server Error' }); // Handle errors
+        res.status(500).json({ error: 'Internal Server Error' });
         return;
     }
 }
-export const login=async (req:express.Request,res:express.Response)=>{
-    try{
-        const {email,password}=req.body;
-        if(!email || !password){
-            res.status(400).json({ error: "Email and password are required." });;
-            return;
-        }
-        const user=await getUserByEmail(email).select('+authentication.salt +authentication.password');
-        if(!user){
-            res.status(400).json({ error: "User not found." });;
-            return;
-        }
-        const expectedHash=authentication(user.authentication.salt,password);
-        if(expectedHash!=user.authentication.password){
-            res.status(403).json({ error: "Invalid credentials." });;
+
+export const login = async (req: express.Request, res: express.Response) => {
+    try {
+        const { email, password } = req.body;
+        if (!email || !password) {
+            res.status(400).json({ error: 'Email and password are required.' });
             return;
         }
 
-        const salt=random();
-        user.authentication.sessionToken=authentication(salt,user._id.toString());
-        console.log(user.authentication.sessionToken);
+        const user = await getUserByEmail(email).select('+authentication.password');
+        if (!user) {
+            res.status(401).json({ error: 'Invalid credentials.' });
+            return;
+        }
+
+        const isMatch = await comparePassword(password, user.authentication.password);
+        if (!isMatch) {
+            res.status(401).json({ error: 'Invalid credentials.' });
+            return;
+        }
+
+        user.authentication.sessionToken = random();
         await user.save();
 
         const isProd = process.env.NODE_ENV === 'production';
         res.cookie('TEMPO-AUTH', user.authentication.sessionToken, {
-        path: '/',
-        sameSite: isProd ? 'none' : 'lax',
-        secure: isProd,
+            path: '/',
+            sameSite: isProd ? 'none' : 'lax',
+            secure: isProd,
         });
-        res.status(200).json(user);
+
+        const { authentication: _, ...safeUser } = user.toObject();
+        res.status(200).json(safeUser);
         return;
-    }catch(error){
+    } catch (error) {
         console.error('Login Error:', error);
-        res.status(400);
+        res.status(500).json({ error: 'Internal Server Error' });
         return;
     }
 }

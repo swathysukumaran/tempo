@@ -1,6 +1,12 @@
 import crypto from 'crypto';
-const SECRET='TEMPOAITRAVEL';
-export const random=()=>crypto.randomBytes(128).toString('base64');
-export const authentication=(salt:string,password:string)=>{
-    return crypto.createHmac('sha256',[salt,password].join('/')).update(SECRET).digest('hex');
-}
+import bcrypt from 'bcrypt';
+
+const BCRYPT_ROUNDS = 10;
+
+export const random = () => crypto.randomBytes(128).toString('base64');
+
+export const hashPassword = (password: string): Promise<string> =>
+    bcrypt.hash(password, BCRYPT_ROUNDS);
+
+export const comparePassword = (password: string, hash: string): Promise<boolean> =>
+    bcrypt.compare(password, hash);

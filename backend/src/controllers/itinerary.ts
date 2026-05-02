@@ -8,7 +8,7 @@ import { getUserById } from '../db/users';
 const {
   GoogleGenerativeAI,
 } = require("@google/generative-ai");
-require('dotenv').config({ path: '.env.local' });
+require('dotenv').config();
 const apiKey = process.env.GEMINI_API_KEY;
 
 // Initialize the API
@@ -95,7 +95,7 @@ export const createTrip = async (req: express.Request, res: express.Response) =>
 
     }catch(error){
         console.error('Error generating itinerary:',error);
-        res.sendStatus(500).json({
+        res.status(500).json({
             error: 'Failed to generate itinerary',
             details:error.message
         });
