@@ -1,98 +1,60 @@
 import { get } from 'lodash';
-import { getTripById,getUserTrips} from '../db/trip';
+import { getTripById, getUserTrips } from '../db/trip';
 import { UserModel } from '../db/users';
 import express from 'express';
 import mongoose from 'mongoose';
 import nodemailer from 'nodemailer';
+import asyncHandler from '../helpers/asyncHandler';
 
-
-export const getTripDetails=async(req:express.Request,res:express.Response)=>{
-    try{
-        const tripId=req.params.tripId;
-        const trip=await getTripById(tripId);
-        if(!trip){
-            res.status(404).json({error:'Trip not found'});
-            return;
-        }
-        const userId=get(req,'identity._id') as unknown as string;
-        const user=await UserModel.findById(userId);
-        const isOwner=trip.userId.toString()===userId.toString();
-        const isShared=trip.sharedWith?.some((entry)=>entry.email=== user?.email);
-        
-        if(!isOwner && !isShared){
-            res.status(403).json({error:'Access denied'});
-            return;
-        }
-        res.status(200).json(trip);
-        return;
-
-    }catch(error){
-        console.error(error);
-        res.status(500).json({ error: 'Failed to fetch trip details' });
+export const getTripDetails = asyncHandler(async (req: express.Request, res: express.Response) => {
+    const tripId = req.params.tripId;
+    const trip = await getTripById(tripId);
+    if (!trip) {
+        res.status(404).json({ error: 'Trip not found' });
         return;
     }
-}
 
+    const userId = get(req, 'identity._id') as unknown as string;
+    const user = await UserModel.findById(userId);
+    const isOwner = trip.userId.toString() === userId.toString();
+    const isShared = trip.sharedWith?.some((entry) => entry.email === user?.email);
 
-export const getAllTrips = async (req: express.Request, res: express.Response) => {
-    try {
-        const userId = get(req, 'identity._id');
-        
-        if (!userId) {
-            res.status(401).json({ error: 'User not authenticated' });
-             return;
-        }
-
-        const trips = await getUserTrips(userId);
-
-         res.status(200).json({ trips });
-         return;
-    } catch (error) {
-        console.error('Error fetching user trips:', error);
-         res.status(500).json({ error: 'Failed to fetch trips' });
-         return;
-    }
-};
-
-export const shareTrip = async(req:express.Request, res:express.Response)=>{
-    try{
-        
-        const userId=get(req,'identity._id') as unknown as string;
-
-        const { email, permission = 'view' }=req.body;
-        const tripId=req.params.tripId;
-        if(!userId){
-            res.status(401).json({error:'User not authenticated'});
-            return;
-        }
-        if(!email){
-            res.status(400).json({error:'Email not provided'});
-            return;
-        }
-        const trip = await getTripById(tripId);
-        if (!trip) {
-            res.status(404).json({ error: 'Trip not found' });
-            return;
-        }
-
-        const alreadyShared = trip.sharedWith?.some((entry) => entry.email === email);
-        if (alreadyShared) {
-            res.status(400).json({ error: 'Trip already shared with this user' });
-            return;
-        }
-
-        trip.sharedWith.push({ email, permission });
-        await trip.save();
-        await sendTripShareEmail(email, trip._id, userId);
-        res.status(200).json({ message: 'Trip shared successfully' });
-        return;
-
-    }catch(error){
-        console.error('Error sharing trip:',error);
-        res.status(500).json({error:'Failed to share trip'});
+    if (!isOwner && !isShared) {
+        res.status(403).json({ error: 'Access denied' });
         return;
     }
-}
+
+    res.status(200).json(trip);
+});
+
+export const getAllTrips = asyncHandler(async (req: express.Request, res: express.Response) => {
+    const userId = get(req, 'identity._id');
+    const trips = await getUserTrips(userId);
+    res.status(200).json({ trips });
+});
+
+export const shareTrip = asyncHandler(async (req: express.Request, res: express.Response) => {
+    const userId = get(req, 'identity._id') as unknown as string;
+    const { email, permission } = req.body;
+    const tripId = req.params.tripId;
+
+    const trip = await getTripById(tripId);
+    if (!trip) {
+        res.status(404).json({ error: 'Trip not found' });
+        return;
+    }
+
+    const alreadyShared = trip.sharedWith?.some((entry) => entry.email === email);
+    if (alreadyShared) {
+        res.status(400).json({ error: 'Trip already shared with this user' });
+        return;
+    }
+
+    trip.sharedWith.push({ email, permission });
+    await trip.save();
+    await sendTripShareEmail(email, trip._id, userId);
+    res.status(200).json({ message: 'Trip shared successfully' });
+});
 
 export const sendTripShareEmail=async (toEmail:string,tripId:mongoose.Types.ObjectId, userId:string)=>{
     
