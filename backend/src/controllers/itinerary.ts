@@ -64,7 +64,7 @@ export const createTrip = asyncHandler(async (req: express.Request, res: express
     const generatedItinerary = itinerary.generatedItinerary;
     const trip = await createNewTrip(userId, { location, timeframe, narrative, travelers, preferences, budget }, generatedItinerary);
 
-    res.status(200).json({ tripId: trip._id });
+    res.status(201).json({ tripId: trip._id });
 });
 
 export const updateItinerary = asyncHandler(async (req: express.Request, res: express.Response) => {
