@@ -11,6 +11,9 @@ const UserSchema=new mongoose.Schema({
     }
 });
 
+UserSchema.index({ email: 1 }, { unique: true });
+UserSchema.index({ 'authentication.sessionToken': 1 });
+
 export const UserModel=mongoose.model('User',UserSchema);
 
 export const getUsers=()=>UserModel.find();
