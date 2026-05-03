@@ -99,7 +99,7 @@ export const updateItinerary = asyncHandler(async (req: express.Request, res: ex
     const response = await generateWithRetry(prompt);
     const text = response.text();
     const updatedItinerary = extractJSON(text);
-    const newTrip = await updateTripItinerary(userId, tripId, updatedItinerary);
+    const newTrip = await updateTripItinerary(tripId, updatedItinerary);
 
     res.status(200).json(newTrip);
 });
