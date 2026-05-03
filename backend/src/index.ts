@@ -6,11 +6,13 @@ import compression from 'compression';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import helmet from 'helmet';
+import morgan from 'morgan';
 import router from './router';
 import { generalLimiter } from './middlewares/rateLimiter';
 require('dotenv').config();
 const app=express();
 app.use(helmet());
+app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(cookieParser());
 app.use(generalLimiter);
 app.use(cors({
