@@ -1,99 +1,61 @@
 import mongoose from 'mongoose';
 
-const TripSchema=new mongoose.Schema({
-    userId:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'User',
-        required:true
+const TripSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     },
-    tripDetails:Object,
-    generatedItinerary:Object,
+    tripDetails: Object,
+    generatedItinerary: Object,
     sharedWith: {
-      type: [
-        {
-          email: { type: String, required: true },
-          permission: {
-            type: String,
-            enum: ['view','edit'],
-            default: 'view'
-          }
-        }
-      ],
-      default: [] 
-        },
-
-    createdAt:{type:Date,default:Date.now},
+        type: [
+            {
+                email: { type: String, required: true },
+                permission: {
+                    type: String,
+                    enum: ['view', 'edit'],
+                    default: 'view'
+                }
+            }
+        ],
+        default: []
+    },
+    createdAt: { type: Date, default: Date.now },
 });
 
-export const TripModel=mongoose.model('Trip',TripSchema);
+TripSchema.index({ userId: 1, createdAt: -1 });
 
-export const createNewTrip=async(userId:string,tripDetails:Record<string,any>,generatedItinerary:Record<string,any>)=>{
-    console.log("Creating new trip");
-    try{
-        const trip=new TripModel({
-            userId,
-            tripDetails,
-            generatedItinerary
-        });
-        const savedTrip = await trip.save();
-        console.log("Trip created successfully");
-        return savedTrip;  // Return the saved trip
-    }catch(err){
-        throw new Error(err.message);
-    }
-    
-}
+export const TripModel = mongoose.model('Trip', TripSchema);
 
-export const updateTripItinerary = async (userId: string, tripId: string, generatedItinerary: Record<string, any>) => {
-  console.log("Updating trip itinerary");
-  try {
-    
-    const trip = await TripModel.findById(tripId);
-    
-   
-    if (!trip) {
-      throw new Error("Trip not found");
-    }
-    
-    
-     if (generatedItinerary.generatedItinerary) {
-      trip.generatedItinerary = generatedItinerary.generatedItinerary;
-    } else {
-      trip.generatedItinerary = generatedItinerary;
-    }
-    
-    
-    trip.markModified('generatedItinerary');
-    
-   
-    const updatedTrip = await trip.save();
-    
-    console.log("Trip itinerary updated successfully", updatedTrip);
-    return updatedTrip;
-  } catch (err) {
-    console.error("Error updating trip itinerary:", err);
-    throw new Error(err.message);
-  }
+export const createNewTrip = async (userId: string, tripDetails: Record<string, any>, generatedItinerary: Record<string, any>) => {
+    const trip = new TripModel({ userId, tripDetails, generatedItinerary });
+    return trip.save();
 };
 
-export const getTripById=async(tripId:string)=>{
-    try{       
-        const trip=await TripModel.findById(tripId);
-        return trip;
+export const updateTripItinerary = async (tripId: string, generatedItinerary: Record<string, any>) => {
+    const trip = await TripModel.findById(tripId);
+    if (!trip) throw new Error('Trip not found');
 
-    }catch(error){
-        throw new Error(error.message);
-    }
-}
+    trip.generatedItinerary = generatedItinerary.generatedItinerary ?? generatedItinerary;
+    trip.markModified('generatedItinerary');
+    return trip.save();
+};
 
-export const getUserTrips = async (userId:string) => {
-    try {
-        const trips = await TripModel.find({ userId })
-            .sort({ createdAt: -1 }) // Sort by newest first
-            .lean();
+export const getTripById = async (tripId: string) => {
+    return TripModel.findById(tripId);
+};
 
-        return trips;
-    } catch (error) {
-        throw new Error('Failed to fetch trips');
-    }
+export const getUserTrips = async (userId: string, page = 1, limit = 10) => {
+    const skip = (page - 1) * limit;
+    const [trips, total] = await Promise.all([
+        TripModel.find({ userId })
+            .select('-generatedItinerary')
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit)
+            .lean(),
+        TripModel.countDocuments({ userId }),
+    ]);
+    return { trips, total, page, limit, totalPages: Math.ceil(total / limit) };
 };
