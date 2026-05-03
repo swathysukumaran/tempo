@@ -56,9 +56,11 @@ export const login = asyncHandler(async (req: express.Request, res: express.Resp
 
     const isProd = process.env.NODE_ENV === 'production';
     res.cookie('TEMPO-AUTH', user.authentication.sessionToken, {
+        httpOnly: true,
         path: '/',
         sameSite: isProd ? 'none' : 'lax',
         secure: isProd,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     const { authentication: _, ...safeUser } = user.toObject();
