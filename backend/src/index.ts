@@ -1,6 +1,5 @@
 import express from 'express';
 import http from 'http';
-import bodyparser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
 import cors from 'cors';
@@ -37,14 +36,8 @@ mongoose.Promise=Promise;
 mongoose.connect(MONGO_URL);
 mongoose.connection.on('error',(error:Error)=>{console.log(error);});
 
-app.use(bodyparser.json({ limit: '50mb' }));
 app.use(express.json({ limit: '50mb' }));
-
-// Increase URL-encoded payload size limit
-app.use(bodyparser.urlencoded({ 
-  limit: '50mb', 
-  extended: true 
-}));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use('/', router());
 
 app.use((req, res) => {

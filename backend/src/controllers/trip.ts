@@ -29,8 +29,10 @@ export const getTripDetails = asyncHandler(async (req: express.Request, res: exp
 
 export const getAllTrips = asyncHandler(async (req: express.Request, res: express.Response) => {
     const userId = get(req, 'identity._id');
-    const trips = await getUserTrips(userId);
-    res.status(200).json({ trips });
+    const page  = Math.max(1, parseInt(req.query.page  as string) || 1);
+    const limit = Math.min(50, Math.max(1, parseInt(req.query.limit as string) || 10));
+    const result = await getUserTrips(userId, page, limit);
+    res.status(200).json(result);
 });
 
 export const shareTrip = asyncHandler(async (req: express.Request, res: express.Response) => {
