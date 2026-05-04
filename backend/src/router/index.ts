@@ -3,22 +3,22 @@ import authentication from './authentication';
 import AI from './AI';
 import users from './users';
 import tripDetails from './tripDetails';
-
 import speechRoutes from './speechRoutes';
 import me from './me';
 import places from './places';
+import health from './health';
 
 const router=express.Router();
 
 export default():express.Router=>{
+    health(router);
     authentication(router);
     AI(router);
     users(router);
     tripDetails(router);
-
     speechRoutes(router);
     me(router);
     places(router);
-    
+
     return router;
 }
