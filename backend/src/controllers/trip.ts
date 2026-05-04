@@ -28,7 +28,7 @@ export const getTripDetails = asyncHandler(async (req: express.Request, res: exp
 });
 
 export const getAllTrips = asyncHandler(async (req: express.Request, res: express.Response) => {
-    const userId = get(req, 'identity._id');
+    const userId = get(req, 'identity._id') as unknown as string;
     const page  = Math.max(1, parseInt(req.query.page  as string) || 1);
     const limit = Math.min(50, Math.max(1, parseInt(req.query.limit as string) || 10));
     const result = await getUserTrips(userId, page, limit);
