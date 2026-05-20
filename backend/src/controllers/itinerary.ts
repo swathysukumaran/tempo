@@ -26,7 +26,7 @@ async function generateWithRetry(prompt: string) {
                 contents: [{ role: "user", parts: [{ text: modifiedPrompt }] }],
                 generationConfig: {
                     temperature: 0.4,
-                    maxOutputTokens: 8192,
+                    maxOutputTokens: 16384,
                     topP: 0.95,
                     topK: 40,
                     responseMimeType: "application/json",
@@ -47,14 +47,14 @@ async function generateWithRetry(prompt: string) {
 }
 
 export const createTrip = asyncHandler(async (req: express.Request, res: express.Response) => {
-    const { location, timeframe, travelers, preferences, budget } = req.body;
+    const { location, tripDetails } = req.body;
     const userId = get(req, 'identity._id') as string | undefined;
     if (!userId) {
         res.status(401).json({ error: 'Unauthorized' });
         return;
     }
 
-    const FINAL_PROMPT = AI_PROMPT(location.label, timeframe, travelers, preferences, budget);
+    const FINAL_PROMPT = AI_PROMPT(location.label, tripDetails);
 
     if (FINAL_PROMPT.length > 30000) {
         res.status(400).json({ error: 'Prompt exceeds maximum allowed length' });
@@ -67,7 +67,7 @@ export const createTrip = asyncHandler(async (req: express.Request, res: express
 
     const narrative = itinerary.tripDetails.narrative;
     const generatedItinerary = itinerary.generatedItinerary;
-    const trip = await createNewTrip(userId, { location, timeframe, narrative, travelers, preferences, budget }, generatedItinerary);
+    const trip = await createNewTrip(userId, { location, tripDetails, narrative }, generatedItinerary);
 
     res.status(201).json({ tripId: trip._id });
 });
@@ -128,7 +128,11 @@ function extractJSON(text: string) {
     const jsonRegex = /```json\s*(\{[\s\S]*\})\s*```|(\{[\s\S]*\})/;
     const match = text.match(jsonRegex);
     if (match) {
-        return JSON.parse((match[1] || match[2]).trim());
+        try {
+            return JSON.parse((match[1] || match[2]).trim());
+        } catch {
+            console.log("Regex extraction failed, attempting JSON repair..");
+        }
     }
 
     const fixedText = attemptToFixJSON(text);

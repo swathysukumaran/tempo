@@ -16,10 +16,7 @@ export const createTripSchema = z.object({
         label: z.string().min(1).max(200),
         value: z.any().optional(),
     }),
-    timeframe: z.string().min(1).max(100),
-    travelers: z.string().min(1).max(100),
-    preferences: z.string().min(1).max(500),
-    budget: z.enum(['cheap', 'moderate', 'luxury']),
+    tripDetails: z.string().min(1, 'Trip details are required').max(1000),
 });
 
 export const updateTripSchema = z.object({

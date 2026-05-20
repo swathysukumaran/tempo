@@ -2,20 +2,14 @@
 
 export const AI_PROMPT = (
   destination: string,
-  timeframe: string,
-  travelers: string | null,
-  preferences: string,
-  budget: "budget" | "moderate" | "luxury"
+  tripDetails: string
 ): string => {
   return `
 You are a specialized travel API that ONLY outputs valid JSON data in the exact format requested.
 
 Task: Generate a detailed travel itinerary for the following parameters:
 - Location: ${destination}
-- Timeframe: ${timeframe}
-- Travelers: ${travelers}
-- Preferences: ${preferences}
-- Budget: ${budget}
+- Trip Details: ${tripDetails}
 Requirements:
 1. The JSON must include all fields from the schema - if data isn't applicable, use null values.
 2. The itinerary must include activities for all the days in the timeframe following {
