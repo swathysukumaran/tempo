@@ -9,7 +9,6 @@ import {
   useLocation,
   Navigate,
 } from "react-router-dom";
-import { GoogleOAuthProvider } from "@react-oauth/google";
 import Header from "./components/custom/Header.tsx";
 import { Toaster } from "./components/ui/sonner.tsx";
 import Register from "./components/custom/Register.tsx";
@@ -109,9 +108,7 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <GoogleOAuthProvider clientId="1075418359786-c91d8abaaaspc4dmkta33uo4chjcgbuo.apps.googleusercontent.com">
-      <Toaster />
-      <RouterProvider router={router} />
-    </GoogleOAuthProvider>
+    <Toaster />
+    <RouterProvider router={router} />
   </StrictMode>
 );
