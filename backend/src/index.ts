@@ -30,7 +30,11 @@ server.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
 
-const MONGO_URL=process.env.MONGO_URI;
+const MONGO_URL = process.env.MONGO_URI;
+
+if (!MONGO_URL) {
+  throw new Error('MONGO_URI environment variable is not set');
+}
 
 mongoose.Promise=Promise;
 mongoose.connect(MONGO_URL);
