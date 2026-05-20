@@ -35,8 +35,8 @@ export const transcribeAudio = async (req: Request, res: Response) => {
             }
         });
 
-        const transcription = response.results
-            .map(result => result.alternatives[0].transcript)
+        const transcription = (response.results ?? [])
+            .map(result => result.alternatives?.[0]?.transcript ?? '')
             .join(' ');
 
         res.json({ 

@@ -20,6 +20,10 @@ export const register = asyncHandler(async (req: express.Request, res: express.R
         }
     });
 
+    if (!user.authentication) {
+        throw new Error('User creation failed');
+    }
+
     user.authentication.sessionToken = random();
     await user.save();
 
@@ -41,6 +45,11 @@ export const login = asyncHandler(async (req: express.Request, res: express.Resp
 
     const user = await getUserByEmail(email).select('+authentication.password');
     if (!user) {
+        res.status(401).json({ error: 'Invalid credentials.' });
+        return;
+    }
+
+    if (!user.authentication?.password) {
         res.status(401).json({ error: 'Invalid credentials.' });
         return;
     }

@@ -35,8 +35,9 @@ async function generateWithRetry(prompt: string) {
             });
             return result.response;
         } catch (apiError) {
-            lastError = apiError.message;
-            console.warn(`API call attempt ${attempts + 1} failed: ${apiError.message}`);
+            const message = apiError instanceof Error ? apiError.message : String(apiError);
+            lastError = message;
+            console.warn(`API call attempt ${attempts + 1} failed: ${message}`);
             attempts++;
             await new Promise(resolve => setTimeout(resolve, 1000 * attempts));
         }
@@ -47,7 +48,11 @@ async function generateWithRetry(prompt: string) {
 
 export const createTrip = asyncHandler(async (req: express.Request, res: express.Response) => {
     const { location, timeframe, travelers, preferences, budget } = req.body;
-    const userId = get(req, 'identity._id');
+    const userId = get(req, 'identity._id') as string | undefined;
+    if (!userId) {
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
+    }
 
     const FINAL_PROMPT = AI_PROMPT(location.label, timeframe, travelers, preferences, budget);
 
@@ -70,7 +75,11 @@ export const createTrip = asyncHandler(async (req: express.Request, res: express
 export const updateItinerary = asyncHandler(async (req: express.Request, res: express.Response) => {
     const { tripId } = req.params;
     const { changeRequest } = req.body;
-    const userId = get(req, 'identity._id');
+    const userId = get(req, 'identity._id') as string | undefined;
+    if (!userId) {
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
+    }
 
     const trip = await getTripById(tripId);
     if (!trip) {
@@ -79,7 +88,12 @@ export const updateItinerary = asyncHandler(async (req: express.Request, res: ex
     }
 
     const currentUser = await getUserById(userId);
-    const isOwner = trip.userId.toString() === ((userId ?? '').toString());
+    if (!currentUser) {
+        res.status(404).json({ error: 'User not found' });
+        return;
+    }
+
+    const isOwner = trip.userId.toString() === userId.toString();
     const isSharedEditor = trip.sharedWith?.some(
         (entry) => entry.email === currentUser.email && entry.permission === 'edit'
     );
@@ -121,7 +135,8 @@ function extractJSON(text: string) {
     try {
         return JSON.parse(fixedText);
     } catch (error) {
-        throw new Error(`Invalid or incomplete JSON response from AI: ${error.message}`);
+        const message = error instanceof Error ? error.message : String(error);
+        throw new Error(`Invalid or incomplete JSON response from AI: ${message}`);
     }
 }
 
