@@ -380,6 +380,7 @@ function TripDetails() {
 
         const response = await fetch(`${API_URL}/transcribe`, {
           method: "POST",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
