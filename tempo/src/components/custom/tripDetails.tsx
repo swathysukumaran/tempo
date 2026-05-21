@@ -143,7 +143,7 @@ function TripDetails() {
     const activityPlaces = await Promise.all(
       Object.values(data.generatedItinerary.itinerary).flatMap((dayData) => {
         console.log("Fetching activity photos for day", dayData);
-        dayData.activities.map((activity) =>
+        return dayData.activities.map((activity) =>
           googlePlacePhotos(activity.place_name)
         );
       })
