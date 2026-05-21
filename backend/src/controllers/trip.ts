@@ -61,10 +61,10 @@ export const shareTrip = asyncHandler(async (req: express.Request, res: express.
 export const sendTripShareEmail=async (toEmail:string,tripId:mongoose.Types.ObjectId, userId:string)=>{
     
     const transporter=nodemailer.createTransport({
-        service:'SendGrid',
+        service:'Gmail',
         auth:{
-            user:'apikey',
-            pass:process.env.SENDGRID_API_KEY,
+            user:process.env.SENDER_EMAIL,
+            pass:process.env.EMAIL_APP_PASSWORD,
         }
     });
 
