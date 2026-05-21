@@ -10,6 +10,7 @@ import router from './router';
 import { generalLimiter } from './middlewares/rateLimiter';
 require('dotenv').config();
 const app=express();
+app.set('trust proxy', 1);
 app.use(helmet());
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(cookieParser());
