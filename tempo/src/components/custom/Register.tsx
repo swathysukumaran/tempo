@@ -28,6 +28,7 @@ function Register({ onLoginClick }: RegisterProps) {
 
   interface ErrorResponse {
     error: string;
+    details?: { field: string; message: string }[];
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -44,7 +45,11 @@ function Register({ onLoginClick }: RegisterProps) {
         navigate(from, { replace: true });
       } else {
         const data: ErrorResponse = await response.json();
-        setError(data.error || "Registration failed");
+        const message =
+          data.details?.map((d) => d.message).join(", ") ||
+          data.error ||
+          "Registration failed";
+        setError(message);
       }
     } catch (err) {
       setError("Registration failed");

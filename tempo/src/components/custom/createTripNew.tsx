@@ -699,6 +699,7 @@ function CreateTripNew() {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({
           audio: chunks[0],
           mimeType: "audio/webm", // Specify mime type
